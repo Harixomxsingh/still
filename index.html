@@ -8,6 +8,16 @@
     <meta name="description"
         content="A research-backed, distraction-free neuro-acoustic soundscape engine. Built for deep calm, zero cognitive fatigue, and room tranquility.">
 
+    <!-- Open Graph & Social Preview Tags (WhatsApp, iMessage, Twitter, etc.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://harixomxsingh.github.io/still/">
+    <meta property="og:title" content="Still — Distraction-Free Calm Space">
+    <meta property="og:description" content="A quiet, research-backed neuro-acoustic sound space made with care by Hari. Zero distractions, zero ads, instant peace.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?q=80&w=1200&auto=format&fit=crop">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Still — Distraction-Free Calm Space">
+    <meta name="twitter:description" content="A quiet, research-backed neuro-acoustic sound space made with care by Hari.">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -113,7 +123,82 @@
         }
 
         /* ==========================================================
-           1. LANDING GATEWAY VIEW (First Impression Masterpiece)
+           1. LAYER 1: WELCOME NOTE MODAL OVERLAY (Top Layer Card)
+           ========================================================== */
+        #welcome-note-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            background: rgba(4, 6, 12, 0.78);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #welcome-note-modal.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.96);
+            pointer-events: none;
+        }
+
+        .welcome-note-box {
+            position: relative;
+            width: 100%;
+            max-width: 440px;
+            background: var(--console-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 28px;
+            padding: 28px 22px;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 35px -10px var(--accent-glow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 14px;
+            animation: fadeInLanding 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @media (min-width: 640px) {
+            .welcome-note-box {
+                padding: 32px 26px;
+                gap: 16px;
+            }
+        }
+
+        .card-close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .card-close-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-primary);
+            transform: scale(1.05);
+        }
+
+        /* ==========================================================
+           2. LAYER 2: HOME LANDING GATEWAY VIEW
            ========================================================== */
         #landing-gateway {
             position: fixed;
@@ -749,7 +834,44 @@
     <!-- Ambient Floating Particle Canvas -->
     <canvas id="ambient-canvas"></canvas>
 
-    <!-- 1. LANDING GATEWAY VIEW (Breathtaking First Impression) -->
+    <!-- 1. LAYER 1: WELCOME NOTE MODAL (Top Layer Greeting Card) -->
+    <div id="welcome-note-modal" onclick="closeWelcomeNote()">
+        <div class="welcome-note-box" onclick="event.stopPropagation()">
+            
+            <!-- Close Button -->
+            <button class="card-close-btn" onclick="closeWelcomeNote()" title="Close Note">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Badge -->
+            <div class="landing-badge">
+                <i class="fa-solid fa-leaf text-xs"></i>
+                <span>A Note From the Creator</span>
+            </div>
+
+            <!-- Title -->
+            <h2 style="font-size: 22px; font-weight: 700; color: #ffffff; letter-spacing: -0.02em; line-height: 1.2;">
+                Welcome to Still
+            </h2>
+
+            <!-- Concise Message -->
+            <p style="font-size: 13.5px; font-weight: 300; color: var(--text-secondary); line-height: 1.6; max-width: 370px;">
+                I built this quiet space to help you calm your mind and room with research-backed soundscapes. No logins. No tracking. No ads. No algorithms. Just pure peace.
+            </p>
+
+            <!-- Handwritten Signature -->
+            <div style="font-size: 14px; font-weight: 400; color: var(--text-muted); margin: 2px 0;">
+                &mdash; <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" class="creator-link" style="color: var(--accent-primary); font-weight: 600;" onclick="event.stopPropagation()">hari</a>
+            </div>
+
+            <!-- Action to Home -->
+            <button class="landing-cta-btn" onclick="closeWelcomeNote()" style="width: 100%; padding: 12px 20px; font-size: 13px; margin-top: 4px;">
+                <span>Continue to Still &rarr;</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. LAYER 2: HOME LANDING GATEWAY VIEW -->
     <div id="landing-gateway" onclick="enterCalmSpace()">
         <div class="landing-container" onclick="event.stopPropagation()">
             
@@ -854,10 +976,14 @@
                     <span>Sound Library</span>
                 </button>
 
-                <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 6px;">
                     <button class="pill-toggle-btn" id="timer-btn" onclick="cycleTimer()" title="Sleep Timer">
                         <i class="fa-solid fa-clock text-[10px]"></i>
                         <span id="timer-label">∞</span>
+                    </button>
+
+                    <button class="icon-action-btn" style="width:32px; height:32px;" onclick="openWelcomeNote()" title="Welcome Note from Hari">
+                        <i class="fa-solid fa-envelope-open-text text-xs"></i>
                     </button>
 
                     <button class="icon-action-btn" style="width:32px; height:32px;" onclick="cycleTheme()" title="Switch Mood (T)">
@@ -1239,7 +1365,37 @@
         /* ==========================================================
            3. USER CONTROLS & TRANSITIONS
            ========================================================== */
+        let welcomeAutoCloseTimer = null;
+
+        function startWelcomeAutoDismissTimer() {
+            clearTimeout(welcomeAutoCloseTimer);
+            welcomeAutoCloseTimer = setTimeout(() => {
+                const noteModal = document.getElementById('welcome-note-modal');
+                if (noteModal && !noteModal.classList.contains('is-hidden')) {
+                    closeWelcomeNote();
+                }
+            }, 120000); // 2 minutes auto-transition fallback to home
+        }
+
+        function closeWelcomeNote() {
+            clearTimeout(welcomeAutoCloseTimer);
+            welcomeAutoCloseTimer = null;
+            const noteModal = document.getElementById('welcome-note-modal');
+            if (noteModal) {
+                noteModal.classList.add('is-hidden');
+            }
+        }
+
+        function openWelcomeNote() {
+            const noteModal = document.getElementById('welcome-note-modal');
+            if (noteModal) {
+                noteModal.classList.remove('is-hidden');
+            }
+        }
+
         function enterCalmSpace() {
+            closeWelcomeNote();
+
             initAudioEngine();
             if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
@@ -1247,12 +1403,12 @@
 
             isPlaying = true;
 
-            // Smooth crossfade from landing to player
+            // Smooth crossfade from home landing to player
             const landing = document.getElementById('landing-gateway');
             const player = document.getElementById('monolith-player');
             
-            landing.classList.add('is-hidden');
-            player.classList.add('is-active');
+            if (landing) landing.classList.add('is-hidden');
+            if (player) player.classList.add('is-active');
 
             applySoundscape(SOUNDSCAPES[currentTrackIndex], 2.2);
             updateUI();
@@ -1605,6 +1761,7 @@
             resizeCanvas();
             drawAmbientScene();
             renderModalMoodList();
+            startWelcomeAutoDismissTimer();
         });
     </script>
 </body>

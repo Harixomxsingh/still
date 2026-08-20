@@ -615,6 +615,29 @@
             transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        /* Creator Credit Signature */
+        .creator-credit {
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--text-muted);
+            opacity: 0.65;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            margin-top: -8px;
+        }
+
+        .creator-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .creator-link:hover {
+            color: #ffffff;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
         /* ==========================================================
            3. AUTO-GHOST INACTIVITY MODE
            ========================================================== */
@@ -622,7 +645,8 @@
         body.is-ghost .track-science-pill,
         body.is-ghost .track-desc,
         body.is-ghost .monolith-console,
-        body.is-ghost .keyboard-hints {
+        body.is-ghost .keyboard-hints,
+        body.is-ghost .creator-credit {
             opacity: 0 !important;
             transform: translateY(14px);
             pointer-events: none;
@@ -756,6 +780,10 @@
             </button>
 
             <span class="landing-hint">Tap anywhere to begin audio</span>
+
+            <div class="creator-credit" style="margin-top: 4px;">
+                made by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" class="creator-link" onclick="event.stopPropagation()">hari</a> with ❤️ &amp; care
+            </div>
         </div>
     </div>
 
@@ -844,9 +872,13 @@
 
         </div>
 
-        <!-- Keyboard Hints -->
+        <!-- 5. Keyboard Hints & Creator Credit -->
         <div class="keyboard-hints">
             [Space] Play &bull; [N] Next &bull; [M] Mute &bull; [F] Zen
+        </div>
+
+        <div class="creator-credit">
+            made by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" class="creator-link">hari</a> with ❤️ &amp; care
         </div>
 
     </div>

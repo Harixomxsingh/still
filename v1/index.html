@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Still — Distraction-Free Calm Space</title>
+    <meta name="description"
+        content="A research-backed, distraction-free neuro-acoustic soundscape engine. Built for deep calm, zero cognitive fatigue, and room tranquility.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #06080f;
+            --bg-gradient: radial-gradient(circle at 50% 45%, rgba(56, 189, 248, 0.11) 0%, rgba(99, 102, 241, 0.05) 38%, transparent 75%);
+            --accent-primary: #38bdf8;
+            --accent-secondary: #818cf8;
+            --accent-glow: rgba(56, 189, 248, 0.35);
+            --card-bg: rgba(255, 255, 255, 0.035);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --console-bg: rgba(13, 19, 33, 0.72);
+        }
+
+        [data-theme="sunrise"] {
+            --bg-color: #0d0f17;
+            --bg-gradient: radial-gradient(circle at 50% 45%, rgba(245, 158, 11, 0.13) 0%, rgba(217, 119, 6, 0.05) 40%, transparent 75%);
+            --accent-primary: #fbbf24;
+            --accent-secondary: #f97316;
+            --accent-glow: rgba(251, 191, 36, 0.35);
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --card-border: rgba(251, 191, 36, 0.14);
+            --text-primary: #fffbeb;
+            --text-secondary: #d97706;
+            --text-muted: #78716c;
+            --console-bg: rgba(24, 18, 12, 0.8);
+        }
+
+        [data-theme="forest"] {
+            --bg-color: #050b07;
+            --bg-gradient: radial-gradient(circle at 50% 45%, rgba(16, 185, 129, 0.12) 0%, rgba(5, 150, 105, 0.05) 40%, transparent 75%);
+            --accent-primary: #34d399;
+            --accent-secondary: #10b981;
+            --accent-glow: rgba(52, 211, 153, 0.35);
+            --card-bg: rgba(255, 255, 255, 0.035);
+            --card-border: rgba(52, 211, 153, 0.14);
+            --text-primary: #ecfdf5;
+            --text-secondary: #6ee7b7;
+            --text-muted: #4b5563;
+            --console-bg: rgba(7, 20, 13, 0.8);
+        }
+
+        [data-theme="lavender"] {
+            --bg-color: #090513;
+            --bg-gradient: radial-gradient(circle at 50% 45%, rgba(192, 132, 252, 0.13) 0%, rgba(168, 85, 247, 0.05) 40%, transparent 75%);
+            --accent-primary: #c084fc;
+            --accent-secondary: #e879f9;
+            --accent-glow: rgba(192, 132, 252, 0.35);
+            --card-bg: rgba(255, 255, 255, 0.035);
+            --card-border: rgba(192, 132, 252, 0.14);
+            --text-primary: #faf5ff;
+            --text-secondary: #d8b4fe;
+            --text-muted: #6b7280;
+            --console-bg: rgba(18, 10, 30, 0.8);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            background-image: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+            transition: background-color 1.2s cubic-bezier(0.16, 1, 0.3, 1), background-image 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Ambient Canvas */
+        #ambient-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ==========================================================
+           CONCEPT A: MONOLITH NEXUS CONTAINER (Centered Pillar)
+           ========================================================== */
+        .monolith-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 480px;
+            margin: auto;
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 22px;
+        }
+
+        /* Top Brand Header */
+        .monolith-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s ease;
+        }
+
+        .monolith-brand span.freq-tag {
+            color: var(--accent-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
+
+        /* Center Resonant Breathing Halo */
+        .breathing-nexus {
+            position: relative;
+            width: 240px;
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 6px 0;
+            cursor: pointer;
+        }
+
+        @media (min-width: 640px) {
+            .breathing-nexus {
+                width: 270px;
+                height: 270px;
+            }
+        }
+
+        .nexus-outer-halo {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 1.5px solid var(--accent-primary);
+            opacity: 0.25;
+            transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1), opacity 4s ease;
+        }
+
+        .nexus-glow-disc {
+            position: absolute;
+            inset: 15px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-primary) 0%, var(--accent-secondary) 45%, transparent 72%);
+            opacity: 0.2;
+            filter: blur(24px);
+            transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1), opacity 4s ease;
+        }
+
+        .nexus-core-sphere {
+            position: absolute;
+            width: 124px;
+            height: 124px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 0 35px var(--accent-glow), inset 0 0 20px rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
+        }
+
+        .nexus-core-sphere:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 45px var(--accent-glow);
+        }
+
+        /* 0.1 Hz Resonant Breathing Keyframes */
+        .breath-inhale .nexus-outer-halo {
+            transform: scale(1.32);
+            opacity: 0.6;
+        }
+
+        .breath-inhale .nexus-glow-disc {
+            transform: scale(1.4);
+            opacity: 0.5;
+        }
+
+        .breath-inhale .nexus-core-sphere {
+            transform: scale(1.1);
+        }
+
+        .breath-exhale .nexus-outer-halo {
+            transform: scale(0.92);
+            opacity: 0.15;
+        }
+
+        .breath-exhale .nexus-glow-disc {
+            transform: scale(0.85);
+            opacity: 0.12;
+        }
+
+        .breath-exhale .nexus-core-sphere {
+            transform: scale(0.96);
+        }
+
+        /* Track Details & Science Section */
+        .track-info-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s ease;
+        }
+
+        .track-title {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .track-science-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .track-desc {
+            font-size: 12px;
+            font-weight: 300;
+            color: var(--text-muted);
+            max-width: 360px;
+            line-height: 1.55;
+            margin-top: 2px;
+        }
+
+        /* Unified Monolith Glass Console */
+        .monolith-console {
+            width: 100%;
+            background: var(--console-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border-radius: 28px;
+            padding: 18px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.6), 0 0 30px -10px var(--accent-glow);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s ease;
+        }
+
+        /* Playback Action Buttons */
+        .playback-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .icon-action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .icon-action-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .icon-action-btn:active {
+            transform: scale(0.92);
+        }
+
+        .master-play-button {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--text-primary);
+            color: var(--bg-color);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .master-play-button:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 35px var(--accent-glow);
+        }
+
+        .master-play-button:active {
+            transform: scale(0.94);
+        }
+
+        /* Smooth Level Slider */
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 6px;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            height: 4px;
+            width: 100%;
+            outline: none;
+            transition: background 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-primary);
+            transition: transform 0.15s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.35);
+        }
+
+        /* Utility Bottom Row */
+        .utility-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .pill-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pill-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.09);
+            color: var(--text-primary);
+            border-color: var(--accent-primary);
+        }
+
+        /* Keyboard Hints (Fades in Ghost Mode) */
+        .keyboard-hints {
+            font-size: 10.5px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            opacity: 0.7;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* ==========================================================
+           AUTO-GHOST INACTIVITY MODE (Pure Room Art)
+           ========================================================== */
+        body.is-ghost .monolith-brand,
+        body.is-ghost .track-science-pill,
+        body.is-ghost .track-desc,
+        body.is-ghost .monolith-console,
+        body.is-ghost .keyboard-hints {
+            opacity: 0 !important;
+            transform: translateY(14px);
+            pointer-events: none;
+        }
+
+        body.is-ghost .breathing-nexus {
+            transform: scale(1.05);
+        }
+
+        body.is-ghost .track-title {
+            opacity: 0.6;
+            font-size: 18px;
+        }
+
+        /* Initial Tap Overlay (Autoplay Compliance) */
+        #welcome-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(6, 8, 15, 0.88);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 24px;
+            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.7s;
+        }
+
+        #welcome-overlay.hidden-overlay {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Sound Library Modal */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 60;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-backdrop.is-open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            width: 100%;
+            max-width: 540px;
+            max-height: 82vh;
+            background: var(--console-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 28px;
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            transform: scale(0.94);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-backdrop.is-open .modal-container {
+            transform: scale(1);
+        }
+
+        .mood-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mood-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--card-border);
+            transform: translateY(-1px);
+        }
+
+        .mood-card.is-active {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .pulsing-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            box-shadow: 0 0 8px var(--accent-primary);
+            animation: pulse-dot 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.3); opacity: 1; }
+        }
+    </style>
+</head>
+
+<body data-theme="midnight">
+
+    <!-- Ambient Floating Particle Canvas -->
+    <canvas id="ambient-canvas"></canvas>
+
+    <!-- INITIAL CLICK-TO-START MODAL -->
+    <div id="welcome-overlay" onclick="startAudioExperience()">
+        <div class="flex flex-col items-center max-w-sm text-center">
+            <div class="w-16 h-16 rounded-full flex items-center justify-center mb-5"
+                style="background: radial-gradient(circle, var(--accent-primary) 0%, transparent 70%); box-shadow: 0 0 35px var(--accent-glow);">
+                <i class="fa-solid fa-water text-2xl text-white"></i>
+            </div>
+            <h1 class="text-2xl font-medium tracking-tight text-white mb-2">Still</h1>
+            <p class="text-xs text-slate-400 font-light mb-6 leading-relaxed">
+                Zero distraction. Neuroscience-backed frequencies to calm your nervous system and room.
+            </p>
+            <div class="px-7 py-3 rounded-full pill-toggle-btn text-xs font-semibold text-white border border-white/20 hover:border-sky-400">
+                <i class="fa-solid fa-play text-[10px] text-sky-400"></i>
+                <span>Enter Calm Space</span>
+            </div>
+            <span class="text-[10.5px] text-slate-500 font-mono mt-4">Tap anywhere to start</span>
+        </div>
+    </div>
+
+    <!-- CONCEPT A: MONOLITH NEXUS (Central Symmetric Column) -->
+    <div class="monolith-wrapper">
+
+        <!-- 1. Top Brand / Status Badge -->
+        <div class="monolith-brand">
+            <i class="fa-solid fa-infinity text-xs" style="color: var(--accent-primary)"></i>
+            <span>Still</span>
+            <span class="freq-tag">0.1 Hz</span>
+        </div>
+
+        <!-- 2. Central Resonant Breathing Halo -->
+        <div class="breathing-nexus" id="breath-orb" onclick="togglePlayPause()">
+            <div class="nexus-outer-halo"></div>
+            <div class="nexus-glow-disc"></div>
+            <div class="nexus-core-sphere">
+                <i class="fa-solid fa-play text-xl text-white ml-0.5" id="orb-play-icon" style="display: block;"></i>
+                <i class="fa-solid fa-pause text-xl text-white" id="orb-pause-icon" style="display: none;"></i>
+                <span class="text-[9px] font-mono tracking-widest text-slate-300 mt-2 uppercase opacity-80" id="breath-phase-text">Breathe</span>
+            </div>
+        </div>
+
+        <!-- 3. Track Details & Neuro-Science Info -->
+        <div class="track-info-block">
+            <h2 class="track-title" id="track-title">Alpha Wave Sanctuary</h2>
+            <div class="track-science-pill" id="track-science">
+                <span class="pulsing-indicator"></span>
+                <span>432 Hz • 10 Hz Alpha • Cortisol Relief</span>
+            </div>
+            <p class="track-desc" id="track-desc">
+                Warm acoustic pads with gentle alpha oscillations designed to quiet the nervous system.
+            </p>
+        </div>
+
+        <!-- 4. Monolith Unified Glass Console -->
+        <div class="monolith-console">
+            
+            <!-- Playback Controls -->
+            <div class="playback-row">
+                <button class="icon-action-btn" onclick="prevTrack()" title="Previous Soundscape (P)">
+                    <i class="fa-solid fa-backward-step text-base"></i>
+                </button>
+
+                <button class="master-play-button" id="master-play-btn" onclick="togglePlayPause()" title="Play / Pause (Space)">
+                    <i class="fa-solid fa-play text-base ml-0.5" id="master-play-icon"></i>
+                </button>
+
+                <button class="icon-action-btn" onclick="nextTrack()" title="Next Soundscape (N)">
+                    <i class="fa-solid fa-forward-step text-base"></i>
+                </button>
+            </div>
+
+            <!-- Volume Slider -->
+            <div class="volume-container">
+                <button class="icon-action-btn" style="width:30px; height:30px;" onclick="toggleMute()" title="Mute (M)">
+                    <i class="fa-solid fa-volume-high text-xs" id="volume-icon"></i>
+                </button>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.75"
+                    oninput="setMasterVolume(this.value)" title="Volume">
+            </div>
+
+            <!-- Bottom Utilities -->
+            <div class="utility-row">
+                <button class="pill-toggle-btn" onclick="openMoodModal()">
+                    <i class="fa-solid fa-sliders text-[11px] text-sky-400"></i>
+                    <span>Sound Library</span>
+                </button>
+
+                <div class="flex items-center gap-2">
+                    <button class="pill-toggle-btn" id="timer-btn" onclick="cycleTimer()" title="Sleep Timer">
+                        <i class="fa-solid fa-clock text-[10px]"></i>
+                        <span id="timer-label">∞</span>
+                    </button>
+
+                    <button class="icon-action-btn" style="width:32px; height:32px;" onclick="cycleTheme()" title="Switch Calm Mood (T)">
+                        <i class="fa-solid fa-moon text-xs" id="theme-icon"></i>
+                    </button>
+
+                    <button class="icon-action-btn" style="width:32px; height:32px;" onclick="toggleFullScreen()" title="Fullscreen Zen (F)">
+                        <i class="fa-solid fa-expand text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 5. Keyboard Hints -->
+        <div class="keyboard-hints">
+            [Space] Play &bull; [N] Next &bull; [M] Mute &bull; [F] Zen
+        </div>
+
+    </div>
+
+    <!-- SOUNDSCAPE MODAL -->
+    <div class="modal-backdrop" id="mood-modal" onclick="closeMoodModal(event)">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between pb-2 border-b border-white/10">
+                <div>
+                    <h3 class="text-base font-semibold text-white">Neuro-Acoustic Soundscapes</h3>
+                    <p class="text-[11px] text-slate-400 font-light">Research-backed acoustic frequencies for deep calm.</p>
+                </div>
+                <button class="icon-action-btn" onclick="closeMoodModal()">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <div class="flex flex-col gap-2" id="modal-mood-list">
+                <!-- Dynamically rendered via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT: ADVANCED GENERATIVE SOUND ENGINE & LOGIC -->
+    <script>
+        /* ==========================================================
+           1. SOUNDSCAPE DATABASE
+           ========================================================== */
+        const SOUNDSCAPES = [
+            {
+                id: "alpha_sanctuary",
+                title: "Alpha Wave Sanctuary",
+                science: "432 Hz • 10 Hz Alpha • Cortisol Relief",
+                description: "Warm Rhodes chords and slow analog pads tuned to 432 Hz, pulling active beta stress down into restorative alpha calm.",
+                icon: "fa-brain",
+                baseFreq: 432,
+                binauralDiff: 10,
+                chordNotes: [216, 270, 324, 432, 540],
+                brownGain: 0.25,
+                rainGain: 0.15,
+                padGain: 0.8,
+                binauralGain: 0.45
+            },
+            {
+                id: "deep_delta",
+                title: "Deep Delta Sleep & Rest",
+                science: "2.5 Hz Delta • Melatonin • Vagus Calming",
+                description: "Deep sub-harmonic resonance and low-frequency delta entrainment to prepare the body and mind for deep restorative sleep.",
+                icon: "fa-moon",
+                baseFreq: 108,
+                binauralDiff: 2.5,
+                chordNotes: [108, 162, 216, 270],
+                brownGain: 0.45,
+                rainGain: 0.1,
+                padGain: 0.7,
+                binauralGain: 0.6
+            },
+            {
+                id: "brownian_rain",
+                title: "Brownian Rain Meditation",
+                science: "1/f² Brown Noise • Amygdala Calming",
+                description: "Deep acoustic brown noise blended with gentle spatial rainfall and distant warm thunder to melt away tension.",
+                icon: "fa-cloud-rain",
+                baseFreq: 174,
+                binauralDiff: 7.83,
+                chordNotes: [174, 261, 348],
+                brownGain: 0.75,
+                rainGain: 0.65,
+                padGain: 0.35,
+                binauralGain: 0.3
+            },
+            {
+                id: "zen_garden",
+                title: "Celestial Zen Garden",
+                science: "528 Hz Solfeggio • Singing Bowls",
+                description: "Tibetan singing bowl overtones and bamboo water harmonics that trigger the body's natural relaxation response.",
+                icon: "fa-spa",
+                baseFreq: 528,
+                binauralDiff: 8.0,
+                chordNotes: [264, 396, 528, 792],
+                brownGain: 0.15,
+                rainGain: 0.2,
+                padGain: 0.75,
+                binauralGain: 0.4
+            },
+            {
+                id: "forest_dusk",
+                title: "Forest Dusk & Hearth",
+                science: "Biophilic Frequency • Sympathetic Reset",
+                description: "Night forest crickets, crackling fireplace embers, and evening breezes proven to lower stress hormones.",
+                icon: "fa-tree",
+                baseFreq: 396,
+                binauralDiff: 6.0,
+                chordNotes: [198, 297, 396, 495],
+                brownGain: 0.35,
+                rainGain: 0.1,
+                padGain: 0.5,
+                binauralGain: 0.35
+            },
+            {
+                id: "cosmic_float",
+                title: "Cosmic Float & Stillness",
+                science: "Non-Predictive Ambient Swells",
+                description: "Zero-gravity ambient drone pads that flow without repetitive hooks, allowing the brain to stop predicting and rest.",
+                icon: "fa-meteor",
+                baseFreq: 288,
+                binauralDiff: 9.0,
+                chordNotes: [144, 216, 288, 432, 576],
+                brownGain: 0.3,
+                rainGain: 0.05,
+                padGain: 0.85,
+                binauralGain: 0.5
+            },
+            {
+                id: "flow_state",
+                title: "Deep Flow & Study",
+                science: "6 Hz Theta Focus • Noise Masking",
+                description: "Isochronic theta waves and smooth analog warmth to anchor focus, stop mind-wandering, and promote deep flow.",
+                icon: "fa-fire-flame-curved",
+                baseFreq: 320,
+                binauralDiff: 6.0,
+                chordNotes: [160, 240, 320, 480],
+                brownGain: 0.55,
+                rainGain: 0.2,
+                padGain: 0.6,
+                binauralGain: 0.5
+            }
+        ];
+
+        /* ==========================================================
+           2. WEB AUDIO API SYNTHESIZER & GENERATIVE ENGINE
+           ========================================================== */
+        let audioCtx = null;
+        let isPlaying = false;
+        let currentTrackIndex = 0;
+        let masterGain = null;
+        let previousVolume = 0.75;
+        let isMuted = false;
+
+        let padNodes = [];
+        let binauralLeft = null;
+        let binauralRight = null;
+        let binauralGain = null;
+        let brownNoiseNode = null;
+        let brownGain = null;
+        let rainNoiseNode = null;
+        let rainGain = null;
+        let lfoFilter = null;
+        let lfoOsc = null;
+        let pianoInterval = null;
+
+        function initAudioEngine() {
+            if (audioCtx) return;
+
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContextClass();
+
+            masterGain = audioCtx.createGain();
+            masterGain.gain.setValueAtTime(0.75, audioCtx.currentTime);
+            masterGain.connect(audioCtx.destination);
+
+            setupBrownNoiseGenerator();
+            setupRainGenerator();
+            setupBinauralGenerator();
+            setupPadSynthesizer();
+            startGenerativeAcousticPiano();
+        }
+
+        // Brownian 1/f² Noise Generator
+        function setupBrownNoiseGenerator() {
+            const bufferSize = audioCtx.sampleRate * 4;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            let lastOut = 0.0;
+
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                lastOut = (lastOut + (0.02 * white)) / 1.02;
+                output[i] = lastOut * 3.5;
+            }
+
+            brownNoiseNode = audioCtx.createBufferSource();
+            brownNoiseNode.buffer = noiseBuffer;
+            brownNoiseNode.loop = true;
+
+            const brownFilter = audioCtx.createBiquadFilter();
+            brownFilter.type = 'lowpass';
+            brownFilter.frequency.setValueAtTime(450, audioCtx.currentTime);
+
+            brownGain = audioCtx.createGain();
+            brownGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+
+            brownNoiseNode.connect(brownFilter);
+            brownFilter.connect(brownGain);
+            brownGain.connect(masterGain);
+
+            brownNoiseNode.start(0);
+        }
+
+        // Spatial Gentle Rain Generator
+        function setupRainGenerator() {
+            const bufferSize = audioCtx.sampleRate * 4;
+            const noiseBuffer = audioCtx.createBuffer(2, bufferSize, audioCtx.sampleRate);
+            
+            for (let channel = 0; channel < 2; channel++) {
+                const data = noiseBuffer.getChannelData(channel);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+            }
+
+            rainNoiseNode = audioCtx.createBufferSource();
+            rainNoiseNode.buffer = noiseBuffer;
+            rainNoiseNode.loop = true;
+
+            const bandpass = audioCtx.createBiquadFilter();
+            bandpass.type = 'bandpass';
+            bandpass.frequency.setValueAtTime(1400, audioCtx.currentTime);
+            bandpass.Q.setValueAtTime(0.7, audioCtx.currentTime);
+
+            rainGain = audioCtx.createGain();
+            rainGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+
+            rainNoiseNode.connect(bandpass);
+            bandpass.connect(rainGain);
+            rainGain.connect(masterGain);
+
+            rainNoiseNode.start(0);
+        }
+
+        // Binaural Beat Generator
+        function setupBinauralGenerator() {
+            const merger = audioCtx.createChannelMerger(2);
+
+            binauralLeft = audioCtx.createOscillator();
+            binauralRight = audioCtx.createOscillator();
+
+            binauralLeft.type = 'sine';
+            binauralRight.type = 'sine';
+
+            const leftGain = audioCtx.createGain();
+            const rightGain = audioCtx.createGain();
+            leftGain.gain.value = 0.5;
+            rightGain.gain.value = 0.5;
+
+            binauralLeft.connect(leftGain);
+            binauralRight.connect(rightGain);
+
+            leftGain.connect(merger, 0, 0);
+            rightGain.connect(merger, 0, 1);
+
+            binauralGain = audioCtx.createGain();
+            binauralGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+
+            merger.connect(binauralGain);
+            binauralGain.connect(masterGain);
+
+            binauralLeft.start(0);
+            binauralRight.start(0);
+        }
+
+        // Lush Analog Pad Synthesizer
+        function setupPadSynthesizer() {
+            lfoFilter = audioCtx.createBiquadFilter();
+            lfoFilter.type = 'lowpass';
+            lfoFilter.frequency.setValueAtTime(550, audioCtx.currentTime);
+            lfoFilter.Q.setValueAtTime(2.0, audioCtx.currentTime);
+
+            lfoOsc = audioCtx.createOscillator();
+            lfoOsc.type = 'sine';
+            lfoOsc.frequency.setValueAtTime(0.1, audioCtx.currentTime);
+
+            const lfoGain = audioCtx.createGain();
+            lfoGain.gain.setValueAtTime(250, audioCtx.currentTime);
+
+            lfoOsc.connect(lfoGain);
+            lfoGain.connect(lfoFilter.frequency);
+            lfoOsc.start(0);
+
+            lfoFilter.connect(masterGain);
+        }
+
+        // Generative Brian Eno-style Pentatonic Piano Drops (gentle acoustic warmth)
+        function startGenerativeAcousticPiano() {
+            const pentatonicFrequencies = [216, 270, 324, 432, 486, 648];
+
+            function triggerSingleNote() {
+                if (!isPlaying || !audioCtx) return;
+
+                const now = audioCtx.currentTime;
+                const freq = pentatonicFrequencies[Math.floor(Math.random() * pentatonicFrequencies.length)];
+                
+                const osc = audioCtx.createOscillator();
+                const noteGain = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now);
+
+                // Natural exponential acoustic decay
+                noteGain.gain.setValueAtTime(0.0001, now);
+                noteGain.gain.linearRampToValueAtTime(0.08, now + 0.1);
+                noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 4.5);
+
+                osc.connect(noteGain);
+                noteGain.connect(masterGain);
+
+                osc.start(now);
+                osc.stop(now + 4.6);
+            }
+
+            setInterval(() => {
+                if (Math.random() > 0.45) {
+                    triggerSingleNote();
+                }
+            }, 6000);
+        }
+
+        function applySoundscape(track, crossfadeDuration = 3.5) {
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+
+            // Binaural
+            binauralLeft.frequency.setTargetAtTime(track.baseFreq, now, 1.2);
+            binauralRight.frequency.setTargetAtTime(track.baseFreq + track.binauralDiff, now, 1.2);
+            binauralGain.gain.setTargetAtTime(isPlaying ? track.binauralGain : 0.001, now, crossfadeDuration / 3);
+
+            // Brown & Rain
+            brownGain.gain.setTargetAtTime(isPlaying ? track.brownGain : 0.001, now, crossfadeDuration / 3);
+            rainGain.gain.setTargetAtTime(isPlaying ? track.rainGain : 0.001, now, crossfadeDuration / 3);
+
+            // Synthesizer Chords
+            padNodes.forEach(node => {
+                try {
+                    node.gainNode.gain.setTargetAtTime(0.0001, now, 1.0);
+                    setTimeout(() => {
+                        node.osc.stop();
+                        node.osc.disconnect();
+                    }, 1800);
+                } catch(e) {}
+            });
+            padNodes = [];
+
+            if (isPlaying) {
+                track.chordNotes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gNode = audioCtx.createGain();
+                    
+                    osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+                    osc.frequency.setValueAtTime(freq, now);
+                    osc.detune.setValueAtTime((Math.random() * 8) - 4, now);
+
+                    gNode.gain.setValueAtTime(0.0001, now);
+                    const targetGain = track.padGain / track.chordNotes.length;
+                    gNode.gain.setTargetAtTime(targetGain, now + 0.3, crossfadeDuration / 2.5);
+
+                    osc.connect(gNode);
+                    gNode.connect(lfoFilter);
+                    osc.start(now);
+
+                    padNodes.push({ osc, gainNode: gNode });
+                });
+            }
+
+            updateUI();
+        }
+
+        /* ==========================================================
+           3. USER CONTROLS & INTERACTION
+           ========================================================== */
+        function startAudioExperience() {
+            initAudioEngine();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            isPlaying = true;
+            document.getElementById('welcome-overlay').classList.add('hidden-overlay');
+            
+            applySoundscape(SOUNDSCAPES[currentTrackIndex], 2.0);
+            updateUI();
+            startBreathingEngine();
+        }
+
+        function togglePlayPause() {
+            if (!audioCtx) {
+                startAudioExperience();
+                return;
+            }
+
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            isPlaying = !isPlaying;
+
+            if (isPlaying) {
+                applySoundscape(SOUNDSCAPES[currentTrackIndex], 2.0);
+            } else {
+                const now = audioCtx.currentTime;
+                brownGain.gain.setTargetAtTime(0.0001, now, 0.8);
+                rainGain.gain.setTargetAtTime(0.0001, now, 0.8);
+                binauralGain.gain.setTargetAtTime(0.0001, now, 0.8);
+                padNodes.forEach(node => {
+                    node.gainNode.gain.setTargetAtTime(0.0001, now, 0.8);
+                });
+            }
+
+            updateUI();
+        }
+
+        function nextTrack() {
+            currentTrackIndex = (currentTrackIndex + 1) % SOUNDSCAPES.length;
+            if (isPlaying) {
+                applySoundscape(SOUNDSCAPES[currentTrackIndex], 3.0);
+            } else {
+                updateUI();
+            }
+        }
+
+        function prevTrack() {
+            currentTrackIndex = (currentTrackIndex - 1 + SOUNDSCAPES.length) % SOUNDSCAPES.length;
+            if (isPlaying) {
+                applySoundscape(SOUNDSCAPES[currentTrackIndex], 3.0);
+            } else {
+                updateUI();
+            }
+        }
+
+        function selectTrack(idx) {
+            currentTrackIndex = idx;
+            if (!isPlaying) {
+                togglePlayPause();
+            } else {
+                applySoundscape(SOUNDSCAPES[currentTrackIndex], 3.0);
+            }
+            closeMoodModal();
+        }
+
+        function setMasterVolume(val) {
+            if (!audioCtx) initAudioEngine();
+            const volume = parseFloat(val);
+            masterGain.gain.setTargetAtTime(volume, audioCtx.currentTime, 0.05);
+            
+            if (volume > 0) {
+                isMuted = false;
+                previousVolume = volume;
+            }
+            updateVolumeIcon(volume);
+        }
+
+        function toggleMute() {
+            if (!audioCtx) initAudioEngine();
+            const slider = document.getElementById('volume-slider');
+            if (isMuted) {
+                isMuted = false;
+                slider.value = previousVolume || 0.75;
+                setMasterVolume(slider.value);
+            } else {
+                isMuted = true;
+                previousVolume = parseFloat(slider.value) || 0.75;
+                slider.value = 0;
+                setMasterVolume(0);
+            }
+        }
+
+        function updateVolumeIcon(vol) {
+            const icon = document.getElementById('volume-icon');
+            if (vol === 0 || isMuted) {
+                icon.className = 'fa-solid fa-volume-xmark text-xs text-rose-400';
+            } else if (vol < 0.5) {
+                icon.className = 'fa-solid fa-volume-low text-xs';
+            } else {
+                icon.className = 'fa-solid fa-volume-high text-xs';
+            }
+        }
+
+        /* ==========================================================
+           4. AUTO-GHOST 5-SECOND INACTIVITY
+           ========================================================== */
+        let ghostTimeout = null;
+        const GHOST_DELAY_MS = 5000;
+
+        function resetGhostTimer() {
+            document.body.classList.remove('is-ghost');
+            clearTimeout(ghostTimeout);
+            
+            if (isPlaying) {
+                ghostTimeout = setTimeout(() => {
+                    document.body.classList.add('is-ghost');
+                }, GHOST_DELAY_MS);
+            }
+        }
+
+        ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'].forEach(evt => {
+            window.addEventListener(evt, resetGhostTimer, { passive: true });
+        });
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        /* ==========================================================
+           5. TIMER & THEMES
+           ========================================================== */
+        const TIMER_INTERVALS = [0, 15, 30, 45, 60, 90];
+        let timerIdx = 0;
+        let sleepTimerId = null;
+
+        function cycleTimer() {
+            timerIdx = (timerIdx + 1) % TIMER_INTERVALS.length;
+            const minutes = TIMER_INTERVALS[timerIdx];
+            const label = document.getElementById('timer-label');
+            const btn = document.getElementById('timer-btn');
+
+            clearTimeout(sleepTimerId);
+
+            if (minutes === 0) {
+                label.textContent = '∞';
+                btn.style.color = '';
+            } else {
+                label.textContent = `${minutes}m`;
+                btn.style.color = 'var(--accent-primary)';
+
+                sleepTimerId = setTimeout(() => {
+                    if (audioCtx && isPlaying) {
+                        masterGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 8.0);
+                        setTimeout(() => {
+                            togglePlayPause();
+                            masterGain.gain.setValueAtTime(0.75, audioCtx.currentTime);
+                            timerIdx = 0;
+                            label.textContent = '∞';
+                        }, 10000);
+                    }
+                }, minutes * 60 * 1000);
+            }
+        }
+
+        const THEMES = [
+            { id: "midnight", icon: "fa-moon" },
+            { id: "sunrise", icon: "fa-sun" },
+            { id: "forest", icon: "fa-tree" },
+            { id: "lavender", icon: "fa-feather-pointed" }
+        ];
+        let currentThemeIdx = 0;
+
+        function cycleTheme() {
+            currentThemeIdx = (currentThemeIdx + 1) % THEMES.length;
+            const theme = THEMES[currentThemeIdx];
+            document.body.setAttribute('data-theme', theme.id);
+            document.getElementById('theme-icon').className = `fa-solid ${theme.icon} text-xs`;
+        }
+
+        function openMoodModal() {
+            document.getElementById('mood-modal').classList.add('is-open');
+        }
+
+        function closeMoodModal(e) {
+            document.getElementById('mood-modal').classList.remove('is-open');
+        }
+
+        /* ==========================================================
+           6. 0.1 HZ RESONANT BREATHING CYCLE
+           ========================================================== */
+        function startBreathingEngine() {
+            const orb = document.getElementById('breath-orb');
+            const phaseText = document.getElementById('breath-phase-text');
+
+            function runBreathLoop() {
+                orb.className = 'breathing-nexus breath-inhale';
+                phaseText.textContent = 'Inhale';
+
+                setTimeout(() => {
+                    phaseText.textContent = 'Hold';
+
+                    setTimeout(() => {
+                        orb.className = 'breathing-nexus breath-exhale';
+                        phaseText.textContent = 'Exhale';
+
+                        setTimeout(runBreathLoop, 4000);
+                    }, 2000);
+                }, 4000);
+            }
+
+            runBreathLoop();
+        }
+
+        /* ==========================================================
+           7. AMBIENT PARTICLES
+           ========================================================== */
+        const canvas = document.getElementById('ambient-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        function initParticles() {
+            particles = [];
+            const count = Math.min(Math.floor(window.innerWidth / 20), 45);
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.6 + 0.5,
+                    vx: (Math.random() - 0.5) * 0.2,
+                    vy: (Math.random() - 0.5) * 0.2 - 0.08,
+                    alpha: Math.random() * 0.35 + 0.1
+                });
+            }
+        }
+
+        function drawAmbientScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const accentColor = getComputedStyle(document.body).getPropertyValue('--accent-primary').trim() || '#38bdf8';
+            ctx.fillStyle = accentColor;
+
+            particles.forEach(p => {
+                ctx.globalAlpha = isPlaying ? p.alpha * 1.2 : p.alpha * 0.5;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+            });
+
+            requestAnimationFrame(drawAmbientScene);
+        }
+
+        /* ==========================================================
+           8. UI UPDATES & KEYBOARD SHORTCUTS
+           ========================================================== */
+        function updateUI() {
+            const track = SOUNDSCAPES[currentTrackIndex];
+
+            document.getElementById('track-title').textContent = track.title;
+            document.getElementById('track-science').querySelector('span:last-child').textContent = track.science;
+            document.getElementById('track-desc').textContent = track.description;
+
+            const orbPlay = document.getElementById('orb-play-icon');
+            const orbPause = document.getElementById('orb-pause-icon');
+            const masterPlay = document.getElementById('master-play-icon');
+
+            if (isPlaying) {
+                orbPlay.style.display = 'none';
+                orbPause.style.display = 'block';
+                masterPlay.className = 'fa-solid fa-pause text-base';
+            } else {
+                orbPlay.style.display = 'block';
+                orbPause.style.display = 'none';
+                masterPlay.className = 'fa-solid fa-play text-base ml-0.5';
+            }
+
+            renderModalMoodList();
+            resetGhostTimer();
+        }
+
+        function renderModalMoodList() {
+            const list = document.getElementById('modal-mood-list');
+            list.innerHTML = '';
+
+            SOUNDSCAPES.forEach((track, idx) => {
+                const isActive = idx === currentTrackIndex;
+                const card = document.createElement('div');
+                card.className = `mood-card ${isActive ? 'is-active' : ''}`;
+                card.onclick = () => selectTrack(idx);
+
+                card.innerHTML = `
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm flex-shrink-0"
+                        style="background: rgba(255,255,255,0.05); color: var(--accent-primary)">
+                        <i class="fa-solid ${track.icon}"></i>
+                    </div>
+                    <div class="flex-grow min-w-0">
+                        <div class="flex items-center justify-between">
+                            <h5 class="text-xs font-semibold text-white truncate">${track.title}</h5>
+                            ${isActive && isPlaying ? '<span class="pulsing-indicator"></span>' : ''}
+                        </div>
+                        <p class="text-[10px] text-slate-400 font-mono mt-0.5 truncate">${track.science}</p>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+
+            switch (e.code) {
+                case 'Space':
+                    e.preventDefault();
+                    togglePlayPause();
+                    break;
+                case 'KeyN':
+                    nextTrack();
+                    break;
+                case 'KeyP':
+                    prevTrack();
+                    break;
+                case 'KeyM':
+                    toggleMute();
+                    break;
+                case 'KeyF':
+                    toggleFullScreen();
+                    break;
+                case 'KeyT':
+                    cycleTheme();
+                    break;
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            resizeCanvas();
+            drawAmbientScene();
+            renderModalMoodList();
+        });
+    </script>
+</body>
+
+</html>

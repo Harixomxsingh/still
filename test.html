@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
 
     <!-- FontAwesome 6 CDN -->
@@ -20,59 +20,59 @@
 
     <style>
         :root {
-            --bg-color: #06080f;
-            --bg-gradient: radial-gradient(circle at 50% 45%, rgba(56, 189, 248, 0.11) 0%, rgba(99, 102, 241, 0.05) 38%, transparent 75%);
+            --bg-color: #05070d;
+            --bg-gradient: radial-gradient(circle at 50% 40%, rgba(56, 189, 248, 0.12) 0%, rgba(99, 102, 241, 0.04) 40%, transparent 80%);
             --accent-primary: #38bdf8;
             --accent-secondary: #818cf8;
             --accent-glow: rgba(56, 189, 248, 0.35);
-            --card-bg: rgba(255, 255, 255, 0.035);
+            --card-bg: rgba(255, 255, 255, 0.03);
             --card-border: rgba(255, 255, 255, 0.08);
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
-            --console-bg: rgba(13, 19, 33, 0.72);
+            --console-bg: rgba(13, 19, 33, 0.75);
         }
 
         [data-theme="sunrise"] {
-            --bg-color: #0d0f17;
-            --bg-gradient: radial-gradient(circle at 50% 45%, rgba(245, 158, 11, 0.13) 0%, rgba(217, 119, 6, 0.05) 40%, transparent 75%);
+            --bg-color: #0c0e14;
+            --bg-gradient: radial-gradient(circle at 50% 40%, rgba(245, 158, 11, 0.13) 0%, rgba(217, 119, 6, 0.04) 42%, transparent 80%);
             --accent-primary: #fbbf24;
             --accent-secondary: #f97316;
             --accent-glow: rgba(251, 191, 36, 0.35);
-            --card-bg: rgba(255, 255, 255, 0.04);
+            --card-bg: rgba(255, 255, 255, 0.035);
             --card-border: rgba(251, 191, 36, 0.14);
             --text-primary: #fffbeb;
             --text-secondary: #d97706;
             --text-muted: #78716c;
-            --console-bg: rgba(24, 18, 12, 0.8);
+            --console-bg: rgba(24, 18, 12, 0.82);
         }
 
         [data-theme="forest"] {
-            --bg-color: #050b07;
-            --bg-gradient: radial-gradient(circle at 50% 45%, rgba(16, 185, 129, 0.12) 0%, rgba(5, 150, 105, 0.05) 40%, transparent 75%);
+            --bg-color: #040906;
+            --bg-gradient: radial-gradient(circle at 50% 40%, rgba(16, 185, 129, 0.12) 0%, rgba(5, 150, 105, 0.04) 42%, transparent 80%);
             --accent-primary: #34d399;
             --accent-secondary: #10b981;
             --accent-glow: rgba(52, 211, 153, 0.35);
-            --card-bg: rgba(255, 255, 255, 0.035);
+            --card-bg: rgba(255, 255, 255, 0.03);
             --card-border: rgba(52, 211, 153, 0.14);
             --text-primary: #ecfdf5;
             --text-secondary: #6ee7b7;
             --text-muted: #4b5563;
-            --console-bg: rgba(7, 20, 13, 0.8);
+            --console-bg: rgba(7, 20, 13, 0.82);
         }
 
         [data-theme="lavender"] {
-            --bg-color: #090513;
-            --bg-gradient: radial-gradient(circle at 50% 45%, rgba(192, 132, 252, 0.13) 0%, rgba(168, 85, 247, 0.05) 40%, transparent 75%);
+            --bg-color: #080410;
+            --bg-gradient: radial-gradient(circle at 50% 40%, rgba(192, 132, 252, 0.13) 0%, rgba(168, 85, 247, 0.04) 42%, transparent 80%);
             --accent-primary: #c084fc;
             --accent-secondary: #e879f9;
             --accent-glow: rgba(192, 132, 252, 0.35);
-            --card-bg: rgba(255, 255, 255, 0.035);
+            --card-bg: rgba(255, 255, 255, 0.03);
             --card-border: rgba(192, 132, 252, 0.14);
             --text-primary: #faf5ff;
             --text-secondary: #d8b4fe;
             --text-muted: #6b7280;
-            --console-bg: rgba(18, 10, 30, 0.8);
+            --console-bg: rgba(18, 10, 30, 0.82);
         }
 
         * {
@@ -85,7 +85,7 @@
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-color);
             background-image: var(--bg-gradient);
             background-attachment: fixed;
@@ -93,7 +93,6 @@
             min-height: 100vh;
             min-height: 100dvh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             overflow-x: hidden;
@@ -114,7 +113,186 @@
         }
 
         /* ==========================================================
-           CONCEPT A: MONOLITH NEXUS CONTAINER (Centered Pillar)
+           1. LANDING GATEWAY VIEW (First Impression Masterpiece)
+           ========================================================== */
+        #landing-gateway {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 20px;
+            text-align: center;
+            background: radial-gradient(circle at 50% 45%, rgba(6, 9, 18, 0.6) 0%, rgba(5, 7, 13, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            cursor: pointer;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+        }
+
+        #landing-gateway.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(1.04);
+            pointer-events: none;
+        }
+
+        .landing-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 480px;
+            width: 100%;
+            gap: 20px;
+            animation: fadeInLanding 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeInLanding {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .landing-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--card-border);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--accent-primary);
+        }
+
+        .landing-title {
+            font-size: 52px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: #ffffff;
+            line-height: 1.05;
+            background: linear-gradient(180deg, #ffffff 40%, rgba(255, 255, 255, 0.65) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @media (min-width: 640px) {
+            .landing-title {
+                font-size: 64px;
+            }
+        }
+
+        .landing-subtitle {
+            font-size: 15px;
+            font-weight: 300;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-width: 380px;
+        }
+
+        /* Center Glowing Breathing Aura on Landing */
+        .landing-orb {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .landing-orb-glow {
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-primary) 0%, var(--accent-secondary) 50%, transparent 75%);
+            opacity: 0.28;
+            filter: blur(28px);
+            animation: pulse-landing-glow 4s infinite ease-in-out;
+        }
+
+        .landing-orb-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: pulse-landing-ring 4s infinite ease-in-out;
+        }
+
+        .landing-orb-core {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.03));
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 30px var(--accent-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .landing-orb:hover .landing-orb-core {
+            transform: scale(1.1);
+            box-shadow: 0 0 45px var(--accent-glow);
+        }
+
+        @keyframes pulse-landing-glow {
+            0%, 100% { transform: scale(1); opacity: 0.22; }
+            50% { transform: scale(1.35); opacity: 0.45; }
+        }
+
+        @keyframes pulse-landing-ring {
+            0%, 100% { transform: scale(0.95); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        .landing-cta-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 32px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 13.5px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.6), 0 0 25px -5px var(--accent-glow);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .landing-cta-btn:hover {
+            transform: translateY(-2px) scale(1.03);
+            border-color: var(--accent-primary);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.7), 0 0 35px var(--accent-glow);
+        }
+
+        .landing-cta-btn:active {
+            transform: scale(0.96);
+        }
+
+        .landing-hint {
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        /* ==========================================================
+           2. ACTIVE MONOLITH NEXUS (Main Player Screen)
            ========================================================== */
         .monolith-wrapper {
             position: relative;
@@ -127,7 +305,15 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            gap: 22px;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .monolith-wrapper.is-active {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Top Brand Header */
@@ -163,7 +349,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 6px 0;
+            margin: 4px 0;
             cursor: pointer;
         }
 
@@ -216,7 +402,7 @@
             box-shadow: 0 0 45px var(--accent-glow);
         }
 
-        /* 0.1 Hz Resonant Breathing Keyframes */
+        /* 0.1 Hz Resonant Breathing States */
         .breath-inhale .nexus-outer-halo {
             transform: scale(1.32);
             opacity: 0.6;
@@ -420,7 +606,7 @@
             border-color: var(--accent-primary);
         }
 
-        /* Keyboard Hints (Fades in Ghost Mode) */
+        /* Keyboard Hints */
         .keyboard-hints {
             font-size: 10.5px;
             font-family: 'JetBrains Mono', monospace;
@@ -430,7 +616,7 @@
         }
 
         /* ==========================================================
-           AUTO-GHOST INACTIVITY MODE (Pure Room Art)
+           3. AUTO-GHOST INACTIVITY MODE
            ========================================================== */
         body.is-ghost .monolith-brand,
         body.is-ghost .track-science-pill,
@@ -451,37 +637,14 @@
             font-size: 18px;
         }
 
-        /* Initial Tap Overlay (Autoplay Compliance) */
-        #welcome-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(6, 8, 15, 0.88);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            padding: 24px;
-            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.7s;
-        }
-
-        #welcome-overlay.hidden-overlay {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        /* Sound Library Modal */
+        /* Modal Backdrop */
         .modal-backdrop {
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.75);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            z-index: 60;
+            z-index: 150;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -498,8 +661,8 @@
 
         .modal-container {
             width: 100%;
-            max-width: 540px;
-            max-height: 82vh;
+            max-width: 500px;
+            max-height: 80vh;
             background: var(--console-bg);
             border: 1px solid var(--card-border);
             border-radius: 28px;
@@ -507,7 +670,7 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
             transform: scale(0.94);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -562,36 +725,51 @@
     <!-- Ambient Floating Particle Canvas -->
     <canvas id="ambient-canvas"></canvas>
 
-    <!-- INITIAL CLICK-TO-START MODAL -->
-    <div id="welcome-overlay" onclick="startAudioExperience()">
-        <div class="flex flex-col items-center max-w-sm text-center">
-            <div class="w-16 h-16 rounded-full flex items-center justify-center mb-5"
-                style="background: radial-gradient(circle, var(--accent-primary) 0%, transparent 70%); box-shadow: 0 0 35px var(--accent-glow);">
-                <i class="fa-solid fa-water text-2xl text-white"></i>
+    <!-- 1. LANDING GATEWAY VIEW (Breathtaking First Impression) -->
+    <div id="landing-gateway" onclick="enterCalmSpace()">
+        <div class="landing-container" onclick="event.stopPropagation()">
+            
+            <div class="landing-badge">
+                <i class="fa-solid fa-infinity"></i>
+                <span>Neuro-Acoustic Sanctuary</span>
             </div>
-            <h1 class="text-2xl font-medium tracking-tight text-white mb-2">Still</h1>
-            <p class="text-xs text-slate-400 font-light mb-6 leading-relaxed">
-                Zero distraction. Neuroscience-backed frequencies to calm your nervous system and room.
+
+            <h1 class="landing-title">Still</h1>
+
+            <p class="landing-subtitle">
+                A distraction-free space for your mind and room. Zero algorithms. Instant peace.
             </p>
-            <div class="px-7 py-3 rounded-full pill-toggle-btn text-xs font-semibold text-white border border-white/20 hover:border-sky-400">
-                <i class="fa-solid fa-play text-[10px] text-sky-400"></i>
-                <span>Enter Calm Space</span>
+
+            <!-- Center Breathing Living Aura -->
+            <div class="landing-orb" onclick="enterCalmSpace()">
+                <div class="landing-orb-glow"></div>
+                <div class="landing-orb-ring"></div>
+                <div class="landing-orb-core">
+                    <i class="fa-solid fa-play ml-1"></i>
+                </div>
             </div>
-            <span class="text-[10.5px] text-slate-500 font-mono mt-4">Tap anywhere to start</span>
+
+            <!-- Primary Glowing Button -->
+            <button class="landing-cta-btn" onclick="enterCalmSpace()">
+                <i class="fa-solid fa-water text-xs" style="color: var(--accent-primary)"></i>
+                <span>Enter Calm Space</span>
+            </button>
+
+            <span class="landing-hint">Tap anywhere to begin audio</span>
         </div>
     </div>
 
-    <!-- CONCEPT A: MONOLITH NEXUS (Central Symmetric Column) -->
-    <div class="monolith-wrapper">
+    <!-- 2. MAIN ACTIVE MONOLITH NEXUS -->
+    <div class="monolith-wrapper" id="monolith-player">
 
-        <!-- 1. Top Brand / Status Badge -->
+        <!-- Top Brand Status -->
         <div class="monolith-brand">
             <i class="fa-solid fa-infinity text-xs" style="color: var(--accent-primary)"></i>
             <span>Still</span>
             <span class="freq-tag">0.1 Hz</span>
         </div>
 
-        <!-- 2. Central Resonant Breathing Halo -->
+        <!-- Central Resonant Breathing Halo -->
         <div class="breathing-nexus" id="breath-orb" onclick="togglePlayPause()">
             <div class="nexus-outer-halo"></div>
             <div class="nexus-glow-disc"></div>
@@ -602,7 +780,7 @@
             </div>
         </div>
 
-        <!-- 3. Track Details & Neuro-Science Info -->
+        <!-- Track Details & Science Section -->
         <div class="track-info-block">
             <h2 class="track-title" id="track-title">Alpha Wave Sanctuary</h2>
             <div class="track-science-pill" id="track-science">
@@ -614,7 +792,7 @@
             </p>
         </div>
 
-        <!-- 4. Monolith Unified Glass Console -->
+        <!-- Monolith Unified Glass Console -->
         <div class="monolith-console">
             
             <!-- Playback Controls -->
@@ -641,20 +819,20 @@
                     oninput="setMasterVolume(this.value)" title="Volume">
             </div>
 
-            <!-- Bottom Utilities -->
+            <!-- Utilities -->
             <div class="utility-row">
                 <button class="pill-toggle-btn" onclick="openMoodModal()">
                     <i class="fa-solid fa-sliders text-[11px] text-sky-400"></i>
                     <span>Sound Library</span>
                 </button>
 
-                <div class="flex items-center gap-2">
+                <div style="display: flex; align-items: center; gap: 8px;">
                     <button class="pill-toggle-btn" id="timer-btn" onclick="cycleTimer()" title="Sleep Timer">
                         <i class="fa-solid fa-clock text-[10px]"></i>
                         <span id="timer-label">∞</span>
                     </button>
 
-                    <button class="icon-action-btn" style="width:32px; height:32px;" onclick="cycleTheme()" title="Switch Calm Mood (T)">
+                    <button class="icon-action-btn" style="width:32px; height:32px;" onclick="cycleTheme()" title="Switch Mood (T)">
                         <i class="fa-solid fa-moon text-xs" id="theme-icon"></i>
                     </button>
 
@@ -666,7 +844,7 @@
 
         </div>
 
-        <!-- 5. Keyboard Hints -->
+        <!-- Keyboard Hints -->
         <div class="keyboard-hints">
             [Space] Play &bull; [N] Next &bull; [M] Mute &bull; [F] Zen
         </div>
@@ -676,23 +854,23 @@
     <!-- SOUNDSCAPE MODAL -->
     <div class="modal-backdrop" id="mood-modal" onclick="closeMoodModal(event)">
         <div class="modal-container" onclick="event.stopPropagation()">
-            <div class="flex items-center justify-between pb-2 border-b border-white/10">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
                 <div>
-                    <h3 class="text-base font-semibold text-white">Neuro-Acoustic Soundscapes</h3>
-                    <p class="text-[11px] text-slate-400 font-light">Research-backed acoustic frequencies for deep calm.</p>
+                    <h3 style="font-size: 15px; font-weight: 600; color: #fff;">Neuro-Acoustic Soundscapes</h3>
+                    <p style="font-size: 11px; color: var(--text-muted); font-weight: 300;">Research-backed frequencies for deep calm.</p>
                 </div>
                 <button class="icon-action-btn" onclick="closeMoodModal()">
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
 
-            <div class="flex flex-col gap-2" id="modal-mood-list">
+            <div style="display: flex; flex-direction: column; gap: 8px;" id="modal-mood-list">
                 <!-- Dynamically rendered via JS -->
             </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT: ADVANCED GENERATIVE SOUND ENGINE & LOGIC -->
+    <!-- JAVASCRIPT: ADVANCED GENERATIVE AUDIO & INTERFACE -->
     <script>
         /* ==========================================================
            1. SOUNDSCAPE DATABASE
@@ -836,7 +1014,6 @@
             startGenerativeAcousticPiano();
         }
 
-        // Brownian 1/f² Noise Generator
         function setupBrownNoiseGenerator() {
             const bufferSize = audioCtx.sampleRate * 4;
             const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -867,7 +1044,6 @@
             brownNoiseNode.start(0);
         }
 
-        // Spatial Gentle Rain Generator
         function setupRainGenerator() {
             const bufferSize = audioCtx.sampleRate * 4;
             const noiseBuffer = audioCtx.createBuffer(2, bufferSize, audioCtx.sampleRate);
@@ -898,7 +1074,6 @@
             rainNoiseNode.start(0);
         }
 
-        // Binaural Beat Generator
         function setupBinauralGenerator() {
             const merger = audioCtx.createChannelMerger(2);
 
@@ -929,7 +1104,6 @@
             binauralRight.start(0);
         }
 
-        // Lush Analog Pad Synthesizer
         function setupPadSynthesizer() {
             lfoFilter = audioCtx.createBiquadFilter();
             lfoFilter.type = 'lowpass';
@@ -950,7 +1124,6 @@
             lfoFilter.connect(masterGain);
         }
 
-        // Generative Brian Eno-style Pentatonic Piano Drops (gentle acoustic warmth)
         function startGenerativeAcousticPiano() {
             const pentatonicFrequencies = [216, 270, 324, 432, 486, 648];
 
@@ -966,9 +1139,8 @@
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(freq, now);
 
-                // Natural exponential acoustic decay
                 noteGain.gain.setValueAtTime(0.0001, now);
-                noteGain.gain.linearRampToValueAtTime(0.08, now + 0.1);
+                noteGain.gain.linearRampToValueAtTime(0.07, now + 0.1);
                 noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 4.5);
 
                 osc.connect(noteGain);
@@ -990,16 +1162,13 @@
 
             const now = audioCtx.currentTime;
 
-            // Binaural
             binauralLeft.frequency.setTargetAtTime(track.baseFreq, now, 1.2);
             binauralRight.frequency.setTargetAtTime(track.baseFreq + track.binauralDiff, now, 1.2);
             binauralGain.gain.setTargetAtTime(isPlaying ? track.binauralGain : 0.001, now, crossfadeDuration / 3);
 
-            // Brown & Rain
             brownGain.gain.setTargetAtTime(isPlaying ? track.brownGain : 0.001, now, crossfadeDuration / 3);
             rainGain.gain.setTargetAtTime(isPlaying ? track.rainGain : 0.001, now, crossfadeDuration / 3);
 
-            // Synthesizer Chords
             padNodes.forEach(node => {
                 try {
                     node.gainNode.gain.setTargetAtTime(0.0001, now, 1.0);
@@ -1036,25 +1205,31 @@
         }
 
         /* ==========================================================
-           3. USER CONTROLS & INTERACTION
+           3. USER CONTROLS & TRANSITIONS
            ========================================================== */
-        function startAudioExperience() {
+        function enterCalmSpace() {
             initAudioEngine();
             if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
 
             isPlaying = true;
-            document.getElementById('welcome-overlay').classList.add('hidden-overlay');
+
+            // Smooth crossfade from landing to player
+            const landing = document.getElementById('landing-gateway');
+            const player = document.getElementById('monolith-player');
             
-            applySoundscape(SOUNDSCAPES[currentTrackIndex], 2.0);
+            landing.classList.add('is-hidden');
+            player.classList.add('is-active');
+
+            applySoundscape(SOUNDSCAPES[currentTrackIndex], 2.2);
             updateUI();
             startBreathingEngine();
         }
 
         function togglePlayPause() {
             if (!audioCtx) {
-                startAudioExperience();
+                enterCalmSpace();
                 return;
             }
 
@@ -1146,7 +1321,7 @@
         }
 
         /* ==========================================================
-           4. AUTO-GHOST 5-SECOND INACTIVITY
+           4. AUTO-GHOST INACTIVITY (5 Seconds)
            ========================================================== */
         let ghostTimeout = null;
         const GHOST_DELAY_MS = 5000;
@@ -1308,7 +1483,7 @@
                 if (p.x < 0) p.x = canvas.width;
                 if (p.x > canvas.width) p.x = 0;
                 if (p.y < 0) p.y = canvas.height;
-                if (p.y > canvas.height) y = 0;
+                if (p.y > canvas.height) p.y = 0;
             });
 
             requestAnimationFrame(drawAmbientScene);
@@ -1353,16 +1528,15 @@
                 card.onclick = () => selectTrack(idx);
 
                 card.innerHTML = `
-                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm flex-shrink-0"
-                        style="background: rgba(255,255,255,0.05); color: var(--accent-primary)">
+                    <div style="width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); color: var(--accent-primary); flex-shrink: 0;">
                         <i class="fa-solid ${track.icon}"></i>
                     </div>
-                    <div class="flex-grow min-w-0">
-                        <div class="flex items-center justify-between">
-                            <h5 class="text-xs font-semibold text-white truncate">${track.title}</h5>
+                    <div style="flex-grow: 1; min-width: 0; text-align: left;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <h5 style="font-size: 13px; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${track.title}</h5>
                             ${isActive && isPlaying ? '<span class="pulsing-indicator"></span>' : ''}
                         </div>
-                        <p class="text-[10px] text-slate-400 font-mono mt-0.5 truncate">${track.science}</p>
+                        <p style="font-size: 10px; color: var(--text-muted); font-family: monospace; margin-top: 2px;">${track.science}</p>
                     </div>
                 `;
                 list.appendChild(card);

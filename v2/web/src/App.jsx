@@ -61,12 +61,19 @@ export const App = () => {
 
   // Detect if running inside native mobile app or standalone PWA
   const isMobileApp = useMemo(() => {
-    if (typeof window === 'undefined') return false;
-    const urlParams = new URLSearchParams(window.location.search);
-    const hasPlatformParam = urlParams.get('platform') === 'android' || urlParams.get('platform') === 'ios';
-    const isReactNative = Boolean(window.ReactNativeWebView);
-    const isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
-    return Boolean(hasPlatformParam || isReactNative || isStandalone);
+    try {
+      if (typeof window === 'undefined') return false;
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasPlatformParam = urlParams.get('platform') === 'android' || urlParams.get('platform') === 'ios';
+      const isReactNative = Boolean(window.ReactNativeWebView);
+      const isStandalone = Boolean(
+        (window.matchMedia && window.matchMedia('(display-mode: standalone)')?.matches) || 
+        window.navigator?.standalone
+      );
+      return Boolean(hasPlatformParam || isReactNative || isStandalone);
+    } catch (e) {
+      return false;
+    }
   }, []);
 
   // 3-Stage Arrival Flow:
@@ -279,34 +286,41 @@ export const App = () => {
 
   // System Lock Screen and Notification Shade Media Controls (Android & iOS)
   useEffect(() => {
-    if (typeof window === 'undefined' || !('mediaSession' in navigator)) return;
-
     try {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: activeTrack.title,
-        artist: 'Still • by Hari',
-        album: activeTrack.science,
-        artwork: [
-          { src: 'https://harixomxsingh.github.io/still/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'https://harixomxsingh.github.io/still/icon-512.png', sizes: '512x512', type: 'image/png' }
-        ]
-      });
+      if (typeof window === 'undefined' || !window.navigator || !('mediaSession' in window.navigator)) return;
 
-      navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+      if (window.MediaMetadata && activeTrack) {
+        window.navigator.mediaSession.metadata = new window.MediaMetadata({
+          title: activeTrack.title || 'Still',
+          artist: 'Still • by Hari',
+          album: activeTrack.science || 'Calm Space',
+          artwork: [
+            { src: 'https://harixomxsingh.github.io/still/icon-192.png', sizes: '192x192', type: 'image/png' },
+            { src: 'https://harixomxsingh.github.io/still/icon-512.png', sizes: '512x512', type: 'image/png' }
+          ]
+        });
+      }
 
-      navigator.mediaSession.setActionHandler('play', () => {
+      window.navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+
+      const playHandler = () => {
         if (isHomeOpen) handleEnterCalmSpace();
         else handleTogglePlay();
-      });
-      navigator.mediaSession.setActionHandler('pause', () => {
+      };
+      const pauseHandler = () => {
         handleTogglePlay();
-      });
-      navigator.mediaSession.setActionHandler('nexttrack', () => {
+      };
+      const nextHandler = () => {
         handleNextTrack();
-      });
-      navigator.mediaSession.setActionHandler('previoustrack', () => {
+      };
+      const prevHandler = () => {
         handlePrevTrack();
-      });
+      };
+
+      try { window.navigator.mediaSession.setActionHandler('play', playHandler); } catch (e) {}
+      try { window.navigator.mediaSession.setActionHandler('pause', pauseHandler); } catch (e) {}
+      try { window.navigator.mediaSession.setActionHandler('nexttrack', nextHandler); } catch (e) {}
+      try { window.navigator.mediaSession.setActionHandler('previoustrack', prevHandler); } catch (e) {}
     } catch (e) {
       console.log('MediaSession note:', e);
     }

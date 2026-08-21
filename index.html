@@ -8,6 +8,15 @@
     <meta name="description"
         content="A research-backed, distraction-free neuro-acoustic soundscape engine. Built for deep calm, zero cognitive fatigue, and room tranquility.">
 
+    <!-- PWA & Mobile Web App Meta Tags -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#05070d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Still">
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+
     <!-- Open Graph & Social Preview Tags (WhatsApp, iMessage, Twitter, etc.) -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://harixomxsingh.github.io/still/">
@@ -834,6 +843,9 @@
     <!-- Ambient Floating Particle Canvas -->
     <canvas id="ambient-canvas"></canvas>
 
+    <!-- Background Lock-Screen Audio Keep-Alive Anchor -->
+    <audio id="bg-audio-anchor" loop playsinline preload="auto" style="display:none;"></audio>
+
     <!-- 1. LAYER 1: WELCOME NOTE MODAL (Top Layer Greeting Card) -->
     <div id="welcome-note-modal" onclick="closeWelcomeNote()">
         <div class="welcome-note-box" onclick="event.stopPropagation()">
@@ -1138,7 +1150,22 @@
                     </div>
                 </div>
 
-                <!-- 5. Privacy & Open Source -->
+                <!-- 5. Standalone Mobile App Guide -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 14px 16px; border-radius: 16px;">
+                    <h4 style="font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-mobile-screen text-xs" style="color: var(--accent-primary);"></i>
+                        <span>Use as a Mobile App (Lock-Screen Playback)</span>
+                    </h4>
+                    <p style="font-size: 11.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 6px;">
+                        Still supports background lock-screen audio! For the full native app experience without browser address bars:
+                    </p>
+                    <div style="font-size: 11px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 4px;">
+                        <div>🍎 <strong>iPhone (Safari):</strong> Tap the <em>Share button</em> <i class="fa-solid fa-arrow-up-from-bracket text-[10px]"></i> &rarr; select <strong>"Add to Home Screen"</strong>.</div>
+                        <div>🤖 <strong>Android (Chrome):</strong> Tap the <em>3-dots menu</em> &rarr; select <strong>"Install app"</strong> or <strong>"Add to Home Screen"</strong>.</div>
+                    </div>
+                </div>
+
+                <!-- 6. Privacy & Open Source -->
                 <div style="padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
                     <span>🛡️ 100% Client-Side • Zero Trackers • Zero Ads</span>
                     <a href="https://github.com/Harixomxsingh/still" target="_blank" rel="noopener noreferrer" class="creator-link" style="font-weight: 500;">
@@ -1278,6 +1305,64 @@
         let lfoFilter = null;
         let lfoOsc = null;
 
+        // Mobile background keep-alive audio anchor
+        const SILENT_AUDIO_URI = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+
+        function startBackgroundKeepAlive() {
+            const anchor = document.getElementById('bg-audio-anchor');
+            if (anchor) {
+                if (anchor.src !== SILENT_AUDIO_URI) {
+                    anchor.src = SILENT_AUDIO_URI;
+                }
+                anchor.play().catch(e => console.log('Keep-alive anchor note:', e));
+            }
+        }
+
+        function pauseBackgroundKeepAlive() {
+            const anchor = document.getElementById('bg-audio-anchor');
+            if (anchor) {
+                anchor.pause();
+            }
+        }
+
+        function updateMediaSession(track) {
+            if ('mediaSession' in navigator) {
+                const t = track || SOUNDSCAPES[currentTrackIndex];
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: t ? t.title : 'Alpha Wave Sanctuary',
+                    artist: 'Still — by Hari',
+                    album: 'Neuro-Acoustic Sanctuary (432 Hz)',
+                    artwork: [
+                        { src: './icon-192.png', sizes: '192x192', type: 'image/png' },
+                        { src: './icon-512.png', sizes: '512x512', type: 'image/png' },
+                        { src: './apple-touch-icon.png', sizes: '180x180', type: 'image/png' }
+                    ]
+                });
+                navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+            }
+        }
+
+        function setupMediaSessionHandlers() {
+            if ('mediaSession' in navigator) {
+                try {
+                    navigator.mediaSession.setActionHandler('play', () => {
+                        if (!isPlaying) togglePlayPause();
+                    });
+                    navigator.mediaSession.setActionHandler('pause', () => {
+                        if (isPlaying) togglePlayPause();
+                    });
+                    navigator.mediaSession.setActionHandler('previoustrack', () => {
+                        prevTrack();
+                    });
+                    navigator.mediaSession.setActionHandler('nexttrack', () => {
+                        nextTrack();
+                    });
+                } catch (e) {
+                    console.log('MediaSession handler note:', e);
+                }
+            }
+        }
+
         function initAudioEngine() {
             if (audioCtx) return;
 
@@ -1293,6 +1378,7 @@
             setupBinauralGenerator();
             setupPadSynthesizer();
             startGenerativeAcousticPiano();
+            setupMediaSessionHandlers();
         }
 
         function setupBrownNoiseGenerator() {
@@ -1462,6 +1548,7 @@
             padNodes = [];
 
             if (isPlaying) {
+                startBackgroundKeepAlive();
                 track.chordNotes.forEach((freq, idx) => {
                     const osc = audioCtx.createOscillator();
                     const gNode = audioCtx.createGain();
@@ -1480,8 +1567,11 @@
 
                     padNodes.push({ osc, gainNode: gNode });
                 });
+            } else {
+                pauseBackgroundKeepAlive();
             }
 
+            updateMediaSession(track);
             updateUI();
         }
 
@@ -1551,8 +1641,10 @@
             isPlaying = !isPlaying;
 
             if (isPlaying) {
+                startBackgroundKeepAlive();
                 applySoundscape(SOUNDSCAPES[currentTrackIndex], 2.0);
             } else {
+                pauseBackgroundKeepAlive();
                 const now = audioCtx.currentTime;
                 brownGain.gain.setTargetAtTime(0.0001, now, 0.8);
                 rainGain.gain.setTargetAtTime(0.0001, now, 0.8);
@@ -1562,6 +1654,7 @@
                 });
             }
 
+            updateMediaSession(SOUNDSCAPES[currentTrackIndex]);
             updateUI();
         }
 
@@ -1893,6 +1986,13 @@
             drawAmbientScene();
             renderModalMoodList();
             startWelcomeAutoDismissTimer();
+
+            // Register PWA Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js').catch(err => {
+                    console.log('ServiceWorker registration note:', err);
+                });
+            }
         });
     </script>
 </body>

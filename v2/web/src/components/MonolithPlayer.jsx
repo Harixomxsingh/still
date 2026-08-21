@@ -219,7 +219,7 @@ export const MonolithPlayer = ({
 
           {/* Fullscreen Zen Mode */}
           <button 
-            className="icon-action-btn" 
+            className="icon-action-btn zen-fullscreen-btn" 
             onClick={onToggleFullScreen} 
             title="Fullscreen Zen Mode (F)"
           >

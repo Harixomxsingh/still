@@ -2,7 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View, StatusBar, Platform, SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
 import * as Haptics from 'expo-haptics';
+import * as Notifications from 'expo-notifications';
 import { BackgroundAudioService } from './src/audio/BackgroundAudioService';
+import { MediaNotificationService } from './src/services/MediaNotificationService';
 
 const LIVE_WEB_APP_URL = 'https://harixomxsingh.github.io/still/';
 
@@ -13,8 +15,28 @@ export default function App() {
   const [launchUrl] = useState(() => `${LIVE_WEB_APP_URL}?platform=android&_live=${Date.now()}`);
 
   useEffect(() => {
-    // Initialize native background audio driver
+    // Initialize native background audio driver & notification channels
     BackgroundAudioService.init();
+    MediaNotificationService.setup();
+
+    // Listen for Lock Screen and Notification Shade Action Clicks
+    const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+      const actionIdentifier = response.actionIdentifier;
+      if (actionIdentifier === 'ACTION_PAUSE' || actionIdentifier === 'ACTION_PLAY') {
+        webViewRef.current?.injectJavaScript(
+          'window.__mediaTogglePlay && window.__mediaTogglePlay(); true;'
+        );
+      } else if (actionIdentifier === 'ACTION_NEXT') {
+        webViewRef.current?.injectJavaScript(
+          'window.__mediaNextTrack && window.__mediaNextTrack(); true;'
+        );
+      }
+    });
+
+    return () => {
+      subscription.remove();
+      MediaNotificationService.dismiss();
+    };
   }, []);
 
   const handleMessage = (event) => {
@@ -24,10 +46,18 @@ export default function App() {
       switch (data.type) {
         case 'AUDIO_PLAY':
           BackgroundAudioService.startNativeSession();
+          MediaNotificationService.showPlaying(data.track);
           break;
 
         case 'AUDIO_PAUSE':
           BackgroundAudioService.pauseNativeSession();
+          MediaNotificationService.showPaused(data.track);
+          break;
+
+        case 'TRACK_CHANGE':
+          if (data.isPlaying) {
+            MediaNotificationService.showPlaying(data.track);
+          }
           break;
 
         case 'HAPTIC_BREATHE':

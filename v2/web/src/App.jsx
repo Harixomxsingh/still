@@ -132,11 +132,27 @@ export const App = () => {
     try {
       if (window.ReactNativeWebView) {
         window.ReactNativeWebView.postMessage(JSON.stringify({ 
-          type: isPlaying ? 'AUDIO_PLAY' : 'AUDIO_PAUSE' 
+          type: isPlaying ? 'AUDIO_PLAY' : 'AUDIO_PAUSE',
+          track: activeTrack 
         }));
       }
     } catch (e) {}
-  }, [isPlaying]);
+  }, [isPlaying, activeTrack]);
+
+  // Expose global bridge handlers for native lockscreen notification buttons
+  useEffect(() => {
+    window.__mediaTogglePlay = () => {
+      if (isHomeOpen) handleEnterCalmSpace();
+      else handleTogglePlay();
+    };
+    window.__mediaNextTrack = () => {
+      handleNextTrack();
+    };
+    return () => {
+      delete window.__mediaTogglePlay;
+      delete window.__mediaNextTrack;
+    };
+  }, [isHomeOpen, isPlaying, currentTrackIndex]);
 
   // Ambient floating particle canvas animation
   useEffect(() => {

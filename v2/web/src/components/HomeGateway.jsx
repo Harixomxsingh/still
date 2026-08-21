@@ -149,7 +149,7 @@ export const HomeGateway = ({ isVisible, onEnter, onOpenAbout, onOpenDownload })
         <div className="creator-credit" style={{ marginTop: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
           <span>made by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link" onClick={(e) => e.stopPropagation()}>hari</a> with ❤️ &amp; care</span>
           <span>&bull;</span>
-          <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.0.0</span>
+          <span style={{ fontFamily: 'monospace', color: '#34d399', fontSize: '10.5px', fontWeight: '600' }}>v2.0.1 • 🟢 Live Sync Active</span>
         </div>
 
       </div>

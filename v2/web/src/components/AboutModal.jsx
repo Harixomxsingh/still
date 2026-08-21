@@ -51,18 +51,18 @@ export const AboutModal = ({ isOpen, onClose }) => {
           </div>
 
           {/* 2. Active Dev Notice */}
-          <div style={{ background: 'rgba(56, 189, 248, 0.06)', border: '1px solid rgba(56, 189, 248, 0.2)', borderRadius: '16px', padding: '16px 18px' }}>
+          <div style={{ background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '16px', padding: '16px 18px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, color: 'var(--accent-primary)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, color: '#34d399' }}>
                 <Hammer className="w-3.5 h-3.5" />
-                <span>Actively in Development</span>
+                <span>🟢 Silent Auto-Update Active</span>
               </div>
-              <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-primary)', fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '10px', fontFamily: 'monospace' }}>
-                v2.0 Beta
+              <span style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '10px', fontFamily: 'monospace' }}>
+                v2.0.1 Live
               </span>
             </div>
             <p style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 300, lineHeight: '1.6', margin: 0 }}>
-              Still is currently in active development. I am continuously researching, crafting new acoustic frequencies, testing soundscapes, and refining the experience. More features, audio models, and updates are being added regularly.
+              ✨ Live Over-The-Air Update Test Successful! Any new features or soundscapes pushed to GitHub now appear on your phone automatically in real time.
             </p>
           </div>
 

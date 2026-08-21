@@ -17,6 +17,7 @@ export const App = () => {
   // Core Playback State
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const activeTrack = SOUNDSCAPES[currentTrackIndex];
   const [volume, setVolume] = useState(0.75);
   const [isMuted, setIsMuted] = useState(false);
   const [sleepTimerSeconds, setSleepTimerSeconds] = useState(null);
@@ -390,8 +391,6 @@ export const App = () => {
       if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
     }
   };
-
-  const activeTrack = SOUNDSCAPES[currentTrackIndex];
 
   return (
     <>

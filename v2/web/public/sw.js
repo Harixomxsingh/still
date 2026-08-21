@@ -1,4 +1,4 @@
-const CACHE_NAME = 'still-v2.0.0';
+const CACHE_NAME = 'still-v2.0.1';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -10,7 +10,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
-            console.log('🧹 Clearing legacy cache:', key);
+            console.log('🧹 Purging outdated cache:', key);
             return caches.delete(key);
           }
         })
@@ -19,9 +19,10 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Network-first strategy to ensure instant updates
+// Always Network-First strategy
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {

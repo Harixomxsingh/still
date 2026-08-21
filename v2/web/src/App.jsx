@@ -95,11 +95,30 @@ export const App = () => {
     };
   }, []);
 
-  // Sync theme attribute on <body>
+  // Sync theme attribute on <body> and notify native shell
   useEffect(() => {
     const theme = THEMES[currentThemeIdx];
     document.body.setAttribute('data-theme', theme.id);
+    try {
+      if (window.ReactNativeWebView && theme) {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ 
+          type: 'THEME_CHANGE', 
+          bg: theme.bg 
+        }));
+      }
+    } catch (e) {}
   }, [currentThemeIdx]);
+
+  // Notify native shell on playback state for background lock-screen audio
+  useEffect(() => {
+    try {
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ 
+          type: isPlaying ? 'AUDIO_PLAY' : 'AUDIO_PAUSE' 
+        }));
+      }
+    } catch (e) {}
+  }, [isPlaying]);
 
   // Ambient floating particle canvas animation
   useEffect(() => {

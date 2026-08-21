@@ -14,20 +14,31 @@ export const BreathingHalo = ({ isPlaying, onTogglePlay }) => {
 
     let isMounted = true;
 
+    const notifyNative = (phase) => {
+      try {
+        if (window.ReactNativeWebView) {
+          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'HAPTIC_BREATHE', phase }));
+        }
+      } catch (e) {}
+    };
+
     const runLoop = () => {
       if (!isMounted) return;
       setPhaseClass('breath-inhale');
       setBreathPhase('Inhale');
+      notifyNative('inhale');
 
       setTimeout(() => {
         if (!isMounted) return;
         setPhaseClass('breath-hold');
         setBreathPhase('Hold');
+        notifyNative('hold');
 
         setTimeout(() => {
           if (!isMounted) return;
           setPhaseClass('breath-exhale');
           setBreathPhase('Exhale');
+          notifyNative('exhale');
 
           setTimeout(() => {
             if (!isMounted) return;

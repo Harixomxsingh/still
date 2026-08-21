@@ -58,11 +58,11 @@ export const AboutModal = ({ isOpen, onClose }) => {
                 <span>🟢 Silent Auto-Update Active</span>
               </div>
               <span style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '10px', fontFamily: 'monospace' }}>
-                v2.0.2 Live
+                v2.0.3 Live
               </span>
             </div>
             <p style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 300, lineHeight: '1.6', margin: 0 }}>
-              ✨ Live Over-The-Air Update Test Successful! [v2.0.2 Verified] Any new features or soundscapes pushed to GitHub now appear on your phone automatically in real time.
+              ✨ Live Over-The-Air Update Test Successful! [v2.0.3 Verified] Any new features or soundscapes pushed to GitHub now appear on your phone automatically in real time.
             </p>
           </div>
 

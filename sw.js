@@ -1,4 +1,4 @@
-const CACHE_NAME = 'still-v2.0.2';
+const CACHE_NAME = 'still-v2.0.3';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

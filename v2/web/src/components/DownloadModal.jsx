@@ -3,10 +3,25 @@ import React from 'react';
 export const DownloadModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
-  const APK_DOWNLOAD_URL = "./Still.apk";
+  const GITHUB_RAW_URL = "https://github.com/Harixomxsingh/still/raw/main/Still.apk";
+  const LOCAL_APK_URL = "./Still.apk";
+
+  const handleDownload = (e) => {
+    try {
+      const link = document.createElement('a');
+      link.href = LOCAL_APK_URL;
+      link.setAttribute('download', 'Still.apk');
+      link.setAttribute('target', '_blank');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      window.open(GITHUB_RAW_URL, '_blank');
+    }
+  };
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
+    <div className="modal-backdrop is-open" onClick={onClose}>
       <div 
         className="modal-card download-modal-card" 
         onClick={(e) => e.stopPropagation()}
@@ -42,26 +57,47 @@ export const DownloadModal = ({ isOpen, onClose }) => {
         </p>
 
         {/* 1-Click Primary Action */}
-        <a 
-          href={APK_DOWNLOAD_URL}
-          download="Still.apk"
-          className="gateway-btn"
-          style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            gap: '10px', 
-            textDecoration: 'none',
-            fontSize: '15px',
-            fontWeight: '700',
-            padding: '16px 24px',
-            marginBottom: '28px',
-            boxShadow: '0 0 30px rgba(56, 189, 248, 0.3)'
-          }}
-        >
-          <i className="fa-brands fa-android" style={{ fontSize: '18px' }}></i>
-          Download Still for Android (.apk)
-        </a>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '28px' }}>
+          <button 
+            onClick={handleDownload}
+            className="gateway-btn"
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              gap: '10px', 
+              fontSize: '15px',
+              fontWeight: '700',
+              padding: '16px 24px',
+              boxShadow: '0 0 30px rgba(56, 189, 248, 0.3)',
+              cursor: 'pointer',
+              width: '100%'
+            }}
+          >
+            <i className="fa-brands fa-android" style={{ fontSize: '18px' }}></i>
+            <span>Download Still for Android (.apk)</span>
+          </button>
+
+          {/* Direct Raw GitHub Backup Mirror */}
+          <a
+            href={GITHUB_RAW_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              color: '#94a3b8',
+              fontSize: '11.5px',
+              textDecoration: 'none',
+              padding: '6px 12px'
+            }}
+          >
+            <i className="fa-brands fa-github"></i>
+            <span>Alternative Direct Download Mirror</span>
+          </a>
+        </div>
 
         {/* Radically Simple 3-Step Guide (Zero Decision Fatigue) */}
         <div style={{ 

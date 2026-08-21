@@ -3,7 +3,7 @@ import React from 'react';
 export const DownloadModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
-  const APK_DOWNLOAD_URL = "https://github.com/Harixomxsingh/still/releases/latest/download/Still.apk";
+  const APK_DOWNLOAD_URL = "/Still.apk";
 
   return (
     <div className="modal-backdrop" onClick={onClose}>

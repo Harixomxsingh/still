@@ -1,7 +1,13 @@
 import React from 'react';
-import { Waves, Info } from 'lucide-react';
+import { Waves, Info, Play } from 'lucide-react';
 
-export const HomeGateway = ({ isVisible, onEnter, onOpenAbout, onOpenDownload }) => {
+export const HomeGateway = ({ 
+  isVisible, 
+  onEnter, 
+  onOpenAbout, 
+  onOpenDownload,
+  isMobileApp 
+}) => {
   if (!isVisible) return null;
 
   return (
@@ -35,13 +41,13 @@ export const HomeGateway = ({ isVisible, onEnter, onOpenAbout, onOpenDownload })
         }}
       >
         
-        {/* Top Badge */}
+        {/* Top Minimalist Tag */}
         <div className="landing-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
           <i className="fa-solid fa-infinity text-xs" style={{ color: 'var(--accent-primary)' }}></i>
           <span>Neuro-Acoustic Sanctuary</span>
         </div>
 
-        {/* Title */}
+        {/* Hero Title */}
         <h1 
           style={{
             fontSize: '56px',
@@ -81,7 +87,7 @@ export const HomeGateway = ({ isVisible, onEnter, onOpenAbout, onOpenDownload })
           </div>
         </div>
 
-        {/* Primary Glowing Button */}
+        {/* Primary Call to Action Button */}
         <button 
           className="master-play-button" 
           style={{
@@ -102,16 +108,16 @@ export const HomeGateway = ({ isVisible, onEnter, onOpenAbout, onOpenDownload })
             boxShadow: '0 0 25px var(--accent-glow)'
           }}
         >
-          <Waves className="w-4 h-4 text-sky-400" />
+          <Play className="w-4 h-4 text-sky-400" />
           <span>Enter Calm Space</span>
         </button>
 
-        {/* Hint text */}
+        {/* Sub-hint */}
         <span style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-muted)', marginTop: '-6px' }}>
           Tap anywhere to begin audio
         </span>
 
-        {/* About & Download App Buttons */}
+        {/* Action Row */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginTop: '2px', flexWrap: 'wrap' }}>
           <button 
             className="pill-toggle-btn" 
@@ -125,29 +131,53 @@ export const HomeGateway = ({ isVisible, onEnter, onOpenAbout, onOpenDownload })
             <span>About &amp; Science</span>
           </button>
 
-          <button 
-            className="pill-toggle-btn" 
-            onClick={(e) => {
-              e.stopPropagation();
-              onOpenDownload();
-            }} 
-            style={{ 
-              fontSize: '11px', 
-              padding: '5px 14px', 
-              gap: '6px',
-              borderColor: 'rgba(56, 189, 248, 0.4)',
-              background: 'rgba(56, 189, 248, 0.1)',
-              color: '#38bdf8'
-            }}
-          >
-            <i className="fa-brands fa-android text-xs"></i>
-            <span>Get Android App</span>
-          </button>
+          {!isMobileApp && (
+            <button 
+              className="pill-toggle-btn" 
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenDownload();
+              }} 
+              style={{ 
+                fontSize: '11px', 
+                padding: '5px 14px', 
+                gap: '6px',
+                borderColor: 'rgba(56, 189, 248, 0.4)',
+                background: 'rgba(56, 189, 248, 0.1)',
+                color: '#38bdf8'
+              }}
+            >
+              <i className="fa-brands fa-android text-xs"></i>
+              <span>Get Android App</span>
+            </button>
+          )}
         </div>
 
         {/* Creator Signature & Version */}
-        <div className="creator-credit" style={{ marginTop: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+        <div className="creator-credit" style={{ marginTop: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flexWrap: 'wrap' }}>
           <span>made by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link" onClick={(e) => e.stopPropagation()}>hari</a> with ❤️ &amp; care</span>
+          {!isMobileApp && (
+            <>
+              <span>&bull;</span>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenDownload();
+                }} 
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: 'var(--accent-primary)', 
+                  fontSize: '11px', 
+                  cursor: 'pointer', 
+                  textDecoration: 'underline',
+                  fontWeight: '500'
+                }}
+              >
+                📱 Get Android App
+              </button>
+            </>
+          )}
           <span>&bull;</span>
           <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.0.0</span>
         </div>

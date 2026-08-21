@@ -25,7 +25,8 @@ export const MonolithPlayer = ({
   onOpenMixer,
   onOpenAbout,
   onOpenNote,
-  onOpenDownload
+  onOpenDownload,
+  isMobileApp
 }) => {
   // Inactivity Auto-Ghost state (5 seconds)
   const [isGhost, setIsGhost] = useState(false);
@@ -180,15 +181,17 @@ export const MonolithPlayer = ({
             </span>
           </button>
 
-          {/* Download Android App */}
-          <button 
-            className="icon-action-btn" 
-            onClick={onOpenDownload} 
-            title="Download Still Android App (.apk)"
-            style={{ color: 'var(--accent-primary)', borderColor: 'rgba(56, 189, 248, 0.3)' }}
-          >
-            <i className="fa-brands fa-android text-xs"></i>
-          </button>
+          {/* Download Android App (Web Browser Only) */}
+          {!isMobileApp && (
+            <button 
+              className="icon-action-btn" 
+              onClick={onOpenDownload} 
+              title="Download Still Android App (.apk)"
+              style={{ color: 'var(--accent-primary)', borderColor: 'rgba(56, 189, 248, 0.3)' }}
+            >
+              <i className="fa-brands fa-android text-xs"></i>
+            </button>
+          )}
 
           {/* About & Science */}
           <button 
@@ -237,21 +240,25 @@ export const MonolithPlayer = ({
       {/* 6. Creator Signature, App Link & Version */}
       <div className="creator-credit" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
         <span>made by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link">hari</a> with ❤️ &amp; care</span>
-        <span>&bull;</span>
-        <button 
-          onClick={onOpenDownload} 
-          style={{ 
-            background: 'none', 
-            border: 'none', 
-            color: 'var(--accent-primary)', 
-            fontSize: '11px', 
-            cursor: 'pointer', 
-            textDecoration: 'underline',
-            fontWeight: '500'
-          }}
-        >
-          📱 Get Android App
-        </button>
+        {!isMobileApp && (
+          <>
+            <span>&bull;</span>
+            <button 
+              onClick={onOpenDownload} 
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: 'var(--accent-primary)', 
+                fontSize: '11px', 
+                cursor: 'pointer', 
+                textDecoration: 'underline',
+                fontWeight: '500'
+              }}
+            >
+              📱 Get Android App
+            </button>
+          </>
+        )}
         <span>&bull;</span>
         <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.0.0</span>
       </div>

@@ -4,13 +4,15 @@ import { WebView } from 'react-native-webview';
 import * as Haptics from 'expo-haptics';
 import { BackgroundAudioService } from './src/audio/BackgroundAudioService';
 
-const LIVE_WEB_APP_URL = 'https://harixomxsingh.github.io/still/';
+const PROD_URL = 'https://harixomxsingh.github.io/still/';
+const DEV_URL = 'http://192.168.31.238:5173/';
+const BASE_URL = __DEV__ ? DEV_URL : PROD_URL;
 
 export default function App() {
   const webViewRef = useRef(null);
   const [statusBarBg, setStatusBarBg] = useState('#05070d');
-  // Timestamp to guarantee fresh live sync on every app boot
-  const [launchUrl] = useState(() => `${LIVE_WEB_APP_URL}?_live=${Date.now()}`);
+  // Timestamp and native platform flag to guarantee instant live sync and environment detection
+  const [launchUrl] = useState(() => `${BASE_URL}?platform=android&_live=${Date.now()}`);
 
   useEffect(() => {
     // Initialize native background audio driver

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { AudioEngine } from './engine/AudioEngine';
 import { SOUNDSCAPES, THEMES } from '../../shared/soundscapes';
 import { CALM_QUOTES } from '../../shared/quotes';
@@ -58,6 +58,16 @@ export const App = () => {
   const baseDailyIndex = Math.floor(Date.now() / 86400000) % CALM_QUOTES.length;
   const milestoneOffset = Math.floor(activeListeningSeconds / 1800); // 1800s = 30 minutes
   const currentQuote = CALM_QUOTES[(baseDailyIndex + milestoneOffset) % CALM_QUOTES.length];
+
+  // Detect if running inside native mobile app or standalone PWA
+  const isMobileApp = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasPlatformParam = urlParams.get('platform') === 'android' || urlParams.get('platform') === 'ios';
+    const isReactNative = Boolean(window.ReactNativeWebView);
+    const isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+    return Boolean(hasPlatformParam || isReactNative || isStandalone);
+  }, []);
 
   // 3-Stage Arrival Flow:
   // Stage 1: isNoteOpen (Top Greeting Card)
@@ -351,6 +361,7 @@ export const App = () => {
         onEnter={handleEnterCalmSpace} 
         onOpenAbout={() => setIsAboutOpen(true)} 
         onOpenDownload={() => setIsDownloadOpen(true)}
+        isMobileApp={isMobileApp}
       />
 
       {/* Stage 3: Main Active Monolith Nexus Player */}
@@ -376,6 +387,7 @@ export const App = () => {
           onOpenAbout={() => setIsAboutOpen(true)}
           onOpenNote={() => setIsNoteOpen(true)}
           onOpenDownload={() => setIsDownloadOpen(true)}
+          isMobileApp={isMobileApp}
         />
       )}
 

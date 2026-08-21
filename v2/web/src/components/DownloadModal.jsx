@@ -3,22 +3,7 @@ import React from 'react';
 export const DownloadModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
-  const GITHUB_RAW_URL = "https://github.com/Harixomxsingh/still/raw/main/Still.apk";
-  const LOCAL_APK_URL = "./Still.apk";
-
-  const handleDownload = (e) => {
-    try {
-      const link = document.createElement('a');
-      link.href = LOCAL_APK_URL;
-      link.setAttribute('download', 'Still.apk');
-      link.setAttribute('target', '_blank');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (err) {
-      window.open(GITHUB_RAW_URL, '_blank');
-    }
-  };
+  const APK_DOWNLOAD_URL = "https://github.com/Harixomxsingh/still/releases/download/v2.0.0/Still.apk";
 
   return (
     <div className="modal-backdrop is-open" onClick={onClose}>
@@ -58,8 +43,8 @@ export const DownloadModal = ({ isOpen, onClose }) => {
 
         {/* 1-Click Primary Action */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '28px' }}>
-          <button 
-            onClick={handleDownload}
+          <a 
+            href={APK_DOWNLOAD_URL}
             className="gateway-btn"
             style={{ 
               display: 'flex', 
@@ -70,17 +55,21 @@ export const DownloadModal = ({ isOpen, onClose }) => {
               fontWeight: '700',
               padding: '16px 24px',
               boxShadow: '0 0 30px rgba(56, 189, 248, 0.3)',
+              textDecoration: 'none',
               cursor: 'pointer',
-              width: '100%'
+              width: '100%',
+              borderRadius: '9999px',
+              color: '#09090b',
+              background: 'linear-gradient(135deg, #38bdf8 0%, #818cf8 100%)'
             }}
           >
             <i className="fa-brands fa-android" style={{ fontSize: '18px' }}></i>
             <span>Download Still for Android (.apk)</span>
-          </button>
+          </a>
 
-          {/* Direct Raw GitHub Backup Mirror */}
+          {/* GitHub Release Mirror */}
           <a
-            href={GITHUB_RAW_URL}
+            href="https://github.com/Harixomxsingh/still/releases/tag/v2.0.0"
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -95,7 +84,7 @@ export const DownloadModal = ({ isOpen, onClose }) => {
             }}
           >
             <i className="fa-brands fa-github"></i>
-            <span>Alternative Direct Download Mirror</span>
+            <span>View Release on GitHub (v2.0.0)</span>
           </a>
         </div>
 
@@ -114,7 +103,7 @@ export const DownloadModal = ({ isOpen, onClose }) => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '12.5px', color: '#cbd5e1', lineHeight: '1.5' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
               <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', fontWeight: '700', width: '22px', height: '22px', borderRadius: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', flexShrink: 0 }}>1</span>
-              <div><strong>Tap Download:</strong> The <code>Still.apk</code> file will download to your phone.</div>
+              <div><strong>Tap Download:</strong> The <code>Still.apk</code> file will download directly to your phone.</div>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>

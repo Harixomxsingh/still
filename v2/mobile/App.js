@@ -9,6 +9,8 @@ const LIVE_WEB_APP_URL = 'https://harixomxsingh.github.io/still/';
 export default function App() {
   const webViewRef = useRef(null);
   const [statusBarBg, setStatusBarBg] = useState('#05070d');
+  // Timestamp to guarantee fresh live sync on every app boot
+  const [launchUrl] = useState(() => `${LIVE_WEB_APP_URL}?_live=${Date.now()}`);
 
   useEffect(() => {
     // Initialize native background audio driver
@@ -64,13 +66,13 @@ export default function App() {
       
       <WebView
         ref={webViewRef}
-        source={{ uri: LIVE_WEB_APP_URL }}
+        source={{ uri: launchUrl }}
         style={styles.webview}
         allowsInlineMediaPlayback={true}
         mediaPlaybackRequiresUserAction={false}
         domStorageEnabled={true}
         cacheEnabled={true}
-        cacheMode="LOAD_DEFAULT"
+        cacheMode="LOAD_NO_CACHE"
         javaScriptEnabled={true}
         androidLayerType="hardware"
         pullToRefreshEnabled={true}

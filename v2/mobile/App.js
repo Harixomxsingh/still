@@ -242,6 +242,7 @@ export default function App() {
       <MobileAboutModal
         visible={isAboutOpen}
         onClose={() => setIsAboutOpen(false)}
+        theme={activeTheme}
       />
     </View>
   );

@@ -51,13 +51,18 @@ export const AboutModal = ({ isOpen, onClose }) => {
           </div>
 
           {/* 2. Active Dev Notice */}
-          <div style={{ background: 'rgba(56, 189, 248, 0.06)', border: '1px solid rgba(56, 189, 248, 0.18)', borderRadius: '16px', padding: '14px 16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12.5px', fontWeight: 600, color: 'var(--accent-primary)', marginBottom: '4px' }}>
-              <Hammer className="w-3.5 h-3.5" />
-              <span>Version 2 — Actively in Development</span>
+          <div style={{ background: 'rgba(56, 189, 248, 0.06)', border: '1px solid rgba(56, 189, 248, 0.2)', borderRadius: '16px', padding: '16px 18px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, color: 'var(--accent-primary)' }}>
+                <Hammer className="w-3.5 h-3.5" />
+                <span>Actively in Development</span>
+              </div>
+              <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-primary)', fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '10px', fontFamily: 'monospace' }}>
+                v2.0 Beta
+              </span>
             </div>
-            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 300, margin: 0 }}>
-              Still v2 introduces a modular React architecture, customizable audio stems mixer, and native mobile cross-platform support. I am continuously crafting new acoustic models and testing frequencies.
+            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 300, lineHeight: '1.6', margin: 0 }}>
+              Still is currently in active development. I am continuously researching, crafting new acoustic frequencies, testing soundscapes, and refining the experience. More features, audio models, and updates are being added regularly.
             </p>
           </div>
 

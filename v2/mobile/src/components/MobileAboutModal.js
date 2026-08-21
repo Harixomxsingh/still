@@ -1,16 +1,19 @@
 import React from 'react';
 import { StyleSheet, Text, View, Modal, TouchableOpacity, ScrollView, Linking } from 'react-native';
 
-export const MobileAboutModal = ({ visible, onClose }) => {
+export const MobileAboutModal = ({ visible, onClose, theme }) => {
+  const accent = theme?.accent || '#38bdf8';
+  const cardBg = theme?.cardBg || 'rgba(13, 19, 33, 0.98)';
+
   return (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.backdrop}>
-        <View style={styles.modalCard}>
+        <View style={[styles.modalCard, { backgroundColor: cardBg }]}>
           
           {/* Header */}
           <View style={styles.header}>
             <View>
-              <Text style={styles.title}>About Still v2</Text>
+              <Text style={styles.title}>About Still</Text>
               <Text style={styles.subtitle}>Origin, purpose & the science of calm</Text>
             </View>
             <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
@@ -19,7 +22,7 @@ export const MobileAboutModal = ({ visible, onClose }) => {
           </View>
 
           {/* Body */}
-          <ScrollView style={styles.body}>
+          <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
             
             {/* 1. Origin & Purpose */}
             <View style={styles.sectionCard}>
@@ -35,12 +38,25 @@ export const MobileAboutModal = ({ visible, onClose }) => {
               </Text>
               <TouchableOpacity onPress={() => Linking.openURL('https://github.com/Harixomxsingh')}>
                 <Text style={styles.authorSign}>
-                  — <Text style={{ color: '#38bdf8', fontWeight: '600' }}>hari</Text>
+                  — <Text style={{ color: accent, fontWeight: '600' }}>hari</Text>
                 </Text>
               </TouchableOpacity>
             </View>
 
-            {/* 2. Neuro-Acoustic Science */}
+            {/* 2. Actively in Development & Roadmap Notice */}
+            <View style={[styles.devCard, { borderColor: accent + '4D', backgroundColor: accent + '10' }]}>
+              <View style={styles.devHeader}>
+                <Text style={[styles.devTitle, { color: accent }]}>✨ Actively in Development</Text>
+                <View style={[styles.devPill, { backgroundColor: accent + '26' }]}>
+                  <Text style={[styles.devPillText, { color: accent }]}>v2.0 Beta</Text>
+                </View>
+              </View>
+              <Text style={styles.devText}>
+                Still is currently in active development. I am continuously researching, crafting new acoustic frequencies, testing soundscapes, and refining the experience. More features, soundscapes, and updates are being added regularly.
+              </Text>
+            </View>
+
+            {/* 3. Neuro-Acoustic Science */}
             <View style={styles.sectionCard}>
               <Text style={styles.sectionTitle}>🧠 Neuro-Acoustic Science</Text>
               <Text style={styles.bulletText}>• <Text style={styles.bold}>432 Hz Solfeggio Tuning:</Text> Acoustic resonance that encourages lower cortisol.</Text>
@@ -49,7 +65,7 @@ export const MobileAboutModal = ({ visible, onClose }) => {
               <Text style={styles.bulletText}>• <Text style={styles.bold}>Binaural Entrainment:</Text> Guides brainwaves toward calm alpha and deep delta states.</Text>
             </View>
 
-            {/* 3. Daily Rituals */}
+            {/* 4. Daily Rituals */}
             <View style={styles.sectionCard}>
               <Text style={styles.sectionTitle}>🧭 3 Simple Daily Rituals</Text>
               <Text style={styles.bulletText}>💼 <Text style={styles.bold}>Focus Block:</Text> Put on headphones with Deep Flow to enter deep work.</Text>
@@ -57,11 +73,11 @@ export const MobileAboutModal = ({ visible, onClose }) => {
               <Text style={styles.bulletText}>🫁 <Text style={styles.bold}>2-Min Reset:</Text> Inhale 4s, Hold 2s, Exhale 4s with the center halo.</Text>
             </View>
 
-            {/* 4. Privacy Pledge */}
+            {/* 5. Privacy Pledge */}
             <View style={styles.privacyRow}>
               <Text style={styles.privacyText}>🛡️ 100% Offline • Zero Trackers • Zero Ads</Text>
               <TouchableOpacity onPress={() => Linking.openURL('https://github.com/Harixomxsingh/still')}>
-                <Text style={styles.gitLink}>GitHub ➔</Text>
+                <Text style={[styles.gitLink, { color: accent }]}>GitHub ➔</Text>
               </TouchableOpacity>
             </View>
 
@@ -149,6 +165,37 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     marginTop: 4
   },
+  devCard: {
+    borderWidth: 1,
+    borderRadius: 16,
+    padding: 14,
+    marginBottom: 10
+  },
+  devHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 6
+  },
+  devTitle: {
+    fontSize: 12.5,
+    fontWeight: '700'
+  },
+  devPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10
+  },
+  devPillText: {
+    fontSize: 10,
+    fontWeight: '700'
+  },
+  devText: {
+    color: '#cbd5e1',
+    fontSize: 11.5,
+    lineHeight: 17,
+    fontWeight: '300'
+  },
   bulletText: {
     color: '#94a3b8',
     fontSize: 11.5,
@@ -173,7 +220,6 @@ const styles = StyleSheet.create({
     fontSize: 11
   },
   gitLink: {
-    color: '#38bdf8',
     fontSize: 11,
     fontWeight: '600'
   }

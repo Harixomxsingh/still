@@ -234,8 +234,8 @@ export const MonolithPlayer = ({
         [Space] Play &bull; [N] Next &bull; [M] Mute &bull; [F] Zen
       </div>
 
-      {/* 6. Creator Signature & App Link */}
-      <div className="creator-credit" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+      {/* 6. Creator Signature, App Link & Version */}
+      <div className="creator-credit" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
         <span>made by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link">hari</a> with ❤️ &amp; care</span>
         <span>&bull;</span>
         <button 
@@ -252,6 +252,8 @@ export const MonolithPlayer = ({
         >
           📱 Get Android App
         </button>
+        <span>&bull;</span>
+        <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.0.0</span>
       </div>
 
     </div>

@@ -113,15 +113,12 @@ export const MobileMonolithPlayer = ({
 
         </View>
 
-        {/* 5. Creator Signature */}
+        {/* 5. Creator Signature & Version */}
         <TouchableOpacity onPress={() => Linking.openURL('https://github.com/Harixomxsingh')}>
           <Text style={styles.creatorCredit}>
-            made by <Text style={{ color: accent, fontWeight: '600' }}>hari</Text> with ❤️ & care
+            made by <Text style={{ color: accent, fontWeight: '600' }}>hari</Text> with ❤️ & care • <Text style={styles.versionText}>v2.0.0</Text>
           </Text>
         </TouchableOpacity>
-
-        {/* 6. Discreet Bottom-Right Version Watermark */}
-        <Text style={styles.versionWatermark}>v2.0.0</Text>
 
       </View>
     </SafeAreaView>
@@ -357,13 +354,9 @@ const styles = StyleSheet.create({
     color: '#64748b',
     fontSize: 10.5
   },
-  versionWatermark: {
-    position: 'absolute',
-    bottom: 8,
-    right: 12,
+  versionText: {
+    color: '#475569',
     fontSize: 9.5,
-    fontFamily: 'monospace',
-    color: '#334155',
-    opacity: 0.35
+    fontFamily: 'monospace'
   }
 });

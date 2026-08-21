@@ -121,10 +121,10 @@ export const MobileHomeGateway = ({ onEnter, onOpenAbout }) => {
           <Text style={styles.aboutBtnText}>ℹ️  About & Science</Text>
         </TouchableOpacity>
 
-        {/* Footer Credit */}
+        {/* Footer Credit & Version */}
         <TouchableOpacity onPress={() => Linking.openURL('https://github.com/Harixomxsingh')}>
           <Text style={styles.footerCredit}>
-            made by <Text style={styles.footerName}>hari</Text> with ❤️ & care
+            made by <Text style={styles.footerName}>hari</Text> with ❤️ & care • <Text style={{ color: '#475569', fontSize: 9.5, fontFamily: 'monospace' }}>v2.0.0</Text>
           </Text>
         </TouchableOpacity>
 

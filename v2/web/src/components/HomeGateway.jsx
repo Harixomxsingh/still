@@ -145,9 +145,11 @@ export const HomeGateway = ({ isVisible, onEnter, onOpenAbout, onOpenDownload })
           </button>
         </div>
 
-        {/* Creator Signature */}
-        <div className="creator-credit" style={{ marginTop: '4px' }}>
-          made by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link" onClick={(e) => e.stopPropagation()}>hari</a> with ❤️ &amp; care
+        {/* Creator Signature & Version */}
+        <div className="creator-credit" style={{ marginTop: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+          <span>made by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link" onClick={(e) => e.stopPropagation()}>hari</a> with ❤️ &amp; care</span>
+          <span>&bull;</span>
+          <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.0.0</span>
         </div>
 
       </div>

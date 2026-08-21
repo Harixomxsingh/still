@@ -11,6 +11,7 @@ export class AudioEngine {
     this.masterGain = null;
     this.isPlaying = false;
     this.currentTrack = null;
+    this.mediaAnchor = null;
 
     // Stem Gain Nodes
     this.padMasterGain = null;
@@ -211,6 +212,7 @@ export class AudioEngine {
     if (this.ctx.state === 'suspended') {
       this.ctx.resume();
     }
+    this._startMediaAnchor();
 
     this.currentTrack = track;
     const now = this.ctx.currentTime;
@@ -291,8 +293,29 @@ export class AudioEngine {
     this.masterGain.gain.setTargetAtTime(val, this.ctx.currentTime, 0.05);
   }
 
+  _startMediaAnchor() {
+    if (typeof window === 'undefined') return;
+    try {
+      if (!this.mediaAnchor) {
+        this.mediaAnchor = new Audio(SILENT_AUDIO_URI);
+        this.mediaAnchor.loop = true;
+        this.mediaAnchor.volume = 0.05;
+      }
+      this.mediaAnchor.play().catch(() => {});
+    } catch (e) {}
+  }
+
+  _pauseMediaAnchor() {
+    if (this.mediaAnchor) {
+      try {
+        this.mediaAnchor.pause();
+      } catch (e) {}
+    }
+  }
+
   pause() {
     this.isPlaying = false;
+    this._pauseMediaAnchor();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
     this.brownGain.gain.setTargetAtTime(0.0001, now, 0.8);
@@ -305,6 +328,7 @@ export class AudioEngine {
 
   resume() {
     this.isPlaying = true;
+    this._startMediaAnchor();
     if (this.currentTrack) {
       this.applySoundscape(this.currentTrack, 2.0);
     }

@@ -277,6 +277,41 @@ export const App = () => {
     }
   };
 
+  // System Lock Screen and Notification Shade Media Controls (Android & iOS)
+  useEffect(() => {
+    if (typeof window === 'undefined' || !('mediaSession' in navigator)) return;
+
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: activeTrack.title,
+        artist: 'Still • by Hari',
+        album: activeTrack.science,
+        artwork: [
+          { src: 'https://harixomxsingh.github.io/still/icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'https://harixomxsingh.github.io/still/icon-512.png', sizes: '512x512', type: 'image/png' }
+        ]
+      });
+
+      navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+
+      navigator.mediaSession.setActionHandler('play', () => {
+        if (isHomeOpen) handleEnterCalmSpace();
+        else handleTogglePlay();
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        handleTogglePlay();
+      });
+      navigator.mediaSession.setActionHandler('nexttrack', () => {
+        handleNextTrack();
+      });
+      navigator.mediaSession.setActionHandler('previoustrack', () => {
+        handlePrevTrack();
+      });
+    } catch (e) {
+      console.log('MediaSession note:', e);
+    }
+  }, [activeTrack, isPlaying, currentTrackIndex, isHomeOpen]);
+
   const handleVolumeChange = (val) => {
     setVolume(val);
     if (val > 0) setIsMuted(false);

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, StatusBar } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { BackgroundAudioService } from './src/audio/BackgroundAudioService';
 import { AudioEngineBridge } from './src/audio/AudioEngineBridge';
-import { SOUNDSCAPES, THEMES } from '../shared/soundscapes';
-import { CALM_QUOTES } from '../shared/quotes';
+import { SOUNDSCAPES, THEMES } from './src/shared/soundscapes';
+import { CALM_QUOTES } from './src/shared/quotes';
 
 import { MobileWelcomeModal } from './src/components/MobileWelcomeModal';
 import { MobileHomeGateway } from './src/components/MobileHomeGateway';
@@ -95,12 +96,14 @@ export default function App() {
   const currentQuote = CALM_QUOTES[(baseDailyIndex + milestoneOffset) % CALM_QUOTES.length];
 
   const activeTrack = SOUNDSCAPES[currentTrackIndex];
+  const activeTheme = THEMES[currentThemeIdx];
 
   // Stage Transitions
   const handleEnterCalmSpace = () => {
     setIsNoteOpen(false);
     setIsHomeOpen(false);
     bridgeRef.current?.play(activeTrack);
+    BackgroundAudioService.startNativeSession();
     setIsPlaying(true);
   };
 
@@ -112,9 +115,11 @@ export default function App() {
 
     if (!isPlaying) {
       bridgeRef.current?.play(activeTrack);
+      BackgroundAudioService.startNativeSession();
       setIsPlaying(true);
     } else {
       bridgeRef.current?.pause();
+      BackgroundAudioService.pauseNativeSession();
       setIsPlaying(false);
     }
   };
@@ -124,6 +129,7 @@ export default function App() {
     setCurrentTrackIndex(nextIdx);
     if (isPlaying) {
       bridgeRef.current?.play(SOUNDSCAPES[nextIdx]);
+      BackgroundAudioService.startNativeSession();
     }
   };
 
@@ -132,6 +138,7 @@ export default function App() {
     setCurrentTrackIndex(prevIdx);
     if (isPlaying) {
       bridgeRef.current?.play(SOUNDSCAPES[prevIdx]);
+      BackgroundAudioService.startNativeSession();
     }
   };
 
@@ -139,6 +146,7 @@ export default function App() {
     setCurrentTrackIndex(idx);
     if (isHomeOpen) setIsHomeOpen(false);
     bridgeRef.current?.play(SOUNDSCAPES[idx]);
+    BackgroundAudioService.startNativeSession();
     setIsPlaying(true);
   };
 
@@ -154,6 +162,7 @@ export default function App() {
   };
 
   const handleCycleTimer = () => {
+    try { Haptics.selectionAsync(); } catch(e) {}
     const options = [null, 15, 30, 45, 60];
     const curMins = sleepTimerSeconds !== null ? Math.ceil(sleepTimerSeconds / 60) : null;
     let curIdx = 0;
@@ -166,12 +175,13 @@ export default function App() {
   };
 
   const handleCycleTheme = () => {
+    try { Haptics.selectionAsync(); } catch(e) {}
     setCurrentThemeIdx((prev) => (prev + 1) % THEMES.length);
   };
 
   return (
-    <View style={styles.appContainer}>
-      <StatusBar barStyle="light-content" backgroundColor="#05070d" />
+    <View style={[styles.appContainer, { backgroundColor: activeTheme?.bg || '#05070d' }]}>
+      <StatusBar barStyle="light-content" backgroundColor={activeTheme?.bg || '#05070d'} />
 
       {/* Hidden Procedural Web Audio Engine Bridge */}
       <AudioEngineBridge ref={bridgeRef} />
@@ -215,6 +225,7 @@ export default function App() {
         currentIndex={currentTrackIndex}
         isPlaying={isPlaying}
         onSelect={handleSelectTrack}
+        theme={activeTheme}
       />
 
       {/* Stem Layer Mixer Modal */}
@@ -224,6 +235,7 @@ export default function App() {
         stems={stems}
         onStemChange={handleStemChange}
         onResetStems={handleResetStems}
+        theme={activeTheme}
       />
 
       {/* About & Science Modal */}

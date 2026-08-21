@@ -1,7 +1,60 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Linking, SafeAreaView } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Linking, SafeAreaView, Animated, Easing, Platform, StatusBar } from 'react-native';
 
 export const MobileHomeGateway = ({ onEnter, onOpenAbout }) => {
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const glowAnim = useRef(new Animated.Value(0.4)).current;
+  const ringAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.parallel([
+          Animated.timing(pulseAnim, {
+            toValue: 1.12,
+            duration: 2500,
+            easing: Easing.bezier(0.4, 0, 0.2, 1),
+            useNativeDriver: true
+          }),
+          Animated.timing(glowAnim, {
+            toValue: 0.9,
+            duration: 2500,
+            useNativeDriver: true
+          }),
+          Animated.timing(ringAnim, {
+            toValue: 1.3,
+            duration: 2500,
+            easing: Easing.bezier(0.4, 0, 0.2, 1),
+            useNativeDriver: true
+          })
+        ]),
+        Animated.parallel([
+          Animated.timing(pulseAnim, {
+            toValue: 0.96,
+            duration: 2500,
+            easing: Easing.bezier(0.4, 0, 0.2, 1),
+            useNativeDriver: true
+          }),
+          Animated.timing(glowAnim, {
+            toValue: 0.35,
+            duration: 2500,
+            useNativeDriver: true
+          }),
+          Animated.timing(ringAnim, {
+            toValue: 0.95,
+            duration: 2500,
+            easing: Easing.bezier(0.4, 0, 0.2, 1),
+            useNativeDriver: true
+          })
+        ])
+      ])
+    );
+
+    loop.start();
+
+    return () => loop.stop();
+  }, []);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <TouchableOpacity 
@@ -23,13 +76,28 @@ export const MobileHomeGateway = ({ onEnter, onOpenAbout }) => {
           A distraction-free space for your mind and room. Zero algorithms. Instant peace.
         </Text>
 
-        {/* Center Glowing Breathing Aura */}
+        {/* Center Glowing Breathing Living Aura */}
         <View style={styles.auraWrapper}>
-          <View style={styles.auraGlow} />
-          <View style={styles.auraRing} />
-          <View style={styles.auraCore}>
+          <Animated.View 
+            style={[
+              styles.auraRing, 
+              { transform: [{ scale: ringAnim }], opacity: glowAnim }
+            ]} 
+          />
+          <Animated.View 
+            style={[
+              styles.auraGlow, 
+              { transform: [{ scale: ringAnim }], opacity: glowAnim }
+            ]} 
+          />
+          <Animated.View 
+            style={[
+              styles.auraCore, 
+              { transform: [{ scale: pulseAnim }] }
+            ]}
+          >
             <Text style={styles.playIcon}>▶</Text>
-          </View>
+          </Animated.View>
         </View>
 
         {/* Primary Action Button */}
@@ -68,13 +136,15 @@ export const MobileHomeGateway = ({ onEnter, onOpenAbout }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#05070d'
+    backgroundColor: '#05070d',
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight || 28) + 12 : 0
   },
   fullScreenTouch: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 25,
+    paddingTop: 10,
+    paddingBottom: Platform.OS === 'android' ? 24 : 16,
     paddingHorizontal: 20
   },
   badge: {

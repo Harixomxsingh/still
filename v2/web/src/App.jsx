@@ -8,6 +8,7 @@ import { StemMixer } from './components/StemMixer';
 import { SoundscapeModal } from './components/SoundscapeModal';
 import { AboutModal } from './components/AboutModal';
 import { WelcomeCard } from './components/WelcomeCard';
+import { DownloadModal } from './components/DownloadModal';
 
 export const App = () => {
   const engineRef = useRef(null);
@@ -78,6 +79,7 @@ export const App = () => {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [isMixerOpen, setIsMixerOpen] = useState(false);
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
 
   // Initialize Audio Engine
   useEffect(() => {
@@ -329,6 +331,7 @@ export const App = () => {
         isVisible={isHomeOpen} 
         onEnter={handleEnterCalmSpace} 
         onOpenAbout={() => setIsAboutOpen(true)} 
+        onOpenDownload={() => setIsDownloadOpen(true)}
       />
 
       {/* Stage 3: Main Active Monolith Nexus Player */}
@@ -353,6 +356,7 @@ export const App = () => {
           onOpenMixer={() => setIsMixerOpen(true)}
           onOpenAbout={() => setIsAboutOpen(true)}
           onOpenNote={() => setIsNoteOpen(true)}
+          onOpenDownload={() => setIsDownloadOpen(true)}
         />
       )}
 
@@ -378,6 +382,12 @@ export const App = () => {
       <AboutModal
         isOpen={isAboutOpen}
         onClose={() => setIsAboutOpen(false)}
+      />
+
+      {/* Download Android App Modal */}
+      <DownloadModal
+        isOpen={isDownloadOpen}
+        onClose={() => setIsDownloadOpen(false)}
       />
     </>
   );

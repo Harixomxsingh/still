@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Linking, SafeAreaView } from 'react-native';
-import * as Haptics from 'expo-haptics';
+import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Linking, SafeAreaView, Platform, StatusBar } from 'react-native';
+import { MobileBreathingOrb } from './MobileBreathingOrb';
 
 export const MobileMonolithPlayer = ({
   track,
@@ -18,90 +18,45 @@ export const MobileMonolithPlayer = ({
   onOpenAbout,
   onOpenNote
 }) => {
-  const [breathPhase, setBreathPhase] = useState('Breathe');
-
-  // 0.1 Hz Breathing Cycle with Haptics Feedback
-  useEffect(() => {
-    if (!isPlaying) {
-      setBreathPhase('Breathe');
-      return;
-    }
-
-    let isMounted = true;
-
-    const runLoop = () => {
-      if (!isMounted) return;
-      setBreathPhase('Inhale');
-      try { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); } catch(e) {}
-
-      setTimeout(() => {
-        if (!isMounted) return;
-        setBreathPhase('Hold');
-
-        setTimeout(() => {
-          if (!isMounted) return;
-          setBreathPhase('Exhale');
-          try { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); } catch(e) {}
-
-          setTimeout(() => {
-            if (!isMounted) return;
-            runLoop();
-          }, 4000); // 4s exhale
-        }, 2000); // 2s hold
-      }, 4000); // 4s inhale
-    };
-
-    runLoop();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [isPlaying]);
+  const accent = theme?.accent || '#38bdf8';
+  const cardBg = theme?.cardBg || 'rgba(13, 19, 33, 0.88)';
+  const themeBg = theme?.bg || '#05070d';
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: themeBg }]}>
       <View style={styles.container}>
         
         {/* 1. Brand Header & Daily Quote */}
         <View style={styles.topSection}>
           <View style={styles.brandRow}>
             <Text style={styles.brandTitle}>STILL MOBILE</Text>
-            <View style={styles.freqPill}>
-              <Text style={styles.freqText}>0.1 HZ</Text>
+            <View style={[styles.freqPill, { borderColor: accent + '4D', backgroundColor: accent + '1A' }]}>
+              <Text style={[styles.freqText, { color: accent }]}>0.1 HZ</Text>
             </View>
           </View>
 
           {quote && (
             <View style={styles.quoteBox}>
               <Text style={styles.quoteText}>“{quote.text}”</Text>
-              <Text style={styles.quoteAuthor}>— {quote.author}</Text>
+              <Text style={[styles.quoteAuthor, { color: accent }]}>— {quote.author}</Text>
             </View>
           )}
         </View>
 
-        {/* 2. Breathing Orb Nexus */}
-        <View style={styles.orbWrapper}>
-          <TouchableOpacity 
-            style={[styles.orbCore, isPlaying && styles.orbActive]} 
-            onPress={onTogglePlay}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.playIconText}>{isPlaying ? '❚❚' : '▶'}</Text>
-            <Text style={styles.breathText}>{breathPhase}</Text>
-          </TouchableOpacity>
-        </View>
+        {/* 2. Resonant Animated Breathing Halo */}
+        <MobileBreathingOrb isPlaying={isPlaying} onTogglePlay={onTogglePlay} theme={theme} />
 
         {/* 3. Track Details & Science Section */}
         <View style={styles.trackInfo}>
           <Text style={styles.trackTitle}>{track.title}</Text>
-          <View style={styles.sciencePill}>
-            <Text style={styles.scienceText}>{track.science}</Text>
+          <View style={[styles.sciencePill, { borderColor: accent + '33' }]}>
+            <Text style={[styles.scienceText, { color: accent }]}>{track.science}</Text>
           </View>
           <Text style={styles.trackDesc} numberOfLines={2}>{track.description}</Text>
         </View>
 
         {/* 4. Monolith Console Glass Box */}
-        <View style={styles.consoleCard}>
+        <View style={[styles.consoleCard, { backgroundColor: cardBg }]}>
           
           {/* Playback Row */}
           <View style={styles.playbackRow}>
@@ -129,10 +84,14 @@ export const MobileMonolithPlayer = ({
             </TouchableOpacity>
 
             <TouchableOpacity 
-              style={[styles.pillBtn, styles.timerBtn, sleepTimer !== null && styles.timerBtnActive]} 
+              style={[
+                styles.pillBtn, 
+                styles.timerBtn, 
+                sleepTimer !== null && { borderColor: accent, backgroundColor: accent + '26' }
+              ]} 
               onPress={onCycleTimer}
             >
-              <Text style={[styles.pillBtnText, sleepTimer !== null && styles.timerTextActive]}>
+              <Text style={[styles.pillBtnText, sleepTimer !== null && { color: accent, fontWeight: '700' }]}>
                 🕒 {sleepTimer !== null 
                   ? `${Math.floor(sleepTimer / 60)}:${sleepTimer % 60 < 10 ? '0' : ''}${sleepTimer % 60}` 
                   : '∞'}
@@ -147,8 +106,8 @@ export const MobileMonolithPlayer = ({
               <Text style={styles.iconBtnText}>✉️</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.iconBtn} onPress={onCycleTheme}>
-              <Text style={styles.iconBtnText}>🌙</Text>
+            <TouchableOpacity style={[styles.iconBtn, { borderColor: accent + '66' }]} onPress={onCycleTheme}>
+              <Text style={styles.iconBtnText}>{theme?.icon || '🌙'}</Text>
             </TouchableOpacity>
           </View>
 
@@ -157,7 +116,7 @@ export const MobileMonolithPlayer = ({
         {/* 5. Creator Signature */}
         <TouchableOpacity onPress={() => Linking.openURL('https://github.com/Harixomxsingh')}>
           <Text style={styles.creatorCredit}>
-            made by <Text style={{ color: '#38bdf8', fontWeight: '600' }}>hari</Text> with ❤️ & care
+            made by <Text style={{ color: accent, fontWeight: '600' }}>hari</Text> with ❤️ & care
           </Text>
         </TouchableOpacity>
 
@@ -169,24 +128,29 @@ export const MobileMonolithPlayer = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#05070d'
+    backgroundColor: '#05070d',
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight || 28) + 12 : 0
   },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 15,
-    paddingHorizontal: 16
+    paddingTop: 6,
+    paddingBottom: Platform.OS === 'android' ? 24 : 16,
+    paddingHorizontal: 20
   },
   topSection: {
     alignItems: 'center',
-    width: '100%'
+    width: '100%',
+    paddingHorizontal: 10
   },
   brandRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 8,
-    marginTop: 4
+    marginTop: 2,
+    marginBottom: 4
   },
   brandTitle: {
     color: '#94a3b8',

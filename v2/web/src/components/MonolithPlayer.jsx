@@ -24,7 +24,8 @@ export const MonolithPlayer = ({
   onOpenLibrary,
   onOpenMixer,
   onOpenAbout,
-  onOpenNote
+  onOpenNote,
+  onOpenDownload
 }) => {
   // Inactivity Auto-Ghost state (5 seconds)
   const [isGhost, setIsGhost] = useState(false);
@@ -179,6 +180,16 @@ export const MonolithPlayer = ({
             </span>
           </button>
 
+          {/* Download Android App */}
+          <button 
+            className="icon-action-btn" 
+            onClick={onOpenDownload} 
+            title="Download Still Android App (.apk)"
+            style={{ color: 'var(--accent-primary)', borderColor: 'rgba(56, 189, 248, 0.3)' }}
+          >
+            <i className="fa-brands fa-android text-xs"></i>
+          </button>
+
           {/* About & Science */}
           <button 
             className="icon-action-btn" 
@@ -223,9 +234,24 @@ export const MonolithPlayer = ({
         [Space] Play &bull; [N] Next &bull; [M] Mute &bull; [F] Zen
       </div>
 
-      {/* 6. Creator Signature */}
-      <div className="creator-credit">
-        made by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link">hari</a> with ❤️ &amp; care
+      {/* 6. Creator Signature & App Link */}
+      <div className="creator-credit" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+        <span>made by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link">hari</a> with ❤️ &amp; care</span>
+        <span>&bull;</span>
+        <button 
+          onClick={onOpenDownload} 
+          style={{ 
+            background: 'none', 
+            border: 'none', 
+            color: 'var(--accent-primary)', 
+            fontSize: '11px', 
+            cursor: 'pointer', 
+            textDecoration: 'underline',
+            fontWeight: '500'
+          }}
+        >
+          📱 Get Android App
+        </button>
       </div>
 
     </div>

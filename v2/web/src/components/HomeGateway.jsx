@@ -1,7 +1,7 @@
 import React from 'react';
 import { Waves, Info } from 'lucide-react';
 
-export const HomeGateway = ({ isVisible, onEnter, onOpenAbout }) => {
+export const HomeGateway = ({ isVisible, onEnter, onOpenAbout, onOpenDownload }) => {
   if (!isVisible) return null;
 
   return (
@@ -111,8 +111,8 @@ export const HomeGateway = ({ isVisible, onEnter, onOpenAbout }) => {
           Tap anywhere to begin audio
         </span>
 
-        {/* About & Science Button */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px', marginTop: '2px' }}>
+        {/* About & Download App Buttons */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginTop: '2px', flexWrap: 'wrap' }}>
           <button 
             className="pill-toggle-btn" 
             onClick={(e) => {
@@ -123,6 +123,25 @@ export const HomeGateway = ({ isVisible, onEnter, onOpenAbout }) => {
           >
             <Info className="w-3 h-3 text-sky-400" />
             <span>About &amp; Science</span>
+          </button>
+
+          <button 
+            className="pill-toggle-btn" 
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenDownload();
+            }} 
+            style={{ 
+              fontSize: '11px', 
+              padding: '5px 14px', 
+              gap: '6px',
+              borderColor: 'rgba(56, 189, 248, 0.4)',
+              background: 'rgba(56, 189, 248, 0.1)',
+              color: '#38bdf8'
+            }}
+          >
+            <i className="fa-brands fa-android text-xs"></i>
+            <span>Get Android App</span>
           </button>
         </div>
 

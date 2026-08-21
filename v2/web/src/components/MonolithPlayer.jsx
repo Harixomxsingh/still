@@ -253,7 +253,7 @@ export const MonolithPlayer = ({
           📱 Get Android App
         </button>
         <span>&bull;</span>
-        <span style={{ fontFamily: 'monospace', color: '#34d399', fontSize: '10.5px', fontWeight: '600' }}>v2.0.3 • 🟢 Live Sync Active</span>
+        <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.0.0</span>
       </div>
 
     </div>

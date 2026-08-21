@@ -389,6 +389,25 @@ export const App = () => {
         isOpen={isDownloadOpen}
         onClose={() => setIsDownloadOpen(false)}
       />
+
+      {/* Discrete Bottom-Right Version Watermark */}
+      <div 
+        style={{
+          position: 'fixed',
+          bottom: '8px',
+          right: '12px',
+          fontSize: '9.5px',
+          fontFamily: 'monospace',
+          color: '#334155',
+          opacity: 0.35,
+          pointerEvents: 'none',
+          zIndex: 9999,
+          letterSpacing: '0.04em',
+          userSelect: 'none'
+        }}
+      >
+        v2.0.0
+      </div>
     </>
   );
 };

@@ -29,7 +29,7 @@ export const MobileMonolithPlayer = ({
         {/* 1. Brand Header & Daily Quote */}
         <View style={styles.topSection}>
           <View style={styles.brandRow}>
-            <Text style={styles.brandTitle}>STILL MOBILE</Text>
+            <Text style={styles.brandTitle}>STILL</Text>
             <View style={[styles.freqPill, { borderColor: accent + '4D', backgroundColor: accent + '1A' }]}>
               <Text style={[styles.freqText, { color: accent }]}>0.1 HZ</Text>
             </View>
@@ -119,6 +119,9 @@ export const MobileMonolithPlayer = ({
             made by <Text style={{ color: accent, fontWeight: '600' }}>hari</Text> with ❤️ & care
           </Text>
         </TouchableOpacity>
+
+        {/* 6. Discreet Bottom-Right Version Watermark */}
+        <Text style={styles.versionWatermark}>v2.0.0</Text>
 
       </View>
     </SafeAreaView>
@@ -353,5 +356,14 @@ const styles = StyleSheet.create({
   creatorCredit: {
     color: '#64748b',
     fontSize: 10.5
+  },
+  versionWatermark: {
+    position: 'absolute',
+    bottom: 8,
+    right: 12,
+    fontSize: 9.5,
+    fontFamily: 'monospace',
+    color: '#334155',
+    opacity: 0.35
   }
 });

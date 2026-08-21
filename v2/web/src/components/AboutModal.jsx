@@ -18,7 +18,7 @@ export const AboutModal = ({ isOpen, onClose }) => {
               <Sprout className="w-4 h-4" />
             </div>
             <div>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#fff' }}>About Still v2</h3>
+              <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#fff' }}>About Still</h3>
               <p style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 300 }}>Origin, purpose, and the science of calm.</p>
             </div>
           </div>

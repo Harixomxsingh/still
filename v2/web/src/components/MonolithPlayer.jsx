@@ -72,7 +72,7 @@ export const MonolithPlayer = ({
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
         <div className="monolith-brand">
           <i className="fa-solid fa-infinity text-xs" style={{ color: 'var(--accent-primary)' }}></i>
-          <span>Still v2</span>
+          <span>Still</span>
           <span className="freq-tag">0.1 Hz</span>
         </div>
 

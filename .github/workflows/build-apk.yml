@@ -40,16 +40,19 @@ jobs:
           cd v2/mobile
           npm install
 
-      - name: Build Android APK (Gradle)
+      - name: Build Standalone Release APK (Gradle)
         run: |
           cd v2/mobile/android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          ./gradlew assembleRelease --no-daemon --stacktrace
 
       - name: Copy & Package Still.apk
         run: |
-          APK_PATH=$(find v2/mobile/android/app/build/outputs/apk -name "*.apk" | head -n 1)
-          echo "Found compiled APK at: $APK_PATH"
+          APK_PATH=$(find v2/mobile/android/app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          if [ -z "$APK_PATH" ]; then
+            APK_PATH=$(find v2/mobile/android/app/build/outputs/apk -name "*.apk" | head -n 1)
+          fi
+          echo "Found compiled Release APK at: $APK_PATH"
           cp "$APK_PATH" Still.apk
           cp "$APK_PATH" v2/web/public/Still.apk
           ls -lh Still.apk

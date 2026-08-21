@@ -11,21 +11,32 @@
 </p>
 
 <p align="center">
-  <a href="https://harixomxsingh.github.io/still/"><img src="https://img.shields.io/badge/🌐_Web_App-Launch_Live-38bdf8?style=for-the-badge" alt="Live App" /></a>
-  <a href="https://github.com/Harixomxsingh/still/releases/download/v2.0.0/Still.apk"><img src="https://img.shields.io/badge/📱_Android_APK-Direct_Download-10b981?style=for-the-badge&logo=android" alt="Download APK" /></a>
-  <a href="https://github.com/Harixomxsingh/still/releases/tag/v2.0.0"><img src="https://img.shields.io/badge/Release-v2.0.0-f59e0b?style=for-the-badge&logo=github" alt="Release" /></a>
-  <a href="https://github.com/Harixomxsingh/still/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-a855f7?style=for-the-badge" alt="License" /></a>
+  <a href="https://github.com/Harixomxsingh/still/releases/download/v2.0.0/Still.apk">
+    <img src="https://img.shields.io/badge/⬇️_DIRECT_DOWNLOAD_APK-Still_v2.0.0_(Android)-10b981?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download APK" />
+  </a>
+  &nbsp;
+  <a href="https://harixomxsingh.github.io/still/">
+    <img src="https://img.shields.io/badge/🌐_LAUNCH_WEB_APP-Still_Online-38bdf8?style=for-the-badge&logo=google-chrome&logoColor=white" height="42" alt="Launch Web App" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Harixomxsingh/still/releases/tag/v2.0.0"><img src="https://img.shields.io/badge/Release-v2.0.0-f59e0b?style=flat-square&logo=github" alt="Release" /></a>
+  <a href="https://github.com/Harixomxsingh/still/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-a855f7?style=flat-square" alt="License" /></a>
+  <img src="https://img.shields.io/badge/Platform-Android_|_Web_|_iOS_PWA-blue?style=flat-square" alt="Platforms" />
+  <img src="https://img.shields.io/badge/Privacy-100%25_Offline_|_0_Trackers-brightgreen?style=flat-square" alt="Privacy" />
 </p>
 
 ---
 
 ## ⚡ Direct Quick Links
 
-| Platform | Link | Description |
+| Platform | Direct Link | Description |
 | :--- | :--- | :--- |
-| 🌐 **Live Web Sanctuary** | [**harixomxsingh.github.io/still**](https://harixomxsingh.github.io/still/) | Run Still instantly in any browser (desktop, iPhone, tablet). |
-| 📱 **Official Android APK** | [**Download Still.apk (v2.0.0)**](https://github.com/Harixomxsingh/still/releases/download/v2.0.0/Still.apk) | Standalone release with background audio and tactile haptics. |
-| 📦 **GitHub Releases** | [**View Release v2.0.0**](https://github.com/Harixomxsingh/still/releases/tag/v2.0.0) | Changelog, asset checksums, and release artifacts. |
+| 📱 **Official Android APK (Direct)** | [⬇️ **Download Still.apk (v2.0.0)**](https://github.com/Harixomxsingh/still/releases/download/v2.0.0/Still.apk) | Standalone installable binary with lock-screen background audio & haptics. |
+| 🌐 **Live Web Sanctuary** | [🌐 **harixomxsingh.github.io/still**](https://harixomxsingh.github.io/still/) | Run Still instantly in any browser (desktop, iPhone, tablet). |
+| 📦 **GitHub Releases** | [🏷️ **View Release v2.0.0**](https://github.com/Harixomxsingh/still/releases/tag/v2.0.0) | Full release notes, APK checksums, and assets. |
+| 🔗 **Repository Raw Mirror** | [📁 **Still.apk Mirror**](https://github.com/Harixomxsingh/still/raw/main/Still.apk) | Secondary direct download link. |
 
 ---
 
@@ -110,9 +121,9 @@ Still is available as a **standalone, zero-friction Android App** (`Still.apk`):
 * **📳 Tactile Haptic Sliders:** Physical vibration feedback when sliding stem levels.
 * **⚡ 1-Click Install:** Download and install in 15 seconds without app store logins or paywalls.
 
-### 📥 Download & Install (15 Seconds):
-1. Tap 👉 **[Download Still.apk (Direct Binary)](https://github.com/Harixomxsingh/still/releases/download/v2.0.0/Still.apk)** on your Android phone.
-2. Tap the downloaded file in your notification bar.
+### 📥 Direct Download & 15-Second Installation:
+1. Tap 👉 **[Download Still.apk (Direct Download)](https://github.com/Harixomxsingh/still/releases/download/v2.0.0/Still.apk)** on your phone.
+2. Tap the downloaded file in your notification bar (or Files app).
 3. If prompted: tap *Settings ➔ Allow from this source*.
 4. Open Still, plug in headphones, and breathe.
 

@@ -11,10 +11,21 @@
 </p>
 
 <p align="center">
-  <a href="https://harixomxsingh.github.io/still/"><img src="https://img.shields.io/badge/🌐_Live_Web_App-Launch_Still-38bdf8?style=for-the-badge" alt="Live App" /></a>
-  <a href="https://github.com/Harixomxsingh/still/raw/main/Still.apk"><img src="https://img.shields.io/badge/📱_Android_App-Download_.APK-10b981?style=for-the-badge&logo=android" alt="Download APK" /></a>
+  <a href="https://harixomxsingh.github.io/still/"><img src="https://img.shields.io/badge/🌐_Web_App-Launch_Live-38bdf8?style=for-the-badge" alt="Live App" /></a>
+  <a href="https://github.com/Harixomxsingh/still/releases/download/v2.0.0/Still.apk"><img src="https://img.shields.io/badge/📱_Android_APK-Direct_Download-10b981?style=for-the-badge&logo=android" alt="Download APK" /></a>
+  <a href="https://github.com/Harixomxsingh/still/releases/tag/v2.0.0"><img src="https://img.shields.io/badge/Release-v2.0.0-f59e0b?style=for-the-badge&logo=github" alt="Release" /></a>
   <a href="https://github.com/Harixomxsingh/still/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-a855f7?style=for-the-badge" alt="License" /></a>
 </p>
+
+---
+
+## ⚡ Direct Quick Links
+
+| Platform | Link | Description |
+| :--- | :--- | :--- |
+| 🌐 **Live Web Sanctuary** | [**harixomxsingh.github.io/still**](https://harixomxsingh.github.io/still/) | Run Still instantly in any browser (desktop, iPhone, tablet). |
+| 📱 **Official Android APK** | [**Download Still.apk (v2.0.0)**](https://github.com/Harixomxsingh/still/releases/download/v2.0.0/Still.apk) | Standalone release with background audio and tactile haptics. |
+| 📦 **GitHub Releases** | [**View Release v2.0.0**](https://github.com/Harixomxsingh/still/releases/tag/v2.0.0) | Changelog, asset checksums, and release artifacts. |
 
 ---
 
@@ -99,7 +110,11 @@ Still is available as a **standalone, zero-friction Android App** (`Still.apk`):
 * **📳 Tactile Haptic Sliders:** Physical vibration feedback when sliding stem levels.
 * **⚡ 1-Click Install:** Download and install in 15 seconds without app store logins or paywalls.
 
-👉 **[Download Still for Android (.apk)](https://github.com/Harixomxsingh/still/raw/main/Still.apk)**
+### 📥 Download & Install (15 Seconds):
+1. Tap 👉 **[Download Still.apk (Direct Binary)](https://github.com/Harixomxsingh/still/releases/download/v2.0.0/Still.apk)** on your Android phone.
+2. Tap the downloaded file in your notification bar.
+3. If prompted: tap *Settings ➔ Allow from this source*.
+4. Open Still, plug in headphones, and breathe.
 
 ---
 
@@ -132,12 +147,12 @@ still/
 │   │   │   └── App.jsx
 │   │   └── package.json
 │   └── mobile/                # Native React Native / Expo Android application
+│       ├── android/           # Native Android project with Gradle & Hermes
 │       ├── src/
 │       │   ├── audio/         # Android MediaSession & Web Audio bridge
 │       │   └── components/    # Mobile Monolith Player, Haptic Sliders, Breathing Orb
 │       ├── app.json
 │       └── package.json
-├── Still.apk                  # Official Standalone Android Build
 ├── index.html                 # Production Web Portal for GitHub Pages
 └── README.md
 ```
@@ -160,13 +175,6 @@ cd v2/mobile
 npm install
 npx expo start
 # Scan the QR code with Expo Go on Android
-```
-
-### 📦 Building Standalone Android APK:
-```bash
-cd v2/mobile
-npm install -g eas-cli
-eas build -p android --profile preview
 ```
 
 ---

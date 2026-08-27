@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BreathingHalo } from './BreathingHalo';
 import { 
-  Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, 
+  Play, Pause, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeX, 
   Sliders, Clock, Mail, Moon, Sun, Leaf, Sparkles, Maximize, Info 
 } from 'lucide-react';
 
@@ -124,29 +124,55 @@ export const MonolithPlayer = ({
           </button>
         </div>
 
-        {/* Master Volume Slider */}
+        {/* Master Volume Slider with 2-Way Hardware Sync & Touch Ergonomics */}
         <div className="volume-container">
           <button 
             className="icon-action-btn" 
-            style={{ width: '28px', height: '28px' }} 
+            style={{ width: '30px', height: '30px', flexShrink: 0 }} 
             onClick={onToggleMute} 
             title="Mute / Unmute (M)"
           >
-            {isMuted || volume === 0 ? (
+            {isMuted || volume <= 0.01 ? (
               <VolumeX className="w-3.5 h-3.5 text-rose-400" />
+            ) : volume < 0.4 ? (
+              <Volume className="w-3.5 h-3.5 text-sky-400" />
+            ) : volume < 0.75 ? (
+              <Volume1 className="w-3.5 h-3.5 text-sky-400" />
             ) : (
-              <Volume2 className="w-3.5 h-3.5" />
+              <Volume2 className="w-3.5 h-3.5 text-sky-400" />
             )}
           </button>
-          <input 
-            type="range" 
-            min="0" 
-            max="1" 
-            step="0.01" 
-            value={isMuted ? 0 : volume} 
-            onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
-            title="Master Volume"
-          />
+          
+          <div style={{ position: 'relative', flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+            <input 
+              type="range" 
+              min="0" 
+              max="1" 
+              step="0.01" 
+              value={isMuted ? 0 : volume} 
+              onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
+              title="Master Volume (Syncs with Android Hardware)"
+              style={{
+                width: '100%',
+                cursor: 'pointer',
+                accentColor: 'var(--accent-primary)',
+              }}
+            />
+          </div>
+
+          <span 
+            style={{ 
+              fontFamily: 'JetBrains Mono, monospace', 
+              fontSize: '10.5px', 
+              color: isMuted || volume <= 0.01 ? '#f43f5e' : 'var(--accent-primary)',
+              minWidth: '32px',
+              textAlign: 'right',
+              fontWeight: 600,
+              userSelect: 'none'
+            }}
+          >
+            {isMuted || volume <= 0.01 ? '0%' : `${Math.round(volume * 100)}%`}
+          </span>
         </div>
 
         {/* Utilities Row */}

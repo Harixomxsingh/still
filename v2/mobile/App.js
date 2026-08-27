@@ -1,11 +1,22 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, View, StatusBar, Platform, SafeAreaView, AppState } from 'react-native';
+import { StyleSheet, View, StatusBar, Platform, SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
 import * as Haptics from 'expo-haptics';
 import * as Notifications from 'expo-notifications';
 import { BackgroundAudioService } from './src/audio/BackgroundAudioService';
 import { MediaNotificationService } from './src/services/MediaNotificationService';
 import { MindfulnessNotificationService } from './src/services/MindfulnessNotificationService';
+
+// Safe defensive loader for native volume manager to prevent crashes in Expo Go
+let VolumeManager = null;
+try {
+  const mod = require('react-native-volume-manager');
+  if (mod && mod.VolumeManager && typeof mod.VolumeManager.getVolume === 'function') {
+    VolumeManager = mod.VolumeManager;
+  }
+} catch (e) {
+  VolumeManager = null;
+}
 
 const LIVE_WEB_APP_URL = 'https://harixomxsingh.github.io/still/';
 
@@ -50,12 +61,38 @@ export default function App() {
     // 2. Initialize autonomous mindfulness reminders (Morning, Midday, Evening)
     MindfulnessNotificationService.init();
 
-    // 3. Listen for Lock Screen and Notification Action Clicks
+    // 3. 2-Way Hardware Volume Sync (active in Standalone APK and when native module is present)
+    let volumeSubscription = null;
+    if (VolumeManager) {
+      try {
+        VolumeManager.getVolume()
+          .then((initialVol) => {
+            if (initialVol && typeof initialVol.volume === 'number') {
+              webViewRef.current?.injectJavaScript(
+                `window.__syncVolume && window.__syncVolume(${initialVol.volume}); true;`
+              );
+            }
+          })
+          .catch(() => {});
+
+        volumeSubscription = VolumeManager.addVolumeListener((result) => {
+          if (result && typeof result.volume === 'number') {
+            webViewRef.current?.injectJavaScript(
+              `window.__syncVolume && window.__syncVolume(${result.volume}); true;`
+            );
+          }
+        });
+      } catch (volErr) {
+        console.log('VolumeManager init note:', volErr);
+      }
+    }
+
+    // 4. Listen for Lock Screen and Notification Action Clicks
     const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
       handleNotificationAction(response.actionIdentifier);
     });
 
-    // 4. Check if app was resumed via notification action
+    // 5. Check if app was resumed via notification action
     Notifications.getLastNotificationResponseAsync().then((response) => {
       if (response && response.actionIdentifier && response.actionIdentifier !== Notifications.DEFAULT_ACTION_IDENTIFIER) {
         handleNotificationAction(response.actionIdentifier);
@@ -64,6 +101,7 @@ export default function App() {
 
     return () => {
       subscription.remove();
+      if (volumeSubscription) volumeSubscription.remove();
       MediaNotificationService.dismiss();
     };
   }, []);
@@ -89,6 +127,17 @@ export default function App() {
           if (data.track) lastActiveTrackRef.current = data.track;
           if (data.isPlaying) {
             MediaNotificationService.showPlaying(data.track);
+          }
+          break;
+
+        case 'SET_HARDWARE_VOLUME':
+          if (typeof data.volume === 'number') {
+            if (VolumeManager) {
+              try {
+                VolumeManager.setVolume(data.volume, { showUI: false });
+              } catch (e) {}
+            }
+            BackgroundAudioService.setVolume(data.volume);
           }
           break;
 

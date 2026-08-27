@@ -139,7 +139,7 @@ export const App = () => {
     } catch (e) {}
   }, [isPlaying, activeTrack]);
 
-  // Expose global bridge handlers for native lockscreen notification buttons
+  // Expose global bridge handlers for native lockscreen notification buttons & 2-way hardware volume sync
   useEffect(() => {
     window.__mediaTogglePlay = () => {
       if (isHomeOpen) handleEnterCalmSpace();
@@ -148,9 +148,19 @@ export const App = () => {
     window.__mediaNextTrack = () => {
       handleNextTrack();
     };
+    window.__syncVolume = (deviceVol) => {
+      if (typeof deviceVol === 'number' && !isNaN(deviceVol)) {
+        const v = Math.max(0, Math.min(1, deviceVol));
+        setVolume(v);
+        if (v > 0.01) setIsMuted(false);
+        else setIsMuted(true);
+        if (engineRef.current) engineRef.current.setMasterVolume(v);
+      }
+    };
     return () => {
       delete window.__mediaTogglePlay;
       delete window.__mediaNextTrack;
+      delete window.__syncVolume;
     };
   }, [isHomeOpen, isPlaying, currentTrackIndex]);
 
@@ -344,20 +354,44 @@ export const App = () => {
   }, [activeTrack, isPlaying, currentTrackIndex, isHomeOpen]);
 
   const handleVolumeChange = (val) => {
-    setVolume(val);
-    if (val > 0) setIsMuted(false);
+    const v = Math.max(0, Math.min(1, val));
+    setVolume(v);
+    if (v > 0.01) setIsMuted(false);
+    else setIsMuted(true);
     if (engineRef.current) {
-      engineRef.current.setMasterVolume(val);
+      engineRef.current.setMasterVolume(v);
     }
+    // Post to native shell to adjust Android hardware device media volume
+    try {
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(JSON.stringify({
+          type: 'SET_HARDWARE_VOLUME',
+          volume: v
+        }));
+      }
+    } catch (e) {}
   };
 
   const handleToggleMute = () => {
     if (isMuted) {
+      const restored = volume > 0.05 ? volume : 0.75;
       setIsMuted(false);
-      if (engineRef.current) engineRef.current.setMasterVolume(volume || 0.75);
+      if (engineRef.current) engineRef.current.setMasterVolume(restored);
+      try {
+        window.ReactNativeWebView?.postMessage(JSON.stringify({
+          type: 'SET_HARDWARE_VOLUME',
+          volume: restored
+        }));
+      } catch (e) {}
     } else {
       setIsMuted(true);
       if (engineRef.current) engineRef.current.setMasterVolume(0.0001);
+      try {
+        window.ReactNativeWebView?.postMessage(JSON.stringify({
+          type: 'SET_HARDWARE_VOLUME',
+          volume: 0
+        }));
+      } catch (e) {}
     }
   };
 

@@ -1,0 +1,84 @@
+{
+  "version": "1.0.0",
+  "morning": [
+    {
+      "id": "m1",
+      "title": "🌅 Still • Morning Clarity",
+      "body": "Before the world demands your attention, give yourself 60 seconds of stillness."
+    },
+    {
+      "id": "m2",
+      "title": "🌅 Still • A Quiet Beginning",
+      "body": "You don’t have to rush into the noise. Take three deep breaths and begin with peace."
+    },
+    {
+      "id": "m3",
+      "title": "🌅 Still • Daily Intention",
+      "body": "Peace is not the absence of chaos; it is stillness in the middle of it. 432 Hz awaits."
+    },
+    {
+      "id": "m4",
+      "title": "🌅 Still • Ground Your Mind",
+      "body": "Notice the quiet before the day begins. Step into your calm sanctuary."
+    },
+    {
+      "id": "m5",
+      "title": "🌅 Still • Mindful Arrival",
+      "body": "Today, choose focus over hurry. Ground your nervous system with Still."
+    }
+  ],
+  "afternoon": [
+    {
+      "id": "a1",
+      "title": "☀️ Still • 2-Minute Reset",
+      "body": "Unclench your jaw. Drop your shoulders. Inhale for 4s, hold for 2s, exhale for 4s."
+    },
+    {
+      "id": "a2",
+      "title": "☀️ Still • Acoustic Shield",
+      "body": "Feeling overwhelmed by the room's noise? Let 1/f² Brownian sound mask the chaos."
+    },
+    {
+      "id": "a3",
+      "title": "☀️ Still • Midday Pause",
+      "body": "Step away from the screen for just 90 seconds. Your mind needs silence to recharge."
+    },
+    {
+      "id": "a4",
+      "title": "☀️ Still • Reset Your Pace",
+      "body": "When everything feels urgent, stillness is your greatest superpower."
+    },
+    {
+      "id": "a5",
+      "title": "☀️ Still • Deep Focus Block",
+      "body": "Put on your headphones. Block distractions with alpha wave soundscapes."
+    }
+  ],
+  "evening": [
+    {
+      "id": "e1",
+      "title": "🌙 Still • Evening Sanctuary",
+      "body": "The day is finished. Let go of whatever you couldn’t complete. Rest well."
+    },
+    {
+      "id": "e2",
+      "title": "🌙 Still • Wind-Down Space",
+      "body": "Dim the lights. Settle into 432 Hz Solfeggio soundscapes for deep delta sleep."
+    },
+    {
+      "id": "e3",
+      "title": "🌙 Still • Release the Day",
+      "body": "You don't need to carry today's thoughts into tomorrow. Breathe and let go."
+    },
+    {
+      "id": "e4",
+      "title": "🌙 Still • Night Silence",
+      "body": "Allow your nervous system to return to baseline. A peaceful night begins with Still."
+    },
+    {
+      "id": "e5",
+      "title": "🌙 Still • Restorative Peace",
+      "body": "Set a gentle sleep timer, close your eyes, and let deep ambient tones guide you to sleep."
+    }
+  ]
+}

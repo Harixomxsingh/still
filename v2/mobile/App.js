@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, View, StatusBar, Platform, SafeAreaView } from 'react-native';
+import { StyleSheet, View, StatusBar, Platform, SafeAreaView, AppState } from 'react-native';
 import { WebView } from 'react-native-webview';
 import * as Haptics from 'expo-haptics';
 import * as Notifications from 'expo-notifications';
 import { BackgroundAudioService } from './src/audio/BackgroundAudioService';
 import { MediaNotificationService } from './src/services/MediaNotificationService';
+import { MindfulnessNotificationService } from './src/services/MindfulnessNotificationService';
 
 const LIVE_WEB_APP_URL = 'https://harixomxsingh.github.io/still/';
 
@@ -14,22 +15,50 @@ export default function App() {
   // Timestamp and native platform flag to guarantee instant live sync and environment detection
   const [launchUrl] = useState(() => `${LIVE_WEB_APP_URL}?platform=android&_live=${Date.now()}`);
 
+  const lastActiveTrackRef = useRef(null);
+
+  const handleNotificationAction = async (actionIdentifier) => {
+    console.log('⚡ LockScreen/Background Action Triggered:', actionIdentifier);
+    if (actionIdentifier === 'ACTION_PAUSE') {
+      await BackgroundAudioService.pauseNativeSession();
+      await MediaNotificationService.showPaused(lastActiveTrackRef.current);
+      webViewRef.current?.injectJavaScript(
+        'window.__mediaTogglePlay && window.__mediaTogglePlay(); true;'
+      );
+    } else if (actionIdentifier === 'ACTION_PLAY') {
+      await BackgroundAudioService.startNativeSession();
+      await MediaNotificationService.showPlaying(lastActiveTrackRef.current);
+      webViewRef.current?.injectJavaScript(
+        'window.__mediaTogglePlay && window.__mediaTogglePlay(); true;'
+      );
+    } else if (actionIdentifier === 'ACTION_NEXT') {
+      webViewRef.current?.injectJavaScript(
+        'window.__mediaNextTrack && window.__mediaNextTrack(); true;'
+      );
+    } else {
+      webViewRef.current?.injectJavaScript(
+        'window.__mediaTogglePlay && window.__mediaTogglePlay(); true;'
+      );
+    }
+  };
+
   useEffect(() => {
-    // Initialize native background audio driver & notification channels
+    // 1. Initialize native background audio driver & notification channels
     BackgroundAudioService.init();
     MediaNotificationService.setup();
 
-    // Listen for Lock Screen and Notification Shade Action Clicks
+    // 2. Initialize autonomous mindfulness reminders (Morning, Midday, Evening)
+    MindfulnessNotificationService.init();
+
+    // 3. Listen for Lock Screen and Notification Action Clicks
     const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
-      const actionIdentifier = response.actionIdentifier;
-      if (actionIdentifier === 'ACTION_PAUSE' || actionIdentifier === 'ACTION_PLAY') {
-        webViewRef.current?.injectJavaScript(
-          'window.__mediaTogglePlay && window.__mediaTogglePlay(); true;'
-        );
-      } else if (actionIdentifier === 'ACTION_NEXT') {
-        webViewRef.current?.injectJavaScript(
-          'window.__mediaNextTrack && window.__mediaNextTrack(); true;'
-        );
+      handleNotificationAction(response.actionIdentifier);
+    });
+
+    // 4. Check if app was resumed via notification action
+    Notifications.getLastNotificationResponseAsync().then((response) => {
+      if (response && response.actionIdentifier && response.actionIdentifier !== Notifications.DEFAULT_ACTION_IDENTIFIER) {
+        handleNotificationAction(response.actionIdentifier);
       }
     });
 
@@ -45,16 +74,19 @@ export default function App() {
       
       switch (data.type) {
         case 'AUDIO_PLAY':
+          if (data.track) lastActiveTrackRef.current = data.track;
           BackgroundAudioService.startNativeSession();
           MediaNotificationService.showPlaying(data.track);
           break;
 
         case 'AUDIO_PAUSE':
+          if (data.track) lastActiveTrackRef.current = data.track;
           BackgroundAudioService.pauseNativeSession();
           MediaNotificationService.showPaused(data.track);
           break;
 
         case 'TRACK_CHANGE':
+          if (data.track) lastActiveTrackRef.current = data.track;
           if (data.isPlaying) {
             MediaNotificationService.showPlaying(data.track);
           }
@@ -95,7 +127,10 @@ export default function App() {
       />
       
       <WebView
-        ref={webViewRef}
+        ref={(ref) => {
+          webViewRef.current = ref;
+          global.__stillWebviewRef = ref;
+        }}
         source={{ uri: launchUrl }}
         style={styles.webview}
         allowsInlineMediaPlayback={true}

@@ -1,17 +1,47 @@
 import * as Notifications from 'expo-notifications';
+import * as TaskManager from 'expo-task-manager';
 import { Platform } from 'react-native';
 
-// Configure immediate display
+export const BACKGROUND_NOTIFICATION_TASK = 'STILL_BACKGROUND_NOTIFICATION_TASK';
+
+// Define the background execution task for Android Lock Screen & Notification Shade buttons
+try {
+  TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, async ({ data, error }) => {
+    if (error) return;
+    if (data) {
+      const actionIdentifier = data.actionIdentifier;
+      console.log('⚡ Background Media Action:', actionIdentifier);
+      if (global.__stillWebviewRef) {
+        if (actionIdentifier === 'ACTION_PAUSE' || actionIdentifier === 'ACTION_PLAY') {
+          global.__stillWebviewRef.injectJavaScript(
+            'window.__mediaTogglePlay && window.__mediaTogglePlay(); true;'
+          );
+        } else if (actionIdentifier === 'ACTION_NEXT') {
+          global.__stillWebviewRef.injectJavaScript(
+            'window.__mediaNextTrack && window.__mediaNextTrack(); true;'
+          );
+        }
+      }
+    }
+  });
+} catch (e) {}
+
+// Configure notification behavior: media player controls stay completely silent (no sound, no heads-up popup banner)
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
+  handleNotification: async (notification) => {
+    const isMedia = notification?.request?.content?.data?.action === 'MEDIA_PLAYER';
+    return {
+      shouldShowAlert: true,
+      shouldShowBanner: !isMedia,
+      shouldShowList: true,
+      shouldPlaySound: !isMedia,
+      shouldSetBadge: false,
+    };
+  },
 });
 
 const MEDIA_NOTIFICATION_ID = 'still_media_player';
-const CHANNEL_ID = 'still_media_playback';
+const CHANNEL_ID = 'still_media_playback_silent';
 
 let isChannelConfigured = false;
 
@@ -21,9 +51,10 @@ export class MediaNotificationService {
       try {
         await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
           name: 'Still Media Playback',
-          importance: Notifications.AndroidImportance.HIGH,
-          vibrationPattern: [0],
+          importance: Notifications.AndroidImportance.LOW,
+          sound: null,
           enableVibrate: false,
+          vibrationPattern: [0],
           showBadge: false,
           lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
         });
@@ -32,12 +63,12 @@ export class MediaNotificationService {
           {
             identifier: 'ACTION_PAUSE',
             buttonTitle: '⏸️ Pause',
-            options: { opensAppToForeground: false },
+            options: { opensAppToForeground: false, isAuthenticationRequired: false },
           },
           {
             identifier: 'ACTION_NEXT',
             buttonTitle: '⏭️ Next',
-            options: { opensAppToForeground: false },
+            options: { opensAppToForeground: false, isAuthenticationRequired: false },
           },
         ]);
 
@@ -45,14 +76,19 @@ export class MediaNotificationService {
           {
             identifier: 'ACTION_PLAY',
             buttonTitle: '▶️ Play',
-            options: { opensAppToForeground: false },
+            options: { opensAppToForeground: false, isAuthenticationRequired: false },
           },
           {
             identifier: 'ACTION_NEXT',
             buttonTitle: '⏭️ Next',
-            options: { opensAppToForeground: false },
+            options: { opensAppToForeground: false, isAuthenticationRequired: false },
           },
         ]);
+
+        // Register background task with Notifications
+        try {
+          await Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
+        } catch (taskErr) {}
 
         isChannelConfigured = true;
       } catch (e) {
@@ -77,9 +113,12 @@ export class MediaNotificationService {
           sticky: true,
           autoDismiss: false,
           color: '#38bdf8',
+          sound: false,
           categoryIdentifier: 'still_media_playing',
         },
-        trigger: null,
+        trigger: {
+          channelId: CHANNEL_ID,
+        },
       });
     } catch (e) {
       console.log('Media notification show note:', e);
@@ -101,9 +140,12 @@ export class MediaNotificationService {
           sticky: false,
           autoDismiss: true,
           color: '#64748b',
+          sound: false,
           categoryIdentifier: 'still_media_paused',
         },
-        trigger: null,
+        trigger: {
+          channelId: CHANNEL_ID,
+        },
       });
     } catch (e) {
       console.log('Media notification pause note:', e);

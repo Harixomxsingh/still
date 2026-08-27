@@ -297,10 +297,30 @@ export class AudioEngine {
     if (typeof window === 'undefined') return;
     try {
       if (!this.mediaAnchor) {
-        this.mediaAnchor = new Audio(SILENT_AUDIO_URI);
+        this.mediaAnchor = document.createElement('audio');
         this.mediaAnchor.loop = true;
-        this.mediaAnchor.volume = 0.05;
+        this.mediaAnchor.volume = 0.01;
       }
+
+      // Connect continuous audio stream so Android OS recognizes an ongoing media session in background
+      if (this.ctx && !this.mediaAnchor.srcObject && this.ctx.createMediaStreamDestination) {
+        try {
+          const dest = this.ctx.createMediaStreamDestination();
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.frequency.value = 1; // 1Hz sub-audible carrier
+          gain.gain.value = 0.0001; // Inaudible
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start();
+          this.mediaAnchor.srcObject = dest.stream;
+        } catch (streamErr) {
+          this.mediaAnchor.src = SILENT_AUDIO_URI;
+        }
+      } else if (!this.mediaAnchor.src && !this.mediaAnchor.srcObject) {
+        this.mediaAnchor.src = SILENT_AUDIO_URI;
+      }
+
       this.mediaAnchor.play().catch(() => {});
     } catch (e) {}
   }

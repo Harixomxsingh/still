@@ -51,4 +51,12 @@ export class BackgroundAudioService {
       }
     } catch (e) {}
   }
+
+  static async setVolume(val) {
+    try {
+      if (nativeSound) {
+        await nativeSound.setVolumeAsync(Math.max(0, Math.min(1, val)));
+      }
+    } catch (e) {}
+  }
 }

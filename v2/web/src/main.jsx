@@ -32,8 +32,8 @@ class ErrorBoundary extends React.Component {
           textAlign: 'center'
         }}>
           <h2 style={{ fontSize: '20px', marginBottom: '8px', color: '#38bdf8' }}>Still Sanctuary</h2>
-          <p style={{ fontSize: '13px', color: '#94a3b8', maxWidth: '300px', marginBottom: '16px' }}>
-            A momentary refresh is needed.
+          <p style={{ fontSize: '12px', color: '#f43f5e', maxWidth: '340px', marginBottom: '16px', wordBreak: 'break-word', fontFamily: 'monospace' }}>
+            {this.state.error?.toString() || 'A momentary refresh is needed.'}
           </p>
           <button 
             onClick={() => window.location.reload()}

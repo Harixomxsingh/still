@@ -8,20 +8,8 @@ export const BACKGROUND_NOTIFICATION_TASK = 'STILL_BACKGROUND_NOTIFICATION_TASK'
 try {
   TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, async ({ data, error }) => {
     if (error) return;
-    if (data) {
-      const actionIdentifier = data.actionIdentifier;
-      console.log('⚡ Background Media Action:', actionIdentifier);
-      if (global.__stillWebviewRef) {
-        if (actionIdentifier === 'ACTION_PAUSE' || actionIdentifier === 'ACTION_PLAY') {
-          global.__stillWebviewRef.injectJavaScript(
-            'window.__mediaTogglePlay && window.__mediaTogglePlay(); true;'
-          );
-        } else if (actionIdentifier === 'ACTION_NEXT') {
-          global.__stillWebviewRef.injectJavaScript(
-            'window.__mediaNextTrack && window.__mediaNextTrack(); true;'
-          );
-        }
-      }
+    if (data && global.__stillNotificationActionHandler) {
+      global.__stillNotificationActionHandler(data.actionIdentifier);
     }
   });
 } catch (e) {}
@@ -41,7 +29,7 @@ Notifications.setNotificationHandler({
 });
 
 const MEDIA_NOTIFICATION_ID = 'still_media_player';
-const CHANNEL_ID = 'still_media_playback_silent';
+const CHANNEL_ID = 'still_media_playback_v3';
 
 let isChannelConfigured = false;
 
@@ -49,9 +37,10 @@ export class MediaNotificationService {
   static async setup() {
     if (Platform.OS === 'android' && !isChannelConfigured) {
       try {
+        // High importance without vibration ensures buttons are visible on the 1st single swipe down
         await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
           name: 'Still Media Playback',
-          importance: Notifications.AndroidImportance.LOW,
+          importance: Notifications.AndroidImportance.HIGH,
           sound: null,
           enableVibrate: false,
           vibrationPattern: [0],
@@ -101,7 +90,7 @@ export class MediaNotificationService {
     if (Platform.OS !== 'android') return;
     try {
       await this.setup();
-      const trackTitle = track?.title || 'Ambient Calm Space';
+      const trackTitle = track?.title || 'Alpha Wave Sanctuary';
       const trackScience = track?.science ? track.science.split('•')[0].trim() : '432 Hz Solfeggio';
 
       await Notifications.scheduleNotificationAsync({
@@ -129,7 +118,7 @@ export class MediaNotificationService {
     if (Platform.OS !== 'android') return;
     try {
       await this.setup();
-      const trackTitle = track?.title || 'Ambient Calm Space';
+      const trackTitle = track?.title || 'Alpha Wave Sanctuary';
 
       await Notifications.scheduleNotificationAsync({
         identifier: MEDIA_NOTIFICATION_ID,

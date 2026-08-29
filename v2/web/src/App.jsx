@@ -98,10 +98,20 @@ export const App = () => {
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [isMixerOpen, setIsMixerOpen] = useState(false);
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+  // Detect if running inside the React Native mobile shell
+  const isNativeApp = typeof window !== 'undefined' && (
+    !!window.ReactNativeWebView ||
+    window.location.search.includes('platform=android') ||
+    window.navigator.userAgent.includes('StillAndroidApp')
+  );
 
   // Initialize Audio Engine
   useEffect(() => {
     engineRef.current = new AudioEngine();
+    if (isNativeApp) {
+      // In native mobile app, sound is driven by native expo-av driver for 100% lockscreen control
+      engineRef.current.setMasterVolume(0);
+    }
 
     // 2-minute fallback auto-dismiss for Welcome card
     const timer = setTimeout(() => {
@@ -133,11 +143,12 @@ export const App = () => {
       if (window.ReactNativeWebView) {
         window.ReactNativeWebView.postMessage(JSON.stringify({ 
           type: isPlaying ? 'AUDIO_PLAY' : 'AUDIO_PAUSE',
-          track: activeTrack 
+          track: activeTrack,
+          index: currentTrackIndex
         }));
       }
     } catch (e) {}
-  }, [isPlaying, activeTrack]);
+  }, [isPlaying, activeTrack, currentTrackIndex]);
 
   // Expose global bridge handlers for native lockscreen notification buttons & 2-way hardware volume sync
   useEffect(() => {
@@ -147,6 +158,11 @@ export const App = () => {
     };
     window.__mediaNextTrack = () => {
       handleNextTrack();
+    };
+    window.__mediaSelectTrack = (idx) => {
+      if (typeof idx === 'number' && idx >= 0 && idx < SOUNDSCAPES.length) {
+        handleSelectTrack(idx);
+      }
     };
     window.__syncVolume = (deviceVol) => {
       if (typeof deviceVol === 'number' && !isNaN(deviceVol)) {
@@ -160,6 +176,7 @@ export const App = () => {
     return () => {
       delete window.__mediaTogglePlay;
       delete window.__mediaNextTrack;
+      delete window.__mediaSelectTrack;
       delete window.__syncVolume;
     };
   }, [isHomeOpen, isPlaying, currentTrackIndex]);
@@ -272,8 +289,7 @@ export const App = () => {
     if (!engineRef.current) return;
 
     if (!isPlaying) {
-      engineRef.current.isPlaying = true;
-      engineRef.current.applySoundscape(SOUNDSCAPES[currentTrackIndex], 2.0);
+      engineRef.current.resume();
       setIsPlaying(true);
     } else {
       engineRef.current.pause();

@@ -297,30 +297,22 @@ export class AudioEngine {
     if (typeof window === 'undefined') return;
     try {
       if (!this.mediaAnchor) {
-        this.mediaAnchor = document.createElement('audio');
-        this.mediaAnchor.loop = true;
-        this.mediaAnchor.volume = 0.01;
-      }
-
-      // Connect continuous audio stream so Android OS recognizes an ongoing media session in background
-      if (this.ctx && !this.mediaAnchor.srcObject && this.ctx.createMediaStreamDestination) {
-        try {
-          const dest = this.ctx.createMediaStreamDestination();
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.frequency.value = 1; // 1Hz sub-audible carrier
-          gain.gain.value = 0.0001; // Inaudible
-          osc.connect(gain);
-          gain.connect(dest);
-          osc.start();
-          this.mediaAnchor.srcObject = dest.stream;
-        } catch (streamErr) {
-          this.mediaAnchor.src = SILENT_AUDIO_URI;
+        let existing = document.getElementById('still_media_anchor');
+        if (existing) {
+          this.mediaAnchor = existing;
+        } else {
+          this.mediaAnchor = document.createElement('audio');
+          this.mediaAnchor.id = 'still_media_anchor';
+          this.mediaAnchor.src = './ambient_carrier.wav';
+          this.mediaAnchor.loop = true;
+          this.mediaAnchor.volume = 0.01;
+          this.mediaAnchor.setAttribute('playsinline', 'true');
+          this.mediaAnchor.setAttribute('webkit-playsinline', 'true');
+          if (document.body) {
+            document.body.appendChild(this.mediaAnchor);
+          }
         }
-      } else if (!this.mediaAnchor.src && !this.mediaAnchor.srcObject) {
-        this.mediaAnchor.src = SILENT_AUDIO_URI;
       }
-
       this.mediaAnchor.play().catch(() => {});
     } catch (e) {}
   }
@@ -337,20 +329,30 @@ export class AudioEngine {
     this.isPlaying = false;
     this._pauseMediaAnchor();
     if (!this.ctx) return;
-    const now = this.ctx.currentTime;
-    this.brownGain.gain.setTargetAtTime(0.0001, now, 0.8);
-    this.rainGain.gain.setTargetAtTime(0.0001, now, 0.8);
-    this.binauralGain.gain.setTargetAtTime(0.0001, now, 0.8);
-    this.padNodes.forEach(node => {
-      node.gainNode.gain.setTargetAtTime(0.0001, now, 0.8);
-    });
+    try {
+      if (this.masterGain) {
+        this.masterGain.gain.setValueAtTime(0.00001, this.ctx.currentTime);
+      }
+      this.brownGain?.gain.setValueAtTime(0.00001, this.ctx.currentTime);
+      this.rainGain?.gain.setValueAtTime(0.00001, this.ctx.currentTime);
+      this.binauralGain?.gain.setValueAtTime(0.00001, this.ctx.currentTime);
+      this.pianoMasterGain?.gain.setValueAtTime(0.00001, this.ctx.currentTime);
+      this.ctx.suspend();
+    } catch (e) {}
   }
 
   resume() {
     this.isPlaying = true;
     this._startMediaAnchor();
+    if (!this.ctx) return;
+    try {
+      this.ctx.resume();
+      if (this.masterGain) {
+        this.masterGain.gain.setValueAtTime(0.75, this.ctx.currentTime);
+      }
+    } catch (e) {}
     if (this.currentTrack) {
-      this.applySoundscape(this.currentTrack, 2.0);
+      this.applySoundscape(this.currentTrack, 1.5);
     }
   }
 }

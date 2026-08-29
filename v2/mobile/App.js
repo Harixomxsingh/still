@@ -6,6 +6,7 @@ import * as Notifications from 'expo-notifications';
 import { BackgroundAudioService } from './src/audio/BackgroundAudioService';
 import { MediaNotificationService } from './src/services/MediaNotificationService';
 import { MindfulnessNotificationService } from './src/services/MindfulnessNotificationService';
+import { SOUNDSCAPES } from './src/shared/soundscapes';
 
 // Safe defensive loader for native volume manager to prevent crashes in Expo Go
 let VolumeManager = null;
@@ -23,28 +24,31 @@ const LIVE_WEB_APP_URL = 'https://harixomxsingh.github.io/still/';
 export default function App() {
   const webViewRef = useRef(null);
   const [statusBarBg, setStatusBarBg] = useState('#05070d');
-  // Timestamp and native platform flag to guarantee instant live sync and environment detection
   const [launchUrl] = useState(() => `${LIVE_WEB_APP_URL}?platform=android&_live=${Date.now()}`);
 
-  const lastActiveTrackRef = useRef(null);
+  const currentTrackIndexRef = useRef(0);
 
   const handleNotificationAction = async (actionIdentifier) => {
-    console.log('⚡ LockScreen/Background Action Triggered:', actionIdentifier);
+    console.log('⚡ Native Action Triggered:', actionIdentifier);
     if (actionIdentifier === 'ACTION_PAUSE') {
-      await BackgroundAudioService.pauseNativeSession();
-      await MediaNotificationService.showPaused(lastActiveTrackRef.current);
+      await BackgroundAudioService.pause();
+      await MediaNotificationService.showPaused(SOUNDSCAPES[currentTrackIndexRef.current]);
       webViewRef.current?.injectJavaScript(
         'window.__mediaTogglePlay && window.__mediaTogglePlay(); true;'
       );
     } else if (actionIdentifier === 'ACTION_PLAY') {
-      await BackgroundAudioService.startNativeSession();
-      await MediaNotificationService.showPlaying(lastActiveTrackRef.current);
+      await BackgroundAudioService.resume();
+      await MediaNotificationService.showPlaying(SOUNDSCAPES[currentTrackIndexRef.current]);
       webViewRef.current?.injectJavaScript(
         'window.__mediaTogglePlay && window.__mediaTogglePlay(); true;'
       );
     } else if (actionIdentifier === 'ACTION_NEXT') {
+      currentTrackIndexRef.current = (currentTrackIndexRef.current + 1) % SOUNDSCAPES.length;
+      const nextTrack = SOUNDSCAPES[currentTrackIndexRef.current];
+      await BackgroundAudioService.playTrack(nextTrack);
+      await MediaNotificationService.showPlaying(nextTrack);
       webViewRef.current?.injectJavaScript(
-        'window.__mediaNextTrack && window.__mediaNextTrack(); true;'
+        `window.__mediaSelectTrack && window.__mediaSelectTrack(${currentTrackIndexRef.current}); true;`
       );
     } else {
       webViewRef.current?.injectJavaScript(
@@ -54,6 +58,8 @@ export default function App() {
   };
 
   useEffect(() => {
+    global.__stillNotificationActionHandler = handleNotificationAction;
+
     // 1. Initialize native background audio driver & notification channels
     BackgroundAudioService.init();
     MediaNotificationService.setup();
@@ -61,7 +67,7 @@ export default function App() {
     // 2. Initialize autonomous mindfulness reminders (Morning, Midday, Evening)
     MindfulnessNotificationService.init();
 
-    // 3. 2-Way Hardware Volume Sync (active in Standalone APK and when native module is present)
+    // 3. 2-Way Hardware Volume Sync
     let volumeSubscription = null;
     if (VolumeManager) {
       try {
@@ -112,21 +118,25 @@ export default function App() {
       
       switch (data.type) {
         case 'AUDIO_PLAY':
-          if (data.track) lastActiveTrackRef.current = data.track;
-          BackgroundAudioService.startNativeSession();
-          MediaNotificationService.showPlaying(data.track);
+          if (typeof data.index === 'number') currentTrackIndexRef.current = data.index;
+          const playTrackObj = data.track || SOUNDSCAPES[currentTrackIndexRef.current];
+          BackgroundAudioService.playTrack(playTrackObj);
+          MediaNotificationService.showPlaying(playTrackObj);
           break;
 
         case 'AUDIO_PAUSE':
-          if (data.track) lastActiveTrackRef.current = data.track;
-          BackgroundAudioService.pauseNativeSession();
-          MediaNotificationService.showPaused(data.track);
+          if (typeof data.index === 'number') currentTrackIndexRef.current = data.index;
+          const pauseTrackObj = data.track || SOUNDSCAPES[currentTrackIndexRef.current];
+          BackgroundAudioService.pause();
+          MediaNotificationService.showPaused(pauseTrackObj);
           break;
 
         case 'TRACK_CHANGE':
-          if (data.track) lastActiveTrackRef.current = data.track;
+          if (typeof data.index === 'number') currentTrackIndexRef.current = data.index;
+          const changeTrackObj = data.track || SOUNDSCAPES[currentTrackIndexRef.current];
           if (data.isPlaying) {
-            MediaNotificationService.showPlaying(data.track);
+            BackgroundAudioService.playTrack(changeTrackObj);
+            MediaNotificationService.showPlaying(changeTrackObj);
           }
           break;
 

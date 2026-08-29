@@ -86,6 +86,21 @@ export default function App() {
       });
     }
 
+    // 5. Version Update Arrival Broadcast Notification
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: '✨ Still Sanctuary v2.1.1 Update is Live!',
+        body: 'Compounding mindfulness rewards (5m–80m), calm analytics, and notification sovereignty are now active. Tap to enter.',
+        data: { type: 'APP_UPDATE_NOTIFICATION' },
+        sound: 'default',
+        color: '#38bdf8',
+        priority: Notifications.AndroidNotificationPriority.MAX,
+      },
+      trigger: {
+        channelId: 'still_milestone_channel',
+      },
+    }).catch(() => {});
+
     return () => {
       if (volumeSubscription) volumeSubscription.remove();
       MediaNotificationService.dismiss();

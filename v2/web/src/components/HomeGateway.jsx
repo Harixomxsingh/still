@@ -179,7 +179,7 @@ export const HomeGateway = ({
             </>
           )}
           <span>&bull;</span>
-          <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.0.0</span>
+          <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.1.1</span>
         </div>
 
       </div>

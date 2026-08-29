@@ -3,7 +3,7 @@ import React from 'react';
 export const DownloadModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
-  const APK_DOWNLOAD_URL = "https://github.com/Harixomxsingh/still/releases/download/v2.0.0/Still.apk";
+  const APK_DOWNLOAD_URL = "https://github.com/Harixomxsingh/still/releases/download/v2.1.1/Still.apk";
 
   return (
     <div className="modal-backdrop is-open" onClick={onClose}>
@@ -69,7 +69,7 @@ export const DownloadModal = ({ isOpen, onClose }) => {
 
           {/* GitHub Release Mirror */}
           <a
-            href="https://github.com/Harixomxsingh/still/releases/tag/v2.0.0"
+            href="https://github.com/Harixomxsingh/still/releases/tag/v2.1.1"
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -84,7 +84,7 @@ export const DownloadModal = ({ isOpen, onClose }) => {
             }}
           >
             <i className="fa-brands fa-github"></i>
-            <span>View Release on GitHub (v2.0.0)</span>
+            <span>View Release on GitHub (v2.1.1)</span>
           </a>
         </div>
 

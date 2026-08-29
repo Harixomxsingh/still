@@ -113,11 +113,11 @@ export const App = () => {
       if (res.ok) {
         const data = await res.json();
         setUpdateInfo(data);
-        if (data.version && data.version !== '2.0.0') {
+        if (data.version && data.version !== '2.1.1') {
           setUpdateStatus(`New update v${data.version} available!`);
           setIsUpdateModalOpen(true);
         } else {
-          setUpdateStatus('You are running the latest version (v2.1.0)');
+          setUpdateStatus('You are running the latest version (v2.1.1)');
         }
       } else {
         setUpdateStatus('Latest version installed');

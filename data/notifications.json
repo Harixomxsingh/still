@@ -1,5 +1,10 @@
 {
-  "version": "1.0.0",
+  "version": "2.1.1",
+  "announcement": {
+    "id": "update_v211_broadcast",
+    "title": "✨ Still Sanctuary v2.1.1 Update is Live!",
+    "body": "Compounding mindfulness rewards (5m–80m), calm analytics, and notification sovereignty are now active. Tap to enter your sanctuary."
+  },
   "morning": [
     {
       "id": "m1",

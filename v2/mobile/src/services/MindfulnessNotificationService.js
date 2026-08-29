@@ -92,6 +92,22 @@ export class MindfulnessNotificationService {
         if (data && data.morning && data.afternoon && data.evening) {
           cachedPrompts = data;
         }
+        if (data && data.announcement && data.announcement.id) {
+          await Notifications.scheduleNotificationAsync({
+            identifier: data.announcement.id,
+            content: {
+              title: data.announcement.title,
+              body: data.announcement.body,
+              data: { action: 'ANNOUNCEMENT', announcementId: data.announcement.id },
+              color: '#38bdf8',
+              sound: 'default',
+              priority: Notifications.AndroidNotificationPriority.MAX,
+            },
+            trigger: {
+              channelId: MINDFULNESS_CHANNEL_ID,
+            },
+          }).catch(() => {});
+        }
       }
     } catch (e) {
       // Offline fallback

@@ -175,6 +175,25 @@ export default function App() {
           }
           break;
 
+        case 'APP_UPDATE_AVAILABLE':
+          console.log('✨ Broadcasting App Update Notification to user:', data.version);
+          Notifications.scheduleNotificationAsync({
+            content: {
+              title: data.title || '✨ Still Sanctuary v2.1.1 Update is Live!',
+              body: data.body || 'Compounding mindfulness rewards (5m–80m), calm analytics, and notification sovereignty are now active. Tap to enter.',
+              data: { action: 'UPDATE' },
+              sound: 'default',
+              color: '#38bdf8',
+              priority: Notifications.AndroidNotificationPriority.MAX,
+            },
+            trigger: {
+              channelId: 'still_milestone_channel',
+            },
+          }).catch((err) => {
+            console.log('Update notification note:', err);
+          });
+          break;
+
         case 'THEME_CHANGE':
           if (data.bg) {
             setStatusBarBg(data.bg);

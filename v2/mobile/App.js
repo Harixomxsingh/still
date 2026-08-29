@@ -6,7 +6,7 @@ import * as Notifications from 'expo-notifications';
 import { BackgroundAudioService } from './src/audio/BackgroundAudioService';
 import { MediaNotificationService } from './src/services/MediaNotificationService';
 import { MindfulnessNotificationService } from './src/services/MindfulnessNotificationService';
-import { SOUNDSCAPES } from './src/shared/soundscapes';
+import { WEB_APP_HTML } from './src/assets/webAppBundle';
 
 // Safe defensive loader for native volume manager to prevent crashes in Expo Go
 let VolumeManager = null;
@@ -19,48 +19,28 @@ try {
   VolumeManager = null;
 }
 
-const LIVE_WEB_APP_URL = 'https://harixomxsingh.github.io/still/';
+// Configure notification behavior to show drop-down heads-up banner & sound in foreground & background
+Notifications.setNotificationHandler({
+  handleNotification: async (notification) => {
+    return {
+      shouldShowAlert: true,
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    };
+  },
+});
 
 export default function App() {
   const webViewRef = useRef(null);
   const [statusBarBg, setStatusBarBg] = useState('#05070d');
-  const [launchUrl] = useState(() => `${LIVE_WEB_APP_URL}?platform=android&_live=${Date.now()}`);
-
-  const currentTrackIndexRef = useRef(0);
-
-  const handleNotificationAction = async (actionIdentifier) => {
-    console.log('⚡ Native Action Triggered:', actionIdentifier);
-    if (actionIdentifier === 'ACTION_PAUSE') {
-      await BackgroundAudioService.pause();
-      await MediaNotificationService.showPaused(SOUNDSCAPES[currentTrackIndexRef.current]);
-      webViewRef.current?.injectJavaScript(
-        'window.__mediaTogglePlay && window.__mediaTogglePlay(); true;'
-      );
-    } else if (actionIdentifier === 'ACTION_PLAY') {
-      await BackgroundAudioService.resume();
-      await MediaNotificationService.showPlaying(SOUNDSCAPES[currentTrackIndexRef.current]);
-      webViewRef.current?.injectJavaScript(
-        'window.__mediaTogglePlay && window.__mediaTogglePlay(); true;'
-      );
-    } else if (actionIdentifier === 'ACTION_NEXT') {
-      currentTrackIndexRef.current = (currentTrackIndexRef.current + 1) % SOUNDSCAPES.length;
-      const nextTrack = SOUNDSCAPES[currentTrackIndexRef.current];
-      await BackgroundAudioService.playTrack(nextTrack);
-      await MediaNotificationService.showPlaying(nextTrack);
-      webViewRef.current?.injectJavaScript(
-        `window.__mediaSelectTrack && window.__mediaSelectTrack(${currentTrackIndexRef.current}); true;`
-      );
-    } else {
-      webViewRef.current?.injectJavaScript(
-        'window.__mediaTogglePlay && window.__mediaTogglePlay(); true;'
-      );
-    }
-  };
 
   useEffect(() => {
-    global.__stillNotificationActionHandler = handleNotificationAction;
+    // 0. Request Notification Permissions on Android & iOS
+    Notifications.requestPermissionsAsync().catch(() => {});
 
-    // 1. Initialize native background audio driver & notification channels
+    // 1. Initialize native background audio keep-alive driver
     BackgroundAudioService.init();
     MediaNotificationService.setup();
 
@@ -93,20 +73,20 @@ export default function App() {
       }
     }
 
-    // 4. Listen for Lock Screen and Notification Action Clicks
-    const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
-      handleNotificationAction(response.actionIdentifier);
-    });
-
-    // 5. Check if app was resumed via notification action
-    Notifications.getLastNotificationResponseAsync().then((response) => {
-      if (response && response.actionIdentifier && response.actionIdentifier !== Notifications.DEFAULT_ACTION_IDENTIFIER) {
-        handleNotificationAction(response.actionIdentifier);
-      }
-    });
+    // 4. Milestone Achievement Notification Channel (Sound, Vibration & MAX Priority)
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('still_milestone_channel', {
+        name: 'Stillness Milestones & Achievements',
+        importance: Notifications.AndroidImportance.MAX,
+        sound: 'default',
+        enableVibrate: true,
+        vibrationPattern: [0, 250, 100, 250],
+        showBadge: true,
+        lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+      });
+    }
 
     return () => {
-      subscription.remove();
       if (volumeSubscription) volumeSubscription.remove();
       MediaNotificationService.dismiss();
     };
@@ -118,26 +98,11 @@ export default function App() {
       
       switch (data.type) {
         case 'AUDIO_PLAY':
-          if (typeof data.index === 'number') currentTrackIndexRef.current = data.index;
-          const playTrackObj = data.track || SOUNDSCAPES[currentTrackIndexRef.current];
-          BackgroundAudioService.playTrack(playTrackObj);
-          MediaNotificationService.showPlaying(playTrackObj);
+          BackgroundAudioService.playTrack();
           break;
 
         case 'AUDIO_PAUSE':
-          if (typeof data.index === 'number') currentTrackIndexRef.current = data.index;
-          const pauseTrackObj = data.track || SOUNDSCAPES[currentTrackIndexRef.current];
           BackgroundAudioService.pause();
-          MediaNotificationService.showPaused(pauseTrackObj);
-          break;
-
-        case 'TRACK_CHANGE':
-          if (typeof data.index === 'number') currentTrackIndexRef.current = data.index;
-          const changeTrackObj = data.track || SOUNDSCAPES[currentTrackIndexRef.current];
-          if (data.isPlaying) {
-            BackgroundAudioService.playTrack(changeTrackObj);
-            MediaNotificationService.showPlaying(changeTrackObj);
-          }
           break;
 
         case 'SET_HARDWARE_VOLUME':
@@ -147,7 +112,6 @@ export default function App() {
                 VolumeManager.setVolume(data.volume, { showUI: false });
               } catch (e) {}
             }
-            BackgroundAudioService.setVolume(data.volume);
           }
           break;
 
@@ -160,6 +124,39 @@ export default function App() {
         case 'HAPTIC_SELECTION':
           if (Platform.OS === 'android' || Platform.OS === 'ios') {
             Haptics.selectionAsync();
+          }
+          break;
+
+        case 'MILESTONE_UNLOCKED':
+          if (Platform.OS === 'android' || Platform.OS === 'ios') {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          }
+          if (data.milestone) {
+            console.log('🏆 Triggering System Notification for:', data.milestone.label);
+            Notifications.scheduleNotificationAsync({
+              content: {
+                title: `✨ ${data.milestone.label} Milestone Unlocked!`,
+                body: data.quote ? `"${data.quote.text}" — ${data.quote.author}` : data.milestone.message,
+                data: { action: 'MILESTONE' },
+                sound: 'default',
+                color: '#38bdf8',
+                priority: Notifications.AndroidNotificationPriority.MAX,
+              },
+              trigger: {
+                channelId: 'still_milestone_channel',
+              },
+            }).then(() => {
+              console.log('🔔 System milestone notification delivered with sound');
+            }).catch((err) => {
+              console.log('System notification schedule note:', err);
+            });
+          }
+          break;
+
+        case 'SET_NOTIFICATION_PREFERENCES':
+          if (data.preferences) {
+            console.log('🎛️ Updating native mindfulness preferences:', data.preferences);
+            MindfulnessNotificationService.updatePreferences(data.preferences);
           }
           break;
 
@@ -190,7 +187,7 @@ export default function App() {
           webViewRef.current = ref;
           global.__stillWebviewRef = ref;
         }}
-        source={{ uri: launchUrl }}
+        source={{ html: WEB_APP_HTML }}
         style={styles.webview}
         allowsInlineMediaPlayback={true}
         mediaPlaybackRequiresUserAction={false}

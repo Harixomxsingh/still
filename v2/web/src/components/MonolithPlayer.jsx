@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BreathingHalo } from './BreathingHalo';
 import { 
   Play, Pause, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeX, 
-  Sliders, Clock, Mail, Moon, Sun, Leaf, Sparkles, Maximize, Info 
+  Sliders, Clock, Mail, Moon, Sun, Leaf, Sparkles, Maximize, Info, Settings 
 } from 'lucide-react';
 
 export const MonolithPlayer = ({
@@ -23,6 +23,7 @@ export const MonolithPlayer = ({
   onToggleFullScreen,
   onOpenLibrary,
   onOpenMixer,
+  onOpenSettings,
   onOpenAbout,
   onOpenNote,
   onOpenDownload,
@@ -177,16 +178,19 @@ export const MonolithPlayer = ({
 
         {/* Utilities Row */}
         <div className="utility-row">
-          {/* Sound Library Button */}
-          <button className="pill-toggle-btn" onClick={onOpenLibrary}>
-            <i className="fa-solid fa-sliders text-[10px] text-sky-400"></i>
-            <span>Library</span>
+          {/* Sound Library Icon Button */}
+          <button className="icon-action-btn" onClick={onOpenLibrary} title="Soundscape Library">
+            <i className="fa-solid fa-list-ul text-xs text-sky-400"></i>
           </button>
 
-          {/* Stem Mixer Button */}
-          <button className="pill-toggle-btn" onClick={onOpenMixer} title="Audio Stem Layer Mixer">
-            <Sliders className="w-3 h-3 text-sky-400" />
-            <span>Mixer</span>
+          {/* Stem Mixer Icon Button */}
+          <button className="icon-action-btn" onClick={onOpenMixer} title="Audio Stem Layer Mixer">
+            <Sliders className="w-3.5 h-3.5 text-sky-400" />
+          </button>
+
+          {/* Sanctuary Settings & Analytics Button */}
+          <button className="icon-action-btn" onClick={onOpenSettings} title="Sanctuary Analytics & Notification Settings">
+            <Settings className="w-3.5 h-3.5 text-sky-400" />
           </button>
 
           {/* Countdown Sleep Timer */}
@@ -286,7 +290,7 @@ export const MonolithPlayer = ({
           </>
         )}
         <span>&bull;</span>
-        <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.0.0</span>
+        <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.1.1</span>
       </div>
 
     </div>

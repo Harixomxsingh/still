@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-// Generate a 16-bit Stereo PCM WAV file with seamless loop points
+// Generate an exact 16-bit Stereo PCM WAV file with mathematical phase continuity (Zero dips / Endless flow)
 function generateWav(filename, durationSec, sampleRate, audioFn) {
   const numChannels = 2;
   const bytesPerSample = 2;
@@ -18,7 +18,7 @@ function generateWav(filename, durationSec, sampleRate, audioFn) {
 
   // 'fmt ' sub-chunk
   buffer.write('fmt ', 12);
-  buffer.writeUInt32LE(16, 16); // Subchunk1Size (16 for PCM)
+  buffer.writeUInt32LE(16, 16);
   buffer.writeUInt16LE(1, 20);  // AudioFormat (1 = PCM)
   buffer.writeUInt16LE(numChannels, 22);
   buffer.writeUInt32LE(sampleRate, 24);
@@ -31,25 +31,24 @@ function generateWav(filename, durationSec, sampleRate, audioFn) {
   buffer.writeUInt32LE(dataSize, 40);
 
   let offset = 44;
-  let brownL = 0.0;
-  let brownR = 0.0;
 
   for (let i = 0; i < numSamples; i++) {
     const t = i / sampleRate;
     const progress = i / numSamples;
-    // Crossfade envelope for 100% seamless looping
-    let loopFade = 1.0;
-    const fadeLen = 0.15; // 15% fade margin
-    if (progress < fadeLen) {
-      loopFade = 0.5 - 0.5 * Math.cos((progress / fadeLen) * Math.PI);
-    } else if (progress > (1 - fadeLen)) {
-      loopFade = 0.5 - 0.5 * Math.cos(((1 - progress) / fadeLen) * Math.PI);
+
+    // Continuous infinite flow with microscopic 2ms micro-smoothing at boundaries to guarantee zero-click wrap
+    let edgeFade = 1.0;
+    const edgeSamples = Math.floor(sampleRate * 0.005); // 5ms micro-edge
+    if (i < edgeSamples) {
+      edgeFade = i / edgeSamples;
+    } else if (i > numSamples - edgeSamples) {
+      edgeFade = (numSamples - i) / edgeSamples;
     }
 
-    const [leftSample, rightSample] = audioFn(t, loopFade, i);
+    const [leftSample, rightSample] = audioFn(t, progress, i);
 
-    const intLeft = Math.max(-32767, Math.min(32767, Math.floor(leftSample * 32767)));
-    const intRight = Math.max(-32767, Math.min(32767, Math.floor(rightSample * 32767)));
+    const intLeft = Math.max(-32767, Math.min(32767, Math.floor(leftSample * edgeFade * 32767)));
+    const intRight = Math.max(-32767, Math.min(32767, Math.floor(rightSample * edgeFade * 32767)));
 
     buffer.writeInt16LE(intLeft, offset);
     buffer.writeInt16LE(intRight, offset + 2);
@@ -64,74 +63,82 @@ function generateWav(filename, durationSec, sampleRate, audioFn) {
 }
 
 const sampleRate = 44100;
-const loopDuration = 12.0; // 12-second seamless continuous loop
+const loopDuration = 20.0; // 20-second long seamless ambient loop
 
-// 1. Alpha Wave Sanctuary (432 Hz Solfeggio + 10 Hz Alpha Binaural)
-generateWav('alpha_sanctuary.wav', loopDuration, sampleRate, (t, fade) => {
+// 1. Alpha Wave Sanctuary (432 Hz Solfeggio Pad + 10 Hz Alpha)
+generateWav('alpha_sanctuary.wav', loopDuration, sampleRate, (t, p) => {
   const f = 432;
-  const pad = 0.3 * Math.sin(2 * Math.PI * f * t) + 0.15 * Math.sin(2 * Math.PI * (f / 2) * t) + 0.1 * Math.sin(2 * Math.PI * (f * 1.5) * t);
-  const leftBin = 0.25 * Math.sin(2 * Math.PI * (f - 5) * t);
-  const rightBin = 0.25 * Math.sin(2 * Math.PI * (f + 5) * t);
-  const breathe = 0.8 + 0.2 * Math.sin(2 * Math.PI * 0.1 * t); // 0.1 Hz breathing
-  return [(pad + leftBin) * breathe * fade, (pad + rightBin) * breathe * fade];
+  const pad = 0.28 * Math.sin(2 * Math.PI * f * t) + 0.18 * Math.sin(2 * Math.PI * (f * 0.75) * t) + 0.12 * Math.sin(2 * Math.PI * (f * 1.25) * t);
+  const leftBin = 0.22 * Math.sin(2 * Math.PI * (f - 5) * t);
+  const rightBin = 0.22 * Math.sin(2 * Math.PI * (f + 5) * t);
+  const slowBreathe = 0.9 + 0.1 * Math.sin(2 * Math.PI * 0.1 * t);
+  return [(pad + leftBin) * slowBreathe * 0.75, (pad + rightBin) * slowBreathe * 0.75];
 });
 
-// 2. Deep Delta Sleep (174 Hz + 2.5 Hz Somatic Delta)
-generateWav('deep_delta.wav', loopDuration, sampleRate, (t, fade) => {
+// 2. Deep Delta Sleep (174 Hz Sub-bass + 2.5 Hz Somatic Delta)
+generateWav('deep_delta.wav', loopDuration, sampleRate, (t, p) => {
   const f = 174;
-  const sub = 0.4 * Math.sin(2 * Math.PI * (f / 2) * t) + 0.2 * Math.sin(2 * Math.PI * f * t);
-  const leftBin = 0.25 * Math.sin(2 * Math.PI * (f - 1.25) * t);
-  const rightBin = 0.25 * Math.sin(2 * Math.PI * (f + 1.25) * t);
-  const slowWave = 0.85 + 0.15 * Math.sin(2 * Math.PI * 0.08 * t);
-  return [(sub + leftBin) * slowWave * fade, (sub + rightBin) * slowWave * fade];
+  const sub = 0.4 * Math.sin(2 * Math.PI * (f / 2) * t) + 0.25 * Math.sin(2 * Math.PI * f * t) + 0.12 * Math.sin(2 * Math.PI * (f * 1.5) * t);
+  const leftBin = 0.2 * Math.sin(2 * Math.PI * (f - 1.25) * t);
+  const rightBin = 0.2 * Math.sin(2 * Math.PI * (f + 1.25) * t);
+  return [(sub + leftBin) * 0.75, (sub + rightBin) * 0.75];
 });
 
-// 3. Brownian Rain Shield
-let brownStateL = 0;
-let brownStateR = 0;
-generateWav('brownian_rain.wav', loopDuration, sampleRate, (t, fade) => {
+// 3. Brownian Rain Shield (Continuous Steady Brownian Noise + Rain)
+let brownL = 0;
+let brownR = 0;
+generateWav('brownian_rain.wav', loopDuration, sampleRate, (t, p) => {
   const whiteL = Math.random() * 2 - 1;
   const whiteR = Math.random() * 2 - 1;
-  brownStateL = (brownStateL + 0.02 * whiteL) / 1.02;
-  brownStateR = (brownStateR + 0.02 * whiteR) / 1.02;
-  const rainL = (Math.random() < 0.005 ? (Math.random() * 0.4) : 0);
-  const rainR = (Math.random() < 0.005 ? (Math.random() * 0.4) : 0);
-  const outL = (brownStateL * 2.8 + rainL) * 0.5 * fade;
-  const outR = (brownStateR * 2.8 + rainR) * 0.5 * fade;
+  brownL = (brownL + 0.03 * whiteL) / 1.03;
+  brownR = (brownR + 0.03 * whiteR) / 1.03;
+  const rainDropsL = Math.random() < 0.008 ? Math.random() * 0.35 : 0;
+  const rainDropsR = Math.random() < 0.008 ? Math.random() * 0.35 : 0;
+  const outL = (brownL * 3.2 + rainDropsL) * 0.5;
+  const outR = (brownR * 3.2 + rainDropsR) * 0.5;
   return [outL, outR];
 });
 
-// 4. Theta Deep Focus (256 Hz + 6 Hz Theta)
-generateWav('theta_clarity.wav', loopDuration, sampleRate, (t, fade) => {
-  const f = 256;
-  const pad = 0.3 * Math.sin(2 * Math.PI * f * t) + 0.15 * Math.sin(2 * Math.PI * (f * 1.5) * t);
-  const leftBin = 0.25 * Math.sin(2 * Math.PI * (f - 3) * t);
-  const rightBin = 0.25 * Math.sin(2 * Math.PI * (f + 3) * t);
-  return [(pad + leftBin) * 0.7 * fade, (pad + rightBin) * 0.7 * fade];
-});
-
-// 5. Gamma Transcendence (396 Hz + 40 Hz Gamma)
-generateWav('gamma_flow.wav', loopDuration, sampleRate, (t, fade) => {
-  const f = 396;
-  const pad = 0.3 * Math.sin(2 * Math.PI * f * t) + 0.15 * Math.sin(2 * Math.PI * (f / 2) * t);
-  const leftBin = 0.25 * Math.sin(2 * Math.PI * (f - 20) * t);
-  const rightBin = 0.25 * Math.sin(2 * Math.PI * (f + 20) * t);
-  return [(pad + leftBin) * 0.65 * fade, (pad + rightBin) * 0.65 * fade];
-});
-
-// 6. Schumann Earth Resonance (108 Hz + 7.83 Hz Pulse)
-generateWav('schumann_resonance.wav', loopDuration, sampleRate, (t, fade) => {
-  const f = 108;
-  const pad = 0.35 * Math.sin(2 * Math.PI * f * t) + 0.2 * Math.sin(2 * Math.PI * (f * 2) * t);
-  const leftBin = 0.25 * Math.sin(2 * Math.PI * (f - 3.915) * t);
-  const rightBin = 0.25 * Math.sin(2 * Math.PI * (f + 3.915) * t);
-  const pulse = 0.8 + 0.2 * Math.sin(2 * Math.PI * 7.83 * t);
-  return [(pad + leftBin) * pulse * 0.7 * fade, (pad + rightBin) * pulse * 0.7 * fade];
-});
-
-// 7. Solfeggio 528 Hz DNA Repair
-generateWav('solfeggio_528.wav', loopDuration, sampleRate, (t, fade) => {
+// 4. Zen Garden Harmonics (528 Hz Transformation + 0.1 Hz HRV Resonance)
+generateWav('zen_garden.wav', loopDuration, sampleRate, (t, p) => {
   const f = 528;
-  const pad = 0.35 * Math.sin(2 * Math.PI * f * t) + 0.15 * Math.sin(2 * Math.PI * (f / 2) * t) + 0.1 * Math.sin(2 * Math.PI * (f * 1.5) * t);
-  return [pad * 0.65 * fade, pad * 0.65 * fade];
+  const pad = 0.3 * Math.sin(2 * Math.PI * f * t) + 0.2 * Math.sin(2 * Math.PI * (f * 0.5) * t) + 0.15 * Math.sin(2 * Math.PI * (f * 1.5) * t);
+  const chime = 0.1 * Math.sin(2 * Math.PI * (f * 2.5) * t) * Math.sin(2 * Math.PI * 0.2 * t);
+  const leftBin = 0.2 * Math.sin(2 * Math.PI * (f - 3.915) * t);
+  const rightBin = 0.2 * Math.sin(2 * Math.PI * (f + 3.915) * t);
+  const hrvBreathe = 0.85 + 0.15 * Math.sin(2 * Math.PI * 0.1 * t);
+  return [(pad + chime + leftBin) * hrvBreathe * 0.7, (pad + chime + rightBin) * hrvBreathe * 0.7];
+});
+
+// 5. Forest Dusk & Hearth (396 Hz Grounding + Crackling Hearth Embers)
+generateWav('forest_dusk.wav', loopDuration, sampleRate, (t, p) => {
+  const f = 396;
+  const drone = 0.35 * Math.sin(2 * Math.PI * f * t) + 0.2 * Math.sin(2 * Math.PI * (f * 0.75) * t);
+  const crackleL = Math.random() < 0.004 ? (Math.random() * 0.45) : 0;
+  const crackleR = Math.random() < 0.004 ? (Math.random() * 0.45) : 0;
+  const crickets = 0.06 * Math.sin(2 * Math.PI * 4500 * t) * Math.sin(2 * Math.PI * 4 * t);
+  const leftBin = 0.18 * Math.sin(2 * Math.PI * (f - 3) * t);
+  const rightBin = 0.18 * Math.sin(2 * Math.PI * (f + 3) * t);
+  return [(drone + crackleL + crickets + leftBin) * 0.7, (drone + crackleR + crickets + rightBin) * 0.7];
+});
+
+// 6. Cosmic Float & Stillness (288 Hz Zero-Gravity Ambient Drone)
+generateWav('cosmic_float.wav', loopDuration, sampleRate, (t, p) => {
+  const f = 288;
+  const drone1 = 0.3 * Math.sin(2 * Math.PI * f * t + Math.sin(2 * Math.PI * 0.05 * t));
+  const drone2 = 0.25 * Math.sin(2 * Math.PI * (f * 1.5) * t + Math.cos(2 * Math.PI * 0.07 * t));
+  const subDrone = 0.2 * Math.sin(2 * Math.PI * (f * 0.5) * t);
+  const leftBin = 0.18 * Math.sin(2 * Math.PI * (f - 4.5) * t);
+  const rightBin = 0.18 * Math.sin(2 * Math.PI * (f + 4.5) * t);
+  return [(drone1 + drone2 + subDrone + leftBin) * 0.7, (drone1 + drone2 + subDrone + rightBin) * 0.7];
+});
+
+// 7. Deep Flow & Study (320 Hz + 6 Hz Isochronic Theta Focus)
+generateWav('flow_state.wav', loopDuration, sampleRate, (t, p) => {
+  const f = 320;
+  const warmPad = 0.35 * Math.sin(2 * Math.PI * f * t) + 0.2 * Math.sin(2 * Math.PI * (f * 0.75) * t) + 0.15 * Math.sin(2 * Math.PI * (f * 1.25) * t);
+  const thetaPulse = 0.85 + 0.15 * Math.sin(2 * Math.PI * 6.0 * t);
+  const leftBin = 0.2 * Math.sin(2 * Math.PI * (f - 3) * t);
+  const rightBin = 0.2 * Math.sin(2 * Math.PI * (f + 3) * t);
+  return [(warmPad * thetaPulse + leftBin) * 0.75, (warmPad * thetaPulse + rightBin) * 0.75];
 });

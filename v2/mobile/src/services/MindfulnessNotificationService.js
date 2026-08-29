@@ -209,6 +209,92 @@ export class MindfulnessNotificationService {
   }
 
   /**
+   * Updates scheduled reminders according to granular user preferences
+   */
+  static async updatePreferences(preferences = {}) {
+    try {
+      await Notifications.cancelScheduledNotificationAsync('daily_morning_reminder').catch(() => {});
+      await Notifications.cancelScheduledNotificationAsync('daily_afternoon_reminder').catch(() => {});
+      await Notifications.cancelScheduledNotificationAsync('daily_evening_reminder').catch(() => {});
+
+      const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+
+      // Morning (8:30 AM)
+      if (preferences.morning !== false) {
+        const morningDate = getNextFutureDate(8, 30);
+        const mList = cachedPrompts.morning || defaultPrompts.morning;
+        const mPrompt = mList[dayOfYear % mList.length];
+
+        await Notifications.scheduleNotificationAsync({
+          identifier: 'daily_morning_reminder',
+          content: {
+            title: mPrompt.title,
+            body: mPrompt.body,
+            data: { slot: 'morning' },
+            color: '#38bdf8',
+            sound: true,
+          },
+          trigger: {
+            type: Notifications.SchedulableTriggerInputTypes.DATE,
+            date: morningDate,
+            channelId: MINDFULNESS_CHANNEL_ID,
+          },
+        });
+      }
+
+      // Midday (2:00 PM)
+      if (preferences.midday !== false) {
+        const afternoonDate = getNextFutureDate(14, 0);
+        const aList = cachedPrompts.afternoon || defaultPrompts.afternoon;
+        const aPrompt = aList[dayOfYear % aList.length];
+
+        await Notifications.scheduleNotificationAsync({
+          identifier: 'daily_afternoon_reminder',
+          content: {
+            title: aPrompt.title,
+            body: aPrompt.body,
+            data: { slot: 'afternoon' },
+            color: '#38bdf8',
+            sound: true,
+          },
+          trigger: {
+            type: Notifications.SchedulableTriggerInputTypes.DATE,
+            date: afternoonDate,
+            channelId: MINDFULNESS_CHANNEL_ID,
+          },
+        });
+      }
+
+      // Evening (9:45 PM)
+      if (preferences.evening !== false) {
+        const eveningDate = getNextFutureDate(21, 45);
+        const eList = cachedPrompts.evening || defaultPrompts.evening;
+        const ePrompt = eList[dayOfYear % eList.length];
+
+        await Notifications.scheduleNotificationAsync({
+          identifier: 'daily_evening_reminder',
+          content: {
+            title: ePrompt.title,
+            body: ePrompt.body,
+            data: { slot: 'evening' },
+            color: '#38bdf8',
+            sound: true,
+          },
+          trigger: {
+            type: Notifications.SchedulableTriggerInputTypes.DATE,
+            date: eveningDate,
+            channelId: MINDFULNESS_CHANNEL_ID,
+          },
+        });
+      }
+
+      console.log('🎛️ Mindfulness schedules updated to user preferences:', preferences);
+    } catch (e) {
+      console.log('Error updating mindfulness preferences:', e);
+    }
+  }
+
+  /**
    * Cancel all notifications helper
    */
   static async cancelAll() {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Sprout, Quote, Hammer, Brain, Compass, ExternalLink } from 'lucide-react';
+import { X, Sprout, Quote, Hammer, Brain, Compass, ExternalLink, Sparkles, Activity, Bell, RefreshCw, Layers } from 'lucide-react';
 
 export const AboutModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
@@ -9,7 +9,7 @@ export const AboutModal = ({ isOpen, onClose }) => {
       <div 
         className="modal-container" 
         onClick={(e) => e.stopPropagation()} 
-        style={{ maxWidth: '540px', maxHeight: '85vh' }}
+        style={{ maxWidth: '560px', maxHeight: '88vh' }}
       >
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '12px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
@@ -28,7 +28,7 @@ export const AboutModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Scrollable Body */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', textAlign: 'left', marginTop: '6px', fontSize: '13px', lineHeight: '1.65', color: 'var(--text-secondary)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left', marginTop: '6px', fontSize: '13px', lineHeight: '1.65', color: 'var(--text-secondary)' }}>
           
           {/* 1. Origin & Purpose */}
           <div style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '18px', padding: '18px' }}>
@@ -50,20 +50,63 @@ export const AboutModal = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* 2. Active Dev Notice */}
-          <div style={{ background: 'rgba(56, 189, 248, 0.06)', border: '1px solid rgba(56, 189, 248, 0.2)', borderRadius: '16px', padding: '16px 18px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, color: 'var(--accent-primary)' }}>
-                <Hammer className="w-3.5 h-3.5" />
-                <span>Actively in Development</span>
+          {/* 2. Active Development & What's New in v2.1.1 */}
+          <div style={{ background: 'rgba(56, 189, 248, 0.05)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '20px', padding: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 700, color: '#38bdf8' }}>
+                <Hammer className="w-4 h-4" />
+                <span>Actively in Development • Release Notes</span>
               </div>
-              <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-primary)', fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '10px', fontFamily: 'monospace' }}>
-                v2.0.0 Beta
+              <span style={{ background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8', fontSize: '11px', fontWeight: 800, padding: '3px 10px', borderRadius: '10px', fontFamily: 'monospace' }}>
+                v2.1.1 Live
               </span>
             </div>
-            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 300, lineHeight: '1.6', margin: 0 }}>
-              Still is currently in active development. I am continuously researching, crafting new acoustic frequencies, testing soundscapes, and refining the experience. More features, audio models, and updates are being added regularly.
+            
+            <p style={{ fontSize: '12.5px', color: '#cbd5e1', fontWeight: 300, lineHeight: '1.6', marginBottom: '14px' }}>
+              Still is constantly evolving into a more refined personal sanctuary. Here are the latest major features and upgrades introduced in <strong>v2.1.1</strong>:
             </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '12px' }}>
+              {/* Feature 1 */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <Sparkles size={14} style={{ color: '#38bdf8', flexShrink: 0, marginTop: '2px' }} />
+                <div>
+                  <strong style={{ color: '#ffffff' }}>Compounding Mindfulness Rewards (5m → 80m):</strong> Continuous calm unlocks milestone rewards at 5m, 10m, 20m, 40m, and 80m. Each tier reveals an exclusive wisdom reflection, accompanied by an in-app 528 Hz Solfeggio golden chime and phone celebration notification.
+                </div>
+              </div>
+
+              {/* Feature 2 */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <Activity size={14} style={{ color: '#818cf8', flexShrink: 0, marginTop: '2px' }} />
+                <div>
+                  <strong style={{ color: '#ffffff' }}>Live Stillness &amp; Presence Analytics:</strong> View your exact active calm minutes today and total lifetime stillness hours inside the new Sanctuary Settings modal (100% on-device private tracking).
+                </div>
+              </div>
+
+              {/* Feature 3 */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <Bell size={14} style={{ color: '#f59e0b', flexShrink: 0, marginTop: '2px' }} />
+                <div>
+                  <strong style={{ color: '#ffffff' }}>Granular Notification Sovereignty:</strong> Full freedom to individually toggle Milestone Celebrations, Morning Intentions (8:30 AM), Midday Breath Resets (2:00 PM), and Evening Summaries (9:45 PM) with real-time Android OS synchronization.
+                </div>
+              </div>
+
+              {/* Feature 4 */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <RefreshCw size={14} style={{ color: '#34d399', flexShrink: 0, marginTop: '2px' }} />
+                <div>
+                  <strong style={{ color: '#ffffff' }}>Autonomous In-App Updates &amp; Wisdom Sync:</strong> Automatic weekly synchronization of hundreds of fresh neuroscience, Stoic, and Zen reflections, plus an over-the-air changelog checker without needing the Google Play Store.
+                </div>
+              </div>
+
+              {/* Feature 5 */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <Layers size={14} style={{ color: '#c084fc', flexShrink: 0, marginTop: '2px' }} />
+                <div>
+                  <strong style={{ color: '#ffffff' }}>Radical Minimalist Icon Bar:</strong> Sleek icon-only buttons for Library, Stem Layer Mixer, and Settings, creating a distraction-free, spacious interface.
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* 3. Neuro-Acoustic Science */}

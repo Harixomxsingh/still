@@ -2,6 +2,18 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { AudioEngine } from './engine/AudioEngine';
 import { SOUNDSCAPES, THEMES } from '../../shared/soundscapes';
 import { CALM_QUOTES } from '../../shared/quotes';
+import { MilestoneRewardModal } from './components/MilestoneRewardModal';
+import { SettingsModal } from './components/SettingsModal';
+import { UpdateModal } from './components/UpdateModal';
+import { WisdomCloudSync } from './services/WisdomCloudSync';
+
+export const MILESTONES = [
+  { seconds: 300, label: '5 Minutes', title: 'The Gateway to Presence', message: '5 minutes of continuous stillness. Your heart rate has slowed and your nervous system is settling.' },
+  { seconds: 600, label: '10 Minutes', title: 'Alpha Wave Immersion', message: '10 minutes of pure calm. Mental chatter has quieted and your mind is entering deep tranquility.' },
+  { seconds: 1200, label: '20 Minutes', title: 'Deep Parasympathetic Reset', message: '20 minutes of undisturbed peace. Full physiological recovery and somatic harmony.' },
+  { seconds: 2400, label: '40 Minutes', title: 'The Flow State Sanctuary', message: '40 minutes of deep focus. Distractions have dissolved and your flow state is locked in.' },
+  { seconds: 4800, label: '80 Minutes', title: 'Mastery of Stillness', message: '80 minutes of profound presence. A transformative immersion into pure stillness.' },
+];
 import { HomeGateway } from './components/HomeGateway';
 import { MonolithPlayer } from './components/MonolithPlayer';
 import { StemMixer } from './components/StemMixer';
@@ -42,23 +54,141 @@ export const App = () => {
     return () => clearInterval(timerInterval);
   }, [sleepTimerSeconds, isPlaying]);
 
-  // Active Listening Session Tracker (for 30-min quote milestone bonus shuffle)
+  // Active Listening Session Tracker & Compounding Milestones
   const [activeListeningSeconds, setActiveListeningSeconds] = useState(0);
+  const [unlockedMilestone, setUnlockedMilestone] = useState(null);
+  const [isMilestoneOpen, setIsMilestoneOpen] = useState(false);
+  const [bonusQuoteIndex, setBonusQuoteIndex] = useState(0);
+
+  // Settings & In-App Autonomous Updates
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [updateInfo, setUpdateInfo] = useState(null);
+  const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState('Latest release installed');
+
+  // Lifetime Calm Seconds Tracker
+  const [lifetimeSeconds, setLifetimeSeconds] = useState(() => {
+    try {
+      return Number(localStorage.getItem('still_lifetime_seconds') || 0);
+    } catch (e) {
+      return 0;
+    }
+  });
+
+  // Notification Sovereignty Preferences
+  const [notificationPrefs, setNotificationPrefs] = useState(() => {
+    try {
+      const saved = localStorage.getItem('still_notif_prefs');
+      return saved ? JSON.parse(saved) : {
+        milestones: true,
+        morning: true,
+        midday: true,
+        evening: true
+      };
+    } catch (e) {
+      return { milestones: true, morning: true, midday: true, evening: true };
+    }
+  });
+
+  const handleUpdatePref = (key, value) => {
+    const nextPrefs = { ...notificationPrefs, [key]: value };
+    setNotificationPrefs(nextPrefs);
+    try {
+      localStorage.setItem('still_notif_prefs', JSON.stringify(nextPrefs));
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(JSON.stringify({
+          type: 'SET_NOTIFICATION_PREFERENCES',
+          preferences: nextPrefs
+        }));
+      }
+    } catch (e) {}
+  };
+
+  const handleCheckUpdate = async () => {
+    setIsCheckingUpdate(true);
+    setUpdateStatus('Checking for new releases...');
+    try {
+      const res = await fetch('./version.json?_t=' + Date.now());
+      if (res.ok) {
+        const data = await res.json();
+        setUpdateInfo(data);
+        if (data.version && data.version !== '2.0.0') {
+          setUpdateStatus(`New update v${data.version} available!`);
+          setIsUpdateModalOpen(true);
+        } else {
+          setUpdateStatus('You are running the latest version (v2.1.0)');
+        }
+      } else {
+        setUpdateStatus('Latest version installed');
+      }
+    } catch (e) {
+      setUpdateStatus('Up to date');
+    } finally {
+      setIsCheckingUpdate(false);
+    }
+  };
+
+  const sessionSecondsRef = useRef(0);
+  const reachedSetRef = useRef(new Set());
+  const bonusQuoteIndexRef = useRef(0);
+
+  // Autonomous Dynamic Master Quotes Library
+  const allQuotes = useMemo(() => WisdomCloudSync.getAllQuotes(), [bonusQuoteIndex]);
+  const baseDailyIndex = Math.floor(Date.now() / 86400000) % allQuotes.length;
+  const currentQuote = allQuotes[(baseDailyIndex + bonusQuoteIndex) % allQuotes.length];
 
   useEffect(() => {
-    let interval;
+    // Autonomous Weekly Cloud Wisdom Synchronization
+    WisdomCloudSync.syncWeekly();
+  }, []);
+
+  useEffect(() => {
+    let interval = null;
     if (isPlaying) {
       interval = setInterval(() => {
-        setActiveListeningSeconds((prev) => prev + 1);
+        sessionSecondsRef.current += 1;
+        const currentSec = sessionSecondsRef.current;
+        setActiveListeningSeconds(currentSec);
+        setLifetimeSeconds((l) => {
+          const next = l + 1;
+          try { localStorage.setItem('still_lifetime_seconds', String(next)); } catch (e) {}
+          return next;
+        });
+
+        // Check compounding milestones
+        const milestone = MILESTONES.find((m) => m.seconds === currentSec);
+        if (milestone && !reachedSetRef.current.has(milestone.seconds)) {
+          reachedSetRef.current.add(milestone.seconds);
+          setUnlockedMilestone(milestone);
+          bonusQuoteIndexRef.current += 1;
+          setBonusQuoteIndex(bonusQuoteIndexRef.current);
+
+          // Only alert if user enabled milestone celebrations
+          if (notificationPrefs.milestones) {
+            setIsMilestoneOpen(true);
+            engineRef.current?.playCelebrationChime();
+
+            try {
+              if (window.ReactNativeWebView) {
+                const nextQuote = allQuotes[(baseDailyIndex + bonusQuoteIndexRef.current) % allQuotes.length];
+                window.ReactNativeWebView.postMessage(
+                  JSON.stringify({
+                    type: 'MILESTONE_UNLOCKED',
+                    milestone,
+                    quote: nextQuote,
+                  })
+                );
+              }
+            } catch (e) {}
+          }
+        }
       }, 1000);
     }
-    return () => clearInterval(interval);
-  }, [isPlaying]);
-
-  // Daily Quote + 30-Minute Listening Milestone Bonus
-  const baseDailyIndex = Math.floor(Date.now() / 86400000) % CALM_QUOTES.length;
-  const milestoneOffset = Math.floor(activeListeningSeconds / 1800); // 1800s = 30 minutes
-  const currentQuote = CALM_QUOTES[(baseDailyIndex + milestoneOffset) % CALM_QUOTES.length];
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isPlaying, baseDailyIndex, notificationPrefs.milestones, allQuotes]);
 
   // Detect if running inside native mobile app or standalone PWA
   const isMobileApp = useMemo(() => {
@@ -108,11 +238,6 @@ export const App = () => {
   // Initialize Audio Engine
   useEffect(() => {
     engineRef.current = new AudioEngine();
-    if (isNativeApp) {
-      // In native mobile app, sound is driven by native expo-av driver for 100% lockscreen control
-      engineRef.current.init(true);
-      engineRef.current.setMasterVolume(0);
-    }
 
     // 2-minute fallback auto-dismiss for Welcome card
     const timer = setTimeout(() => {
@@ -153,6 +278,17 @@ export const App = () => {
 
   // Expose global bridge handlers for native lockscreen notification buttons & 2-way hardware volume sync
   useEffect(() => {
+    window.__mediaSetPlaying = (shouldPlay) => {
+      if (shouldPlay) {
+        if (isHomeOpen) {
+          setIsNoteOpen(false);
+          setIsHomeOpen(false);
+        }
+        setIsPlaying(true);
+      } else {
+        setIsPlaying(false);
+      }
+    };
     window.__mediaTogglePlay = () => {
       if (isHomeOpen) handleEnterCalmSpace();
       else handleTogglePlay();
@@ -162,7 +298,11 @@ export const App = () => {
     };
     window.__mediaSelectTrack = (idx) => {
       if (typeof idx === 'number' && idx >= 0 && idx < SOUNDSCAPES.length) {
-        handleSelectTrack(idx);
+        setCurrentTrackIndex(idx);
+        if (isHomeOpen) {
+          setIsHomeOpen(false);
+          setIsNoteOpen(false);
+        }
       }
     };
     window.__syncVolume = (deviceVol) => {
@@ -499,6 +639,7 @@ export const App = () => {
           onToggleFullScreen={handleToggleFullScreen}
           onOpenLibrary={() => setIsLibraryOpen(true)}
           onOpenMixer={() => setIsMixerOpen(true)}
+          onOpenSettings={() => setIsSettingsOpen(true)}
           onOpenAbout={() => setIsAboutOpen(true)}
           onOpenNote={() => setIsNoteOpen(true)}
           onOpenDownload={() => setIsDownloadOpen(true)}
@@ -536,6 +677,38 @@ export const App = () => {
         onClose={() => setIsDownloadOpen(false)}
       />
 
+      {/* Compounding Mindfulness Milestone Reward Modal */}
+      <MilestoneRewardModal
+        isOpen={isMilestoneOpen}
+        milestone={unlockedMilestone}
+        quote={currentQuote}
+        onClose={() => setIsMilestoneOpen(false)}
+      />
+
+      {/* Sanctuary Settings & Presence Analytics Modal */}
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        todaySeconds={activeListeningSeconds}
+        lifetimeSeconds={lifetimeSeconds}
+        currentMilestoneLabel={unlockedMilestone?.label || '0s'}
+        notificationPrefs={notificationPrefs}
+        onUpdatePref={handleUpdatePref}
+        onCheckUpdate={handleCheckUpdate}
+        isCheckingUpdate={isCheckingUpdate}
+        updateStatus={updateStatus}
+        onOpenUpdateModal={() => setIsUpdateModalOpen(true)}
+        isMobileApp={isMobileApp}
+      />
+
+      {/* Autonomous In-App Update Modal */}
+      <UpdateModal
+        isOpen={isUpdateModalOpen}
+        onClose={() => setIsUpdateModalOpen(false)}
+        updateInfo={updateInfo}
+        onApplyUpdate={() => window.location.reload()}
+      />
+
       {/* Discrete Bottom-Right Version Watermark */}
       <div 
         style={{
@@ -552,7 +725,7 @@ export const App = () => {
           userSelect: 'none'
         }}
       >
-        v2.0.0
+        v2.1.1
       </div>
     </>
   );

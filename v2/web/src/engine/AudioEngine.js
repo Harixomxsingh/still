@@ -31,7 +31,6 @@ export class AudioEngine {
 
     // Piano timer
     this.pianoTimeout = null;
-    this.isNative = false;
 
     // Stems configuration (0.0 to 1.0)
     this.stems = {
@@ -43,15 +42,14 @@ export class AudioEngine {
     };
   }
 
-  init(isNative = false) {
+  init() {
     if (this.ctx) return;
-    this.isNative = isNative;
 
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     this.ctx = new AudioContextClass();
 
     this.masterGain = this.ctx.createGain();
-    this.masterGain.gain.setValueAtTime(this.isNative ? 0.00001 : 0.75, this.ctx.currentTime);
+    this.masterGain.gain.setValueAtTime(0.75, this.ctx.currentTime);
     this.masterGain.connect(this.ctx.destination);
 
     // Initialize Stem Sub-Master Gain Nodes
@@ -209,10 +207,38 @@ export class AudioEngine {
     this.pianoTimeout = setTimeout(playNote, 4000);
   }
 
-  applySoundscape(track, crossfadeDuration = 2.5) {
-    this.init(this.isNative);
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+  playCelebrationChime() {
+    if (!this.ctx) return;
+    try {
+      const now = this.ctx.currentTime;
+      const harmonics = [528, 792, 1056, 1320]; // 528 Hz Solfeggio Golden Ratio Transformation Chime
+      harmonics.forEach((freq, idx) => {
+        const osc = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+
+        const peak = 0.12 / (idx + 1);
+        g.gain.setValueAtTime(0.0001, now);
+        g.gain.linearRampToValueAtTime(peak, now + 0.05);
+        g.gain.exponentialRampToValueAtTime(0.00001, now + 3.8);
+
+        osc.connect(g);
+        g.connect(this.masterGain);
+
+        osc.start(now);
+        osc.stop(now + 4.0);
+      });
+    } catch (e) {}
+  }
+
+  async applySoundscape(track, crossfadeDuration = 2.0) {
+    this.init();
+    this.isPlaying = true;
+    if (this.ctx && this.ctx.state === 'suspended') {
+      try {
+        await this.ctx.resume();
+      } catch (e) {}
     }
     this._startMediaAnchor();
 
@@ -222,51 +248,50 @@ export class AudioEngine {
     // Binaural Beats Frequency Tuning
     const carrier = track.baseFreq || 432;
     const diff = track.binauralDiff || 10.0;
-    this.binauralLeft.frequency.setTargetAtTime(carrier, now, 1.2);
-    this.binauralRight.frequency.setTargetAtTime(carrier + diff, now, 1.2);
+    this.binauralLeft.frequency.setValueAtTime(carrier, now);
+    this.binauralRight.frequency.setValueAtTime(carrier + diff, now);
 
-    // Apply Stems
+    // Apply Stems immediately
     const effectiveBrown = (track.defaultStems.brownian || 0.4) * this.stems.brownian;
     const effectiveRain = (track.defaultStems.rain || 0.2) * this.stems.rain;
     const effectiveBinaural = (track.defaultStems.binaural || 0.4) * this.stems.binaural;
 
-    this.brownGain.gain.setTargetAtTime(this.isPlaying ? effectiveBrown : 0.001, now, crossfadeDuration / 3);
-    this.rainGain.gain.setTargetAtTime(this.isPlaying ? effectiveRain : 0.001, now, crossfadeDuration / 3);
-    this.binauralGain.gain.setTargetAtTime(this.isPlaying ? effectiveBinaural : 0.001, now, crossfadeDuration / 3);
+    this.brownGain.gain.setValueAtTime(effectiveBrown, now);
+    this.rainGain.gain.setValueAtTime(effectiveRain, now);
+    this.binauralGain.gain.setValueAtTime(effectiveBinaural, now);
 
     // Fade out previous pad nodes
     this.padNodes.forEach(node => {
       try {
-        node.gainNode.gain.setTargetAtTime(0.0001, now, 1.0);
+        node.gainNode.gain.setValueAtTime(0.0001, now);
         setTimeout(() => {
-          node.osc.stop();
-          node.osc.disconnect();
-        }, 1800);
+          try {
+            node.osc.stop();
+            node.osc.disconnect();
+          } catch (e) {}
+        }, 400);
       } catch (e) {}
     });
     this.padNodes = [];
 
-    // Synthesize new chord harmonics
-    if (this.isPlaying) {
-      track.chordNotes.forEach((freq, idx) => {
-        const osc = this.ctx.createOscillator();
-        const gNode = this.ctx.createGain();
+    // Synthesize new chord harmonics immediately
+    track.chordNotes.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gNode = this.ctx.createGain();
 
-        osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
-        osc.frequency.setValueAtTime(freq, now);
-        osc.detune.setValueAtTime((Math.random() * 8) - 4, now);
+      osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(freq, now);
+      osc.detune.setValueAtTime((Math.random() * 8) - 4, now);
 
-        gNode.gain.setValueAtTime(0.0001, now);
-        const targetGain = ((track.defaultStems.pads || 0.8) / track.chordNotes.length) * this.stems.pads;
-        gNode.gain.setTargetAtTime(targetGain, now + 0.3, crossfadeDuration / 2.5);
+      const targetGain = ((track.defaultStems.pads || 0.8) / track.chordNotes.length) * this.stems.pads;
+      gNode.gain.setValueAtTime(targetGain, now);
 
-        osc.connect(gNode);
-        gNode.connect(this.lfoFilter);
-        osc.start(now);
+      osc.connect(gNode);
+      gNode.connect(this.lfoFilter);
+      osc.start(now);
 
-        this.padNodes.push({ osc, gainNode: gNode });
-      });
-    }
+      this.padNodes.push({ osc, gainNode: gNode });
+    });
   }
 
   setStemGain(stemName, value) {

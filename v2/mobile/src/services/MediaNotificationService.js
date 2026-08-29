@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 
 export const BACKGROUND_NOTIFICATION_TASK = 'STILL_BACKGROUND_NOTIFICATION_TASK';
 
-// Define the background execution task for Android Lock Screen & Notification Shade buttons
+// Background execution task for Android Lock Screen & Notification Shade buttons
 try {
   TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, async ({ data, error }) => {
     if (error) return;
@@ -29,7 +29,7 @@ Notifications.setNotificationHandler({
 });
 
 const MEDIA_NOTIFICATION_ID = 'still_media_player';
-const CHANNEL_ID = 'still_media_playback_v3';
+const CHANNEL_ID = 'still_media_playback_v4';
 
 let isChannelConfigured = false;
 
@@ -37,7 +37,7 @@ export class MediaNotificationService {
   static async setup() {
     if (Platform.OS === 'android' && !isChannelConfigured) {
       try {
-        // High importance without vibration ensures buttons are visible on the 1st single swipe down
+        // High importance without vibration ensures 1-swipe visibility with bold buttons
         await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
           name: 'Still Media Playback',
           importance: Notifications.AndroidImportance.HIGH,
@@ -48,15 +48,16 @@ export class MediaNotificationService {
           lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
         });
 
+        // Clean, bold, radical minimalist action buttons (Zero emojis)
         await Notifications.setNotificationCategoryAsync('still_media_playing', [
           {
             identifier: 'ACTION_PAUSE',
-            buttonTitle: '⏸️ Pause',
+            buttonTitle: 'Pause',
             options: { opensAppToForeground: false, isAuthenticationRequired: false },
           },
           {
             identifier: 'ACTION_NEXT',
-            buttonTitle: '⏭️ Next',
+            buttonTitle: 'Next',
             options: { opensAppToForeground: false, isAuthenticationRequired: false },
           },
         ]);
@@ -64,17 +65,16 @@ export class MediaNotificationService {
         await Notifications.setNotificationCategoryAsync('still_media_paused', [
           {
             identifier: 'ACTION_PLAY',
-            buttonTitle: '▶️ Play',
+            buttonTitle: 'Play',
             options: { opensAppToForeground: false, isAuthenticationRequired: false },
           },
           {
             identifier: 'ACTION_NEXT',
-            buttonTitle: '⏭️ Next',
+            buttonTitle: 'Next',
             options: { opensAppToForeground: false, isAuthenticationRequired: false },
           },
         ]);
 
-        // Register background task with Notifications
         try {
           await Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
         } catch (taskErr) {}
@@ -97,7 +97,7 @@ export class MediaNotificationService {
         identifier: MEDIA_NOTIFICATION_ID,
         content: {
           title: trackTitle,
-          body: `Still • ${trackScience}`,
+          body: trackScience,
           data: { action: 'MEDIA_PLAYER' },
           sticky: true,
           autoDismiss: false,
@@ -119,12 +119,13 @@ export class MediaNotificationService {
     try {
       await this.setup();
       const trackTitle = track?.title || 'Alpha Wave Sanctuary';
+      const trackScience = track?.science ? track.science.split('•')[0].trim() : '432 Hz Solfeggio';
 
       await Notifications.scheduleNotificationAsync({
         identifier: MEDIA_NOTIFICATION_ID,
         content: {
           title: `${trackTitle} (Paused)`,
-          body: 'Still • Tap to Resume Sanctuary',
+          body: trackScience,
           data: { action: 'MEDIA_PLAYER' },
           sticky: false,
           autoDismiss: true,

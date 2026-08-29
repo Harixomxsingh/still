@@ -110,6 +110,7 @@ export const App = () => {
     engineRef.current = new AudioEngine();
     if (isNativeApp) {
       // In native mobile app, sound is driven by native expo-av driver for 100% lockscreen control
+      engineRef.current.init(true);
       engineRef.current.setMasterVolume(0);
     }
 

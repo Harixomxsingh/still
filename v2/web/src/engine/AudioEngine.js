@@ -31,6 +31,7 @@ export class AudioEngine {
 
     // Piano timer
     this.pianoTimeout = null;
+    this.isNative = false;
 
     // Stems configuration (0.0 to 1.0)
     this.stems = {
@@ -42,14 +43,15 @@ export class AudioEngine {
     };
   }
 
-  init() {
+  init(isNative = false) {
     if (this.ctx) return;
+    this.isNative = isNative;
 
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     this.ctx = new AudioContextClass();
 
     this.masterGain = this.ctx.createGain();
-    this.masterGain.gain.setValueAtTime(0.75, this.ctx.currentTime);
+    this.masterGain.gain.setValueAtTime(this.isNative ? 0.00001 : 0.75, this.ctx.currentTime);
     this.masterGain.connect(this.ctx.destination);
 
     // Initialize Stem Sub-Master Gain Nodes
@@ -208,7 +210,7 @@ export class AudioEngine {
   }
 
   applySoundscape(track, crossfadeDuration = 2.5) {
-    this.init();
+    this.init(this.isNative);
     if (this.ctx.state === 'suspended') {
       this.ctx.resume();
     }

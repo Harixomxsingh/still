@@ -188,10 +188,12 @@ export const MonolithPlayer = ({
             <Sliders className="w-3.5 h-3.5 text-sky-400" />
           </button>
 
-          {/* Sanctuary Settings & Analytics Button */}
-          <button className="icon-action-btn" onClick={onOpenSettings} title="Sanctuary Analytics & Notification Settings">
-            <Settings className="w-3.5 h-3.5 text-sky-400" />
-          </button>
+          {/* Sanctuary Settings & Analytics Button (Mobile App Only) */}
+          {isMobileApp && (
+            <button className="icon-action-btn" onClick={onOpenSettings} title="Sanctuary Analytics & Notification Settings">
+              <Settings className="w-3.5 h-3.5 text-sky-400" />
+            </button>
+          )}
 
           {/* Countdown Sleep Timer */}
           <button 

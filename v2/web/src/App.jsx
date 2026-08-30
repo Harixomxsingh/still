@@ -142,27 +142,29 @@ export const App = () => {
     // Autonomous Weekly Cloud Wisdom Synchronization
     WisdomCloudSync.syncWeekly();
 
-    // Check if user has seen v2.1.1 update announcement
+    // Check if user has seen v2.1.1 update announcement (Mobile App Only)
     try {
-      const lastSeenVer = localStorage.getItem('still_last_seen_version');
-      if (lastSeenVer !== '2.1.1') {
-        if (window.ReactNativeWebView) {
-          window.ReactNativeWebView.postMessage(JSON.stringify({
-            type: 'APP_UPDATE_AVAILABLE',
-            version: '2.1.1',
-            title: '✨ Still Sanctuary v2.1.1 Update is Live!',
-            body: 'Compounding mindfulness rewards (5m–80m), calm analytics, and notification sovereignty are now active. Tap to enter your sanctuary.'
-          }));
-        }
+      if (isMobileApp) {
+        const lastSeenVer = localStorage.getItem('still_last_seen_version');
+        if (lastSeenVer !== '2.1.1') {
+          if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+              type: 'APP_UPDATE_AVAILABLE',
+              version: '2.1.1',
+              title: '✨ Still Sanctuary v2.1.1 Update is Live!',
+              body: 'Compounding mindfulness rewards (5m–80m), calm analytics, and notification sovereignty are now active. Tap to enter your sanctuary.'
+            }));
+          }
 
-        fetch('./version.json?_t=' + Date.now())
-          .then((res) => res.json())
-          .then((data) => {
-            setUpdateInfo(data);
-            setIsUpdateModalOpen(true);
-            localStorage.setItem('still_last_seen_version', '2.1.1');
-          })
-          .catch(() => {});
+          fetch('./version.json?_t=' + Date.now())
+            .then((res) => res.json())
+            .then((data) => {
+              setUpdateInfo(data);
+              setIsUpdateModalOpen(true);
+              localStorage.setItem('still_last_seen_version', '2.1.1');
+            })
+            .catch(() => {});
+        }
       }
     } catch (e) {}
   }, []);

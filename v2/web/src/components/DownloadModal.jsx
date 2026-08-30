@@ -3,8 +3,6 @@ import React from 'react';
 export const DownloadModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
-  const APK_DOWNLOAD_URL = "https://github.com/Harixomxsingh/still/releases/download/v2.1.1/Still.apk";
-
   return (
     <div className="modal-backdrop is-open" onClick={onClose}>
       <div 
@@ -41,10 +39,11 @@ export const DownloadModal = ({ isOpen, onClose }) => {
           A distraction-free sanctuary for your pocket. Continuous background audio, tactile 0.1 Hz breathing guide, and zero ads or tracking.
         </p>
 
-        {/* 1-Click Primary Action */}
+        {/* 1-Click Direct Download Action */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '28px' }}>
           <a 
-            href={APK_DOWNLOAD_URL}
+            href="./Still.apk"
+            download="Still.apk"
             className="gateway-btn"
             style={{ 
               display: 'flex', 
@@ -67,9 +66,9 @@ export const DownloadModal = ({ isOpen, onClose }) => {
             <span>Download Still for Android (.apk)</span>
           </a>
 
-          {/* GitHub Release Mirror */}
+          {/* GitHub Mirror */}
           <a
-            href="https://github.com/Harixomxsingh/still/releases/tag/v2.1.1"
+            href="https://github.com/Harixomxsingh/still"
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -84,7 +83,7 @@ export const DownloadModal = ({ isOpen, onClose }) => {
             }}
           >
             <i className="fa-brands fa-github"></i>
-            <span>View Release on GitHub (v2.1.1)</span>
+            <span>Open Source on GitHub (Harixomxsingh/still)</span>
           </a>
         </div>
 

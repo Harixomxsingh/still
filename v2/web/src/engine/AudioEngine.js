@@ -245,36 +245,45 @@ export class AudioEngine {
     this.currentTrack = track;
     const now = this.ctx.currentTime;
 
-    // Binaural Beats Frequency Tuning
+    // Binaural Beats Frequency Smooth Glide (0.8s time constant)
     const carrier = track.baseFreq || 432;
     const diff = track.binauralDiff || 10.0;
-    this.binauralLeft.frequency.setValueAtTime(carrier, now);
-    this.binauralRight.frequency.setValueAtTime(carrier + diff, now);
+    this.binauralLeft.frequency.setTargetAtTime(carrier, now, 0.8);
+    this.binauralRight.frequency.setTargetAtTime(carrier + diff, now, 0.8);
 
-    // Apply Stems immediately
+    // Smoothly transition background stems
     const effectiveBrown = (track.defaultStems.brownian || 0.4) * this.stems.brownian;
     const effectiveRain = (track.defaultStems.rain || 0.2) * this.stems.rain;
     const effectiveBinaural = (track.defaultStems.binaural || 0.4) * this.stems.binaural;
 
-    this.brownGain.gain.setValueAtTime(effectiveBrown, now);
-    this.rainGain.gain.setValueAtTime(effectiveRain, now);
-    this.binauralGain.gain.setValueAtTime(effectiveBinaural, now);
+    this.brownGain.gain.setTargetAtTime(effectiveBrown, now, 0.8);
+    this.rainGain.gain.setTargetAtTime(effectiveRain, now, 0.8);
+    this.binauralGain.gain.setTargetAtTime(effectiveBinaural, now, 0.8);
 
-    // Fade out previous pad nodes
-    this.padNodes.forEach(node => {
-      try {
-        node.gainNode.gain.setValueAtTime(0.0001, now);
-        setTimeout(() => {
-          try {
-            node.osc.stop();
-            node.osc.disconnect();
-          } catch (e) {}
-        }, 400);
-      } catch (e) {}
-    });
+    // Smooth Crossfade: Gracefully fade out previous pad chord oscillators
+    const oldPadNodes = this.padNodes;
     this.padNodes = [];
 
-    // Synthesize new chord harmonics immediately
+    const fadeOutDuration = Math.max(0.6, crossfadeDuration);
+    oldPadNodes.forEach(({ osc, gainNode }) => {
+      try {
+        gainNode.gain.cancelScheduledValues(now);
+        gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+        gainNode.gain.linearRampToValueAtTime(0.00001, now + fadeOutDuration);
+        setTimeout(() => {
+          try {
+            osc.stop(now + fadeOutDuration + 0.1);
+            osc.disconnect();
+            gainNode.disconnect();
+          } catch (e) {}
+        }, (fadeOutDuration + 0.2) * 1000);
+      } catch (e) {}
+    });
+
+    // Fade in new pad chord harmonics with smooth exponential swell
+    const isInitialStart = oldPadNodes.length === 0;
+    const fadeInDuration = isInitialStart ? 0.8 : crossfadeDuration;
+
     track.chordNotes.forEach((freq, idx) => {
       const osc = this.ctx.createOscillator();
       const gNode = this.ctx.createGain();
@@ -284,7 +293,9 @@ export class AudioEngine {
       osc.detune.setValueAtTime((Math.random() * 8) - 4, now);
 
       const targetGain = ((track.defaultStems.pads || 0.8) / track.chordNotes.length) * this.stems.pads;
-      gNode.gain.setValueAtTime(targetGain, now);
+
+      gNode.gain.setValueAtTime(0.00001, now);
+      gNode.gain.linearRampToValueAtTime(targetGain, now + fadeInDuration);
 
       osc.connect(gNode);
       gNode.connect(this.lfoFilter);

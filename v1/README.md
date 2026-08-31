@@ -68,4 +68,4 @@ Then visit `http://localhost:3456`.
 
 ## 📄 License
 
-MIT License. Designed with care for a calmer world.
+Source-Available Non-Commercial & Community License • Copyright © 2026 Hari Om Singh. Designed with care for a calmer world.

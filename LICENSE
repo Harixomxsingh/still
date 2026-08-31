@@ -1,21 +1,44 @@
-MIT License
+# Source-Available Non-Commercial & Community License
 
-Copyright (c) 2026 Hari Om Singh
+**Copyright © 2026 Hari Om Singh (the "Author"). All Rights Reserved.**
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+---
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+### 1. Purpose & Philosophy
+**Still** ("the Software", including source code, algorithmic audio synthesizers, UI/UX designs, artwork, and documentation) is made publicly available for personal enrichment, mindfulness, inspection, education, and open community contributions.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+---
+
+### 2. Permissions Granted (What You CAN Do)
+Subject to the terms and conditions of this License, you are granted a non-exclusive, worldwide, royalty-free license to:
+- **Personal & Non-Commercial Use:** View, download, inspect, compile, run, and use the Software locally for personal, educational, research, and non-commercial purposes.
+- **Study & Educational Research:** Fork and analyze the codebase for personal learning, algorithmic research, and academic study.
+- **Community Contributions:** Propose modifications, submit bug fixes, create issue reports, and open Pull Requests to the official repository to improve the Software.
+
+---
+
+### 3. Restrictions & Prohibitions (What You CANNOT Do)
+Without the express prior written consent of the Author, you may **NOT**:
+- **Commercial Exploitation:** Sell, rent, lease, sublicense, monetize, run paid SaaS/cloud instances, or derive commercial revenue from the Software, or any substantial part thereof.
+- **Distribution & Clones:** Publish, distribute, re-package, or host the Software (or modified derivatives) on public application stores (such as Google Play Store, Apple App Store, Microsoft Store), web hosting platforms, or third-party marketplaces as a standalone commercial or branded product.
+- **Rebranding & False Attribution:** Remove, modify, or obscure any copyright notices, author attributions, logos, or brand identifiers of Still and Hari Om Singh.
+
+---
+
+### 4. Contributions & Intellectual Property
+By submitting code, designs, or other contributions (via Pull Requests, patches, or other channels) to this repository, you agree that:
+1. Your contributions are licensed under the terms of this License.
+2. You grant the Author a perpetual, irrevocable, worldwide, royalty-free, transferable license to use, incorporate, modify, publish, and commercially distribute your contribution as part of the official Software or derivative works without restriction or compensation.
+3. The overall copyright and ownership of the official Software remain exclusively with the Author.
+
+---
+
+### 5. Commercial Inquiries & Dual Licensing
+If you wish to use Still for commercial purposes, integrate its proprietary procedural audio synthesizers into a commercial product, or obtain a commercial distribution license, please contact the Author directly:
+- **Author:** Hari Om Singh
+- **GitHub:** [@Harixomxsingh](https://github.com/Harixomxsingh)
+
+---
+
+### 6. Disclaimer of Warranty
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

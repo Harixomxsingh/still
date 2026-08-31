@@ -269,30 +269,35 @@ export const MonolithPlayer = ({
         [Space] Play &bull; [N] Next &bull; [M] Mute &bull; [F] Zen
       </div>
 
-      {/* 6. Creator Signature, App Link & Version */}
-      <div className="creator-credit" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
-        <span>made by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link">hari</a> with ❤️ &amp; care</span>
-        {!isMobileApp && (
-          <>
-            <span>&bull;</span>
-            <button 
-              onClick={onOpenDownload} 
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'var(--accent-primary)', 
-                fontSize: '11px', 
-                cursor: 'pointer', 
-                textDecoration: 'underline',
-                fontWeight: '500'
-              }}
-            >
-              📱 Get Android App
-            </button>
-          </>
-        )}
-        <span>&bull;</span>
-        <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.1.1</span>
+      {/* 6. Creator Signature, Dynamic Copyright & Version */}
+      <div className="creator-credit" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px', textAlign: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <span>Made with ❤️ &amp; care by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link">Hari</a></span>
+          {!isMobileApp && (
+            <>
+              <span>&bull;</span>
+              <button 
+                onClick={onOpenDownload} 
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: 'var(--accent-primary)', 
+                  fontSize: '11px', 
+                  cursor: 'pointer', 
+                  textDecoration: 'underline',
+                  fontWeight: '500'
+                }}
+              >
+                📱 Get Android App
+              </button>
+            </>
+          )}
+          <span>&bull;</span>
+          <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.1.1</span>
+        </div>
+        <div style={{ fontSize: '10.5px', color: '#64748b', letterSpacing: '0.02em', userSelect: 'none' }}>
+          &copy; {new Date().getFullYear()} Still &bull; All Rights Reserved
+        </div>
       </div>
 
     </div>

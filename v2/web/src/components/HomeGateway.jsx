@@ -153,33 +153,38 @@ export const HomeGateway = ({
           )}
         </div>
 
-        {/* Creator Signature & Version */}
-        <div className="creator-credit" style={{ marginTop: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flexWrap: 'wrap' }}>
-          <span>made by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link" onClick={(e) => e.stopPropagation()}>hari</a> with ❤️ &amp; care</span>
-          {!isMobileApp && (
-            <>
-              <span>&bull;</span>
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onOpenDownload();
-                }} 
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: 'var(--accent-primary)', 
-                  fontSize: '11px', 
-                  cursor: 'pointer', 
-                  textDecoration: 'underline',
-                  fontWeight: '500'
-                }}
-              >
-                📱 Get Android App
-              </button>
-            </>
-          )}
-          <span>&bull;</span>
-          <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.1.1</span>
+        {/* Creator Signature, Dynamic Copyright & Version */}
+        <div className="creator-credit" style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px', textAlign: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', flexWrap: 'wrap' }}>
+            <span>Made with ❤️ &amp; care by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link" onClick={(e) => e.stopPropagation()}>Hari</a></span>
+            {!isMobileApp && (
+              <>
+                <span>&bull;</span>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpenDownload();
+                  }} 
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    color: 'var(--accent-primary)', 
+                    fontSize: '11px', 
+                    cursor: 'pointer', 
+                    textDecoration: 'underline',
+                    fontWeight: '500'
+                  }}
+                >
+                  📱 Get Android App
+                </button>
+              </>
+            )}
+            <span>&bull;</span>
+            <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.1.1</span>
+          </div>
+          <div style={{ fontSize: '10.5px', color: '#64748b', letterSpacing: '0.02em', userSelect: 'none' }}>
+            &copy; {new Date().getFullYear()} Still &bull; All Rights Reserved
+          </div>
         </div>
 
       </div>

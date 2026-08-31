@@ -140,8 +140,8 @@ export const DownloadModal = ({ isOpen, onClose }) => {
           <p style={{ color: '#64748b', fontSize: '11px', fontStyle: 'italic' }}>
             "No tracking. No logins. No ads. No algorithms. Just pure peace."
           </p>
-          <p style={{ color: '#475569', fontSize: '11px', marginTop: '4px' }}>
-            crafted with care by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" style={{ color: '#38bdf8', textDecoration: 'none', fontWeight: '600' }}>hari</a>
+          <p style={{ color: '#475569', fontSize: '11px', marginTop: '4px', userSelect: 'none' }}>
+            Made with ❤️ &amp; care by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" style={{ color: '#38bdf8', textDecoration: 'none', fontWeight: '600' }}>Hari</a> &bull; &copy; {new Date().getFullYear()} Still &bull; All Rights Reserved
           </p>
         </div>
 

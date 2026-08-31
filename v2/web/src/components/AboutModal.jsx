@@ -154,13 +154,18 @@ export const AboutModal = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* 5. Privacy & Open Source */}
-          <div style={{ paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.08)', fontSize: '11.5px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-            <span>🛡️ 100% Client-Side • Zero Trackers • Zero Ads</span>
-            <a href="https://github.com/Harixomxsingh/still" target="_blank" rel="noopener noreferrer" className="creator-link" style={{ fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              <span>GitHub</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
+          {/* 5. Privacy & Dynamic Copyright */}
+          <div style={{ paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.08)', fontSize: '11.5px', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+              <span>🛡️ 100% Client-Side • Zero Trackers • Zero Ads</span>
+              <a href="https://github.com/Harixomxsingh/still" target="_blank" rel="noopener noreferrer" className="creator-link" style={{ fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <span>Source &amp; Community</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+            <div style={{ textAlign: 'center', color: '#64748b', fontSize: '10.5px', marginTop: '2px', userSelect: 'none' }}>
+              Made with ❤️ &amp; care by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link" style={{ color: 'var(--accent-primary)' }}>Hari</a> • &copy; {new Date().getFullYear()} Still • All Rights Reserved
+            </div>
           </div>
 
         </div>

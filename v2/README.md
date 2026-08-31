@@ -58,4 +58,4 @@ npx eas build -p android --profile preview
 ---
 
 ## 🛡️ License
-MIT License • Created with care by [Hari](https://github.com/Harixomxsingh) (2026)
+Source-Available Non-Commercial & Community License • Copyright © 2026 [Hari Om Singh](https://github.com/Harixomxsingh)

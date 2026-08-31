@@ -22,7 +22,7 @@
 
 <p align="center">
   <a href="https://github.com/Harixomxsingh/still/releases/tag/v2.0.0"><img src="https://img.shields.io/badge/Release-v2.0.0-f59e0b?style=flat-square&logo=github" alt="Release" /></a>
-  <a href="https://github.com/Harixomxsingh/still/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-a855f7?style=flat-square" alt="License" /></a>
+  <a href="https://github.com/Harixomxsingh/still/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Source--Available_Non--Commercial-6366f1?style=flat-square" alt="License" /></a>
   <img src="https://img.shields.io/badge/Platform-Android_|_Web_|_iOS_PWA-blue?style=flat-square" alt="Platforms" />
   <img src="https://img.shields.io/badge/Privacy-100%25_Offline_|_0_Trackers-brightgreen?style=flat-square" alt="Privacy" />
 </p>
@@ -199,9 +199,13 @@ npx expo start
 
 ---
 
-## 📄 License & Credits
+## 📄 License & Intellectual Property
 
-Released under the **[MIT License](LICENSE)**.
+Still is released under the **[Source-Available Non-Commercial & Community License](LICENSE)**.
+
+* 📖 **Open for Learning & Inspection:** You are welcome to view, study, fork for personal research, and run Still for non-commercial use.
+* 🤝 **Community Contributions Welcome:** Bug fixes, performance improvements, and PRs to the official repository are welcomed.
+* 🛡️ **Commercial Protection:** All commercial rights, monetization, app store distribution, and copyright are exclusively reserved by the Author (**[Hari Om Singh](https://github.com/Harixomxsingh)**). Commercial re-branding, closed-source re-packaging, or resale is strictly prohibited without prior written authorization.
 
 Crafted with ❤️, care, and intention by **[Hari Om Singh](https://github.com/Harixomxsingh)**.
 

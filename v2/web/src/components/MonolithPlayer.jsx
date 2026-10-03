@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BreathingHalo } from './BreathingHalo';
 import { 
   Play, Pause, SkipBack, SkipForward, Volume, Volume1, Volume2, VolumeX, 
-  Sliders, Clock, Mail, Moon, Sun, Leaf, Sparkles, Maximize, Info, Settings 
+  Sliders, Clock, Mail, Moon, Sun, Leaf, Sparkles, Maximize, Info, Settings, Flame, MoreHorizontal, X 
 } from 'lucide-react';
 
 export const MonolithPlayer = ({
@@ -12,7 +12,10 @@ export const MonolithPlayer = ({
   volume,
   isMuted,
   sleepTimer,
+  targetMilestone,
+  activeListeningSeconds,
   theme,
+  streakInfo,
   onTogglePlay,
   onNext,
   onPrev,
@@ -29,7 +32,10 @@ export const MonolithPlayer = ({
   onOpenDownload,
   isMobileApp
 }) => {
-  // Inactivity Auto-Ghost state (5 seconds)
+  // Sanctuary More Options Drawer State
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
+
+  // Inactivity Auto-Ghost state (10 seconds)
   const [isGhost, setIsGhost] = useState(false);
 
   useEffect(() => {
@@ -67,6 +73,8 @@ export const MonolithPlayer = ({
     }
   }, [isGhost]);
 
+  const streak = streakInfo?.streak || 0;
+
   return (
     <div className="monolith-wrapper">
       
@@ -76,6 +84,23 @@ export const MonolithPlayer = ({
           <i className="fa-solid fa-infinity text-xs" style={{ color: 'var(--accent-primary)' }}></i>
           <span>Still</span>
           <span className="freq-tag">0.1 Hz</span>
+          {streak > 0 && (
+            <span 
+              className="freq-tag" 
+              style={{ 
+                background: 'rgba(245, 158, 11, 0.15)', 
+                color: '#f59e0b', 
+                border: '1px solid rgba(245, 158, 11, 0.35)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '3px'
+              }}
+              title={`${streak}-day stillness streak`}
+            >
+              <Flame className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
+              <span>{streak}d</span>
+            </span>
+          )}
         </div>
 
         {quote && (
@@ -100,7 +125,7 @@ export const MonolithPlayer = ({
       </div>
 
       {/* 4. Monolith Unified Glass Console */}
-      <div className="monolith-console">
+      <div className="monolith-console" style={{ position: 'relative' }}>
         
         {/* Playback Controls Row */}
         <div className="playback-row">
@@ -176,128 +201,151 @@ export const MonolithPlayer = ({
           </span>
         </div>
 
-        {/* Utilities Row */}
+        {/* Streamlined 5-Control Utilities Row (Apple-grade Balance) */}
         <div className="utility-row">
-          {/* Sound Library Icon Button */}
+          {/* 1. Sound Library */}
           <button className="icon-action-btn" onClick={onOpenLibrary} title="Soundscape Library">
             <i className="fa-solid fa-list-ul text-xs text-sky-400"></i>
           </button>
 
-          {/* Stem Mixer Icon Button */}
+          {/* 2. Audio Stem Mixer */}
           <button className="icon-action-btn" onClick={onOpenMixer} title="Audio Stem Layer Mixer">
             <Sliders className="w-3.5 h-3.5 text-sky-400" />
           </button>
 
-          {/* Sanctuary Settings & Analytics Button (Mobile App Only) */}
-          {isMobileApp && (
-            <button className="icon-action-btn" onClick={onOpenSettings} title="Sanctuary Analytics & Notification Settings">
-              <Settings className="w-3.5 h-3.5 text-sky-400" />
-            </button>
-          )}
-
-          {/* Countdown Sleep Timer */}
+          {/* 3. Integrated Dynamic Habit / Sleep Timer Capsule */}
           <button 
-            className={`pill-toggle-btn timer-pill-btn ${sleepTimer !== null ? 'is-active' : ''}`}
+            className={`pill-toggle-btn timer-pill-btn ${sleepTimer !== null || isPlaying ? 'is-active' : ''}`}
             onClick={onCycleTimer} 
-            title={sleepTimer !== null ? `Sleep Timer: ${Math.floor(sleepTimer / 60)}:${sleepTimer % 60 < 10 ? '0' : ''}${sleepTimer % 60} remaining` : "Set Sleep Timer"}
+            title={
+              sleepTimer !== null 
+                ? `Sleep Timer: ${Math.floor(sleepTimer / 60)}:${sleepTimer % 60 < 10 ? '0' : ''}${sleepTimer % 60} remaining. Tap to cycle.` 
+                : `Autonomous Habit: ${targetMilestone?.label || '5m'} (${targetMilestone?.formattedRemaining || '05:00'} remaining). Tap for sleep timer.`
+            }
           >
-            <Clock className="w-3 h-3" />
-            <span style={{ 
-              fontFamily: 'JetBrains Mono, monospace', 
-              fontSize: sleepTimer !== null ? '10px' : '11px',
-              fontWeight: 600
-            }}>
-              {sleepTimer !== null 
-                ? `${Math.floor(sleepTimer / 60)}:${sleepTimer % 60 < 10 ? '0' : ''}${sleepTimer % 60}` 
-                : '∞'}
-            </span>
+            {sleepTimer !== null ? (
+              <>
+                <Clock className="w-3 h-3 text-amber-400" />
+                <span style={{ 
+                  fontFamily: 'JetBrains Mono, monospace', 
+                  fontSize: '10.5px', 
+                  fontWeight: 700,
+                  color: '#f59e0b'
+                }}>
+                  {Math.floor(sleepTimer / 60)}:{sleepTimer % 60 < 10 ? '0' : ''}{sleepTimer % 60}
+                </span>
+              </>
+            ) : (
+              <>
+                <span style={{ fontSize: '10.5px' }}>🎯</span>
+                <span style={{ 
+                  fontFamily: 'JetBrains Mono, monospace', 
+                  fontSize: '10.5px', 
+                  fontWeight: 600,
+                  color: isPlaying ? 'var(--accent-primary)' : 'var(--text-secondary)'
+                }}>
+                  {targetMilestone?.label || '5m'} &bull; {Math.round(targetMilestone?.progressPercent || 0)}%
+                </span>
+                {/* Integrated Micro Progress Underline */}
+                {isPlaying && targetMilestone && (
+                  <div 
+                    className="timer-pill-progress" 
+                    style={{ width: `${Math.min(100, Math.max(3, targetMilestone.progressPercent || 0))}%` }} 
+                  />
+                )}
+              </>
+            )}
           </button>
 
-          {/* Download Android App (Web Browser Only) */}
-          {!isMobileApp && (
-            <button 
-              className="icon-action-btn" 
-              onClick={onOpenDownload} 
-              title="Download Still Android App (.apk)"
-              style={{ color: 'var(--accent-primary)', borderColor: 'rgba(56, 189, 248, 0.3)' }}
-            >
-              <i className="fa-brands fa-android text-xs"></i>
-            </button>
-          )}
-
-          {/* About & Science */}
-          <button 
-            className="icon-action-btn" 
-            onClick={onOpenAbout} 
-            title="About & Science"
-          >
-            <Info className="w-3.5 h-3.5" />
-          </button>
-
-          {/* Welcome Note from Hari */}
-          <button 
-            className="icon-action-btn" 
-            onClick={onOpenNote} 
-            title="Welcome Note from Hari"
-          >
-            <Mail className="w-3.5 h-3.5" />
-          </button>
-
-          {/* Theme Switcher */}
+          {/* 4. Ambient Mood Lighting */}
           <button 
             className="icon-action-btn" 
             onClick={onCycleTheme} 
-            title="Switch Mood Theme (T)"
+            title="Switch Mood Lighting (T)"
           >
             <Moon className="w-3.5 h-3.5" />
           </button>
 
-          {/* Fullscreen Zen Mode */}
+          {/* 5. Sanctuary Menu & More */}
           <button 
-            className="icon-action-btn zen-fullscreen-btn" 
-            onClick={onToggleFullScreen} 
-            title="Fullscreen Zen Mode (F)"
+            className={`icon-action-btn ${isMoreOpen ? 'is-active' : ''}`} 
+            onClick={() => setIsMoreOpen((prev) => !prev)} 
+            title="Sanctuary Options & Tools"
+            style={{ color: isMoreOpen ? 'var(--accent-primary)' : undefined }}
           >
-            <Maximize className="w-3.5 h-3.5" />
+            <MoreHorizontal className="w-3.5 h-3.5" />
           </button>
         </div>
 
-      </div>
+        {/* Sanctuary Floating Drawer Popover */}
+        {isMoreOpen && (
+          <>
+            <div className="sanctuary-more-backdrop" onClick={() => setIsMoreOpen(false)} />
+            <div className="sanctuary-more-popover" onClick={(e) => e.stopPropagation()}>
+              <div className="more-menu-header">
+                <span>Sanctuary Tools</span>
+                <button 
+                  onClick={() => setIsMoreOpen(false)} 
+                  style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '2px' }}
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
 
-      {/* 5. Keyboard Hints Bar */}
-      <div className="keyboard-hints">
-        [Space] Play &bull; [N] Next &bull; [M] Mute &bull; [F] Zen
-      </div>
-
-      {/* 6. Creator Signature, Dynamic Copyright & Version */}
-      <div className="creator-credit" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px', textAlign: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <span>Made with ❤️ &amp; care by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link">Hari</a></span>
-          {!isMobileApp && (
-            <>
-              <span>&bull;</span>
               <button 
-                onClick={onOpenDownload} 
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: 'var(--accent-primary)', 
-                  fontSize: '11px', 
-                  cursor: 'pointer', 
-                  textDecoration: 'underline',
-                  fontWeight: '500'
-                }}
+                className="more-menu-item" 
+                onClick={() => { setIsMoreOpen(false); onOpenSettings(); }}
               >
-                📱 Get Android App
+                <Settings className="w-4 h-4 text-sky-400" />
+                <span>Sanctuary Settings &amp; Sync</span>
               </button>
-            </>
-          )}
-          <span>&bull;</span>
-          <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '10.5px' }}>v2.1.1</span>
-        </div>
-        <div style={{ fontSize: '10.5px', color: '#64748b', letterSpacing: '0.02em', userSelect: 'none' }}>
-          &copy; {new Date().getFullYear()} Still &bull; All Rights Reserved
-        </div>
+
+              <button 
+                className="more-menu-item" 
+                onClick={() => { setIsMoreOpen(false); onOpenAbout(); }}
+              >
+                <Info className="w-4 h-4 text-sky-400" />
+                <span>About Still &amp; Neuroscience</span>
+              </button>
+
+              <button 
+                className="more-menu-item" 
+                onClick={() => { setIsMoreOpen(false); onOpenNote(); }}
+              >
+                <Mail className="w-4 h-4 text-sky-400" />
+                <span>Welcome Note from Hari</span>
+              </button>
+
+              {!isMobileApp && (
+                <button 
+                  className="more-menu-item" 
+                  onClick={() => { setIsMoreOpen(false); onOpenDownload(); }}
+                >
+                  <i className="fa-brands fa-android text-sky-400" style={{ fontSize: '14px', width: '16px', textAlign: 'center' }}></i>
+                  <span>Download Android App (.apk)</span>
+                </button>
+              )}
+
+              <button 
+                className="more-menu-item" 
+                onClick={() => { setIsMoreOpen(false); onToggleFullScreen(); }}
+              >
+                <Maximize className="w-4 h-4 text-sky-400" />
+                <span>Fullscreen Zen Mode (F)</span>
+              </button>
+
+              <div className="more-menu-shortcuts">
+                [Space] Play &bull; [N] Next &bull; [M] Mute &bull; [T] Theme &bull; [F] Zen
+              </div>
+            </div>
+          </>
+        )}
+
+      </div>
+
+      {/* 5. Minimal, Serene Single-Line Craft Credit */}
+      <div className="creator-credit" style={{ marginTop: '14px', textAlign: 'center', opacity: 0.45, transition: 'opacity 0.3s ease' }}>
+        <span>Still Sanctuary &bull; Crafted with care by <a href="https://github.com/Harixomxsingh" target="_blank" rel="noopener noreferrer" className="creator-link">Hari</a> &bull; v2.2.0</span>
       </div>
 
     </div>

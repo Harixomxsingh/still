@@ -19,23 +19,23 @@ export const MilestoneRewardModal = ({
         alignItems: 'center',
         justifyContent: 'center',
         padding: '24px 20px',
-        background: 'rgba(5, 7, 13, 0.75)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        animation: 'fadeIn 0.4s ease-out'
+        background: 'rgba(3, 5, 10, 0.82)',
+        backdropFilter: 'blur(30px)',
+        WebkitBackdropFilter: 'blur(30px)',
+        animation: 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
       }}
       onClick={onClose}
     >
       <div
         style={{
           position: 'relative',
-          maxWidth: '420px',
+          maxWidth: '440px',
           width: '100%',
-          background: 'linear-gradient(145deg, rgba(13, 19, 33, 0.95), rgba(7, 10, 18, 0.98))',
-          border: '1px solid rgba(56, 189, 248, 0.3)',
-          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(56, 189, 248, 0.15)',
-          borderRadius: '28px',
-          padding: '32px 24px 28px',
+          background: 'rgba(15, 20, 32, 0.92)',
+          border: '1px solid rgba(255, 255, 255, 0.09)',
+          boxShadow: '0 30px 90px rgba(0, 0, 0, 0.85), 0 0 1px rgba(255, 255, 255, 0.2)',
+          borderRadius: '32px',
+          padding: '36px 28px 32px',
           textAlign: 'center',
           color: '#ffffff',
           animation: 'scaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
@@ -47,13 +47,13 @@ export const MilestoneRewardModal = ({
           onClick={onClose}
           style={{
             position: 'absolute',
-            top: '18px',
-            right: '18px',
-            width: '36px',
-            height: '36px',
+            top: '20px',
+            right: '20px',
+            width: '32px',
+            height: '32px',
             borderRadius: '50%',
-            background: 'rgba(255, 255, 255, 0.06)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
             color: '#94a3b8',
             display: 'flex',
             alignItems: 'center',
@@ -63,37 +63,37 @@ export const MilestoneRewardModal = ({
           }}
           aria-label="Close"
         >
-          <X size={18} />
+          <X size={15} />
         </button>
 
-        {/* Milestone Glowing Badge */}
+        {/* Milestone Ethereal Pill */}
         <div
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '8px',
-            padding: '6px 16px',
+            gap: '6px',
+            padding: '4px 14px',
             borderRadius: '9999px',
-            background: 'rgba(56, 189, 248, 0.12)',
-            border: '1px solid rgba(56, 189, 248, 0.25)',
-            color: '#38bdf8',
-            fontSize: '12px',
-            fontWeight: 700,
-            letterSpacing: '0.06em',
+            background: 'rgba(255, 255, 255, 0.06)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            color: '#e2e8f0',
+            fontSize: '11px',
+            fontWeight: 600,
+            letterSpacing: '0.04em',
             textTransform: 'uppercase',
-            marginBottom: '16px'
+            marginBottom: '18px'
           }}
         >
-          <Sparkles size={14} />
-          <span>{milestone.label} Milestone</span>
+          <Sparkles size={12} className="text-amber-400" />
+          <span>{milestone.label} Habit Milestone</span>
         </div>
 
         {/* Title */}
         <h2
           style={{
-            fontSize: '24px',
-            fontWeight: 800,
-            letterSpacing: '-0.02em',
+            fontSize: '25px',
+            fontWeight: 700,
+            letterSpacing: '-0.03em',
             color: '#ffffff',
             margin: '0 0 10px',
             lineHeight: 1.2
@@ -105,63 +105,47 @@ export const MilestoneRewardModal = ({
         {/* Affirmation Message */}
         <p
           style={{
-            fontSize: '14px',
+            fontSize: '13.5px',
             color: '#94a3b8',
             lineHeight: 1.6,
-            margin: '0 0 24px',
+            margin: '0 auto 24px',
+            maxWidth: '340px',
             fontWeight: 300
           }}
         >
           {milestone.message}
         </p>
 
-        {/* Unlocked Wisdom Quote Box */}
+        {/* Unlocked Wisdom Quote: Natural, uncluttered poetry style */}
         {quote && (
           <div
             style={{
-              background: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '20px',
-              padding: '20px 18px',
-              marginBottom: '24px',
-              textAlign: 'left',
-              position: 'relative'
+              padding: '16px 20px',
+              margin: '0 0 28px',
+              borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+              textAlign: 'center'
             }}
           >
-            <div
-              style={{
-                fontSize: '11px',
-                fontWeight: 600,
-                color: '#38bdf8',
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                marginBottom: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
-            >
-              <Compass size={13} />
-              <span>Unlocked Wisdom</span>
-            </div>
             <p
               style={{
                 fontSize: '14px',
                 fontStyle: 'italic',
-                color: '#e2e8f0',
-                lineHeight: 1.6,
+                color: '#f1f5f9',
+                lineHeight: 1.65,
                 margin: '0 0 8px',
-                fontFamily: 'serif'
+                fontWeight: 300,
+                letterSpacing: '0.01em'
               }}
             >
-              "{quote.text}"
+              “{quote.text}”
             </p>
             <div
               style={{
-                fontSize: '12px',
+                fontSize: '11.5px',
                 color: '#64748b',
                 fontWeight: 500,
-                textAlign: 'right'
+                letterSpacing: '0.03em'
               }}
             >
               — {quote.author}
@@ -169,30 +153,31 @@ export const MilestoneRewardModal = ({
           </div>
         )}
 
-        {/* Action Button */}
+        {/* Action Button: Tactile frosted glass pill */}
         <button
           onClick={onClose}
           style={{
             width: '100%',
-            height: '48px',
-            borderRadius: '16px',
-            background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
-            border: 'none',
-            color: '#05070d',
-            fontSize: '14px',
-            fontWeight: 700,
+            height: '46px',
+            borderRadius: '9999px',
+            background: 'rgba(255, 255, 255, 0.1)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            color: '#ffffff',
+            fontSize: '13.5px',
+            fontWeight: 600,
             letterSpacing: '0.02em',
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
             gap: '8px',
-            boxShadow: '0 8px 24px rgba(56, 189, 248, 0.3)',
-            transition: 'transform 0.2s ease, filter 0.2s ease'
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+            transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
+          className="master-play-button"
         >
-          <Heart size={16} />
-          <span>Continue in Sanctuary</span>
+          <Heart size={15} className="text-rose-400" />
+          <span>Continue in Stillness</span>
         </button>
       </div>
     </div>

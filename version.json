@@ -1,15 +1,15 @@
 {
-  "version": "2.1.1",
-  "build": 22,
-  "releaseDate": "August 2026",
-  "title": "The Sanctuary Resonance & Sovereignty Update",
+  "version": "2.2.0",
+  "build": 23,
+  "releaseDate": "October 2026",
+  "title": "The Daily Habit, Stillness Reflex & Cross-Device Sync Update",
   "highlights": [
-    "Compounding Mindfulness Rewards (5m → 80m continuous calm tiers)",
-    "Real-time Stillness & Presence Analytics (Daily & Lifetime calm time)",
-    "Granular Notification Sovereignty (Individual toggles for milestones & daily reminders)",
-    "Autonomous Weekly Cloud Wisdom Sync (Hundreds of non-repeating reflections)",
-    "100% Pure Living Procedural Synthesizer & In-App 528 Hz Solfeggio Chimes",
-    "Radical Minimalist Icon-Only Bottom Control Bar"
+    "Daily Stillness Streak & 5-Minute Habit Ring (Loss Aversion & Compounding presence)",
+    "1-Tap SOS State Rescues (Racing Thoughts, ADHD Noise Shield, Deep Flow, Night Sleep)",
+    "Optional 1-Tap Google Cross-Device Sync (Seamless sync to laptop, phone & tablet)",
+    "Streak-Aware Daily Notifications (Morning, Afternoon, Evening nudges with active streak count)",
+    "1-Click Export & Import Sanctuary Backup JSON",
+    "Universal Production Test Gate & Automated Release Verifier"
   ],
   "downloadUrl": "https://github.com/Harixomxsingh/still/releases"
 }

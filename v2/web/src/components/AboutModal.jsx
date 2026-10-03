@@ -50,7 +50,7 @@ export const AboutModal = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* 2. Active Development & What's New in v2.1.1 */}
+          {/* 2. Active Development & What's New in v2.2.0 */}
           <div style={{ background: 'rgba(56, 189, 248, 0.05)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '20px', padding: '20px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 700, color: '#38bdf8' }}>
@@ -58,12 +58,12 @@ export const AboutModal = ({ isOpen, onClose }) => {
                 <span>Actively in Development • Release Notes</span>
               </div>
               <span style={{ background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8', fontSize: '11px', fontWeight: 800, padding: '3px 10px', borderRadius: '10px', fontFamily: 'monospace' }}>
-                v2.1.1 Live
+                v2.2.0 Live
               </span>
             </div>
             
             <p style={{ fontSize: '12.5px', color: '#cbd5e1', fontWeight: 300, lineHeight: '1.6', marginBottom: '14px' }}>
-              Still is constantly evolving into a more refined personal sanctuary. Here are the latest major features and upgrades introduced in <strong>v2.1.1</strong>:
+              Still is constantly evolving into a more refined personal sanctuary. Here are the latest major features and upgrades introduced in <strong>v2.2.0</strong>:
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '12px' }}>
@@ -71,7 +71,7 @@ export const AboutModal = ({ isOpen, onClose }) => {
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                 <Sparkles size={14} style={{ color: '#38bdf8', flexShrink: 0, marginTop: '2px' }} />
                 <div>
-                  <strong style={{ color: '#ffffff' }}>Compounding Mindfulness Rewards (5m → 80m):</strong> Continuous calm unlocks milestone rewards at 5m, 10m, 20m, 40m, and 80m. Each tier reveals an exclusive wisdom reflection, accompanied by an in-app 528 Hz Solfeggio golden chime and phone celebration notification.
+                  <strong style={{ color: '#ffffff' }}>Autonomous 5-Min Habit Counter &amp; Compounding Ladder:</strong> Automated 5-minute countdown immediately upon playback with zero manual setup. Auto-advances across 5m, 10m, 20m, 40m, and 80m with golden 528 Hz bell chime celebrations.
                 </div>
               </div>
 
@@ -79,7 +79,7 @@ export const AboutModal = ({ isOpen, onClose }) => {
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                 <Activity size={14} style={{ color: '#818cf8', flexShrink: 0, marginTop: '2px' }} />
                 <div>
-                  <strong style={{ color: '#ffffff' }}>Live Stillness &amp; Presence Analytics:</strong> View your exact active calm minutes today and total lifetime stillness hours inside the new Sanctuary Settings modal (100% on-device private tracking).
+                  <strong style={{ color: '#ffffff' }}>1-Tap Quick SOS State Rescues:</strong> Instant neuro-acoustic interventions for Racing Thoughts, ADHD/Noise Shield, Deep Flow &amp; Study, and Delta Night Sleep directly on the Home Gateway.
                 </div>
               </div>
 
@@ -87,7 +87,7 @@ export const AboutModal = ({ isOpen, onClose }) => {
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                 <Bell size={14} style={{ color: '#f59e0b', flexShrink: 0, marginTop: '2px' }} />
                 <div>
-                  <strong style={{ color: '#ffffff' }}>Granular Notification Sovereignty:</strong> Full freedom to individually toggle Milestone Celebrations, Morning Intentions (8:30 AM), Midday Breath Resets (2:00 PM), and Evening Summaries (9:45 PM) with real-time Android OS synchronization.
+                  <strong style={{ color: '#ffffff' }}>Radical Simplicity &amp; Apple Craftsmanship:</strong> Streamlined 5-button control console, unified dynamic timer capsule with micro-progress underline, and a whisper-quiet visual hierarchy that honors peace.
                 </div>
               </div>
 
@@ -95,15 +95,7 @@ export const AboutModal = ({ isOpen, onClose }) => {
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                 <RefreshCw size={14} style={{ color: '#34d399', flexShrink: 0, marginTop: '2px' }} />
                 <div>
-                  <strong style={{ color: '#ffffff' }}>Autonomous In-App Updates &amp; Wisdom Sync:</strong> Automatic weekly synchronization of hundreds of fresh neuroscience, Stoic, and Zen reflections, plus an over-the-air changelog checker without needing the Google Play Store.
-                </div>
-              </div>
-
-              {/* Feature 5 */}
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                <Layers size={14} style={{ color: '#c084fc', flexShrink: 0, marginTop: '2px' }} />
-                <div>
-                  <strong style={{ color: '#ffffff' }}>Radical Minimalist Icon Bar:</strong> Sleek icon-only buttons for Library, Stem Layer Mixer, and Settings, creating a distraction-free, spacious interface.
+                  <strong style={{ color: '#ffffff' }}>1-Tap Cloud Sync &amp; Privacy Sovereignty:</strong> Effortlessly sync streak data and listening minutes across your laptop, phone, and tablet without compromising zero-tracking philosophy.
                 </div>
               </div>
             </div>

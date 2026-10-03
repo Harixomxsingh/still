@@ -89,8 +89,8 @@ export default function App() {
     // 5. Version Update Arrival Broadcast Notification
     Notifications.scheduleNotificationAsync({
       content: {
-        title: '✨ Still Sanctuary v2.1.1 Update is Live!',
-        body: 'Compounding mindfulness rewards (5m–80m), calm analytics, and notification sovereignty are now active. Tap to enter.',
+        title: '✨ Still Sanctuary v2.2.0 Update is Live!',
+        body: 'Daily Stillness Streaks, 1-Tap SOS State Rescues, and Cross-Device Sync are now active. Tap to enter.',
         data: { type: 'APP_UPDATE_NOTIFICATION' },
         sound: 'default',
         color: '#38bdf8',
@@ -112,6 +112,10 @@ export default function App() {
       const data = JSON.parse(event.nativeEvent.data);
       
       switch (data.type) {
+        case 'SYNC_STREAK_STATS':
+          MindfulnessNotificationService.updateActiveStreak(data.streak, data.todaySeconds);
+          break;
+
         case 'AUDIO_PLAY':
           BackgroundAudioService.playTrack();
           break;

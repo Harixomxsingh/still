@@ -88,11 +88,29 @@ describe('App Main Application Component & Flow', () => {
     expect(screen.queryByText('Neuro-Acoustic Soundscapes')).not.toBeInTheDocument();
   });
 
+  it('triggers 1-Tap SOS State Rescue directly from Home Gateway', () => {
+    render(<App />);
+
+    // Dismiss Welcome Note
+    fireEvent.click(screen.getByText(/Continue to Still/i));
+
+    // Click SOS State Rescue "ADHD / Noise Shield"
+    const adhdRescue = screen.getByText('ADHD / Noise Shield');
+    fireEvent.click(adhdRescue);
+
+    // Verify Monolith Player is now rendered playing Brownian Noise
+    expect(screen.getByText(SOUNDSCAPES[2].title)).toBeInTheDocument();
+    expect(screen.getAllByTitle(/Pause \(Space\)/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/5m • 0%/)).toBeInTheDocument();
+  });
+
   it('validates MILESTONES constant configuration', () => {
     expect(Array.isArray(MILESTONES)).toBe(true);
     expect(MILESTONES.length).toBe(5);
-    MILESTONES.forEach((m) => {
+    MILESTONES.forEach((m, idx) => {
       expect(m.seconds).toBeGreaterThan(0);
+      expect(m.tier).toBe(idx + 1);
+      expect(m.label).toBeTruthy();
       expect(m.title).toBeTruthy();
       expect(m.message).toBeTruthy();
     });

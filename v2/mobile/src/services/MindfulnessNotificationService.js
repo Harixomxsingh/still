@@ -114,6 +114,14 @@ export class MindfulnessNotificationService {
     }
   }
 
+  static activeStreak = 0;
+
+  static updateActiveStreak(streak, todaySeconds) {
+    if (typeof streak === 'number') {
+      this.activeStreak = streak;
+    }
+  }
+
   /**
    * Schedules the 3 daily reminders using strict future Date objects.
    * Android OS will NEVER fire a future Date immediately.
@@ -126,13 +134,16 @@ export class MindfulnessNotificationService {
       const morningDate = getNextFutureDate(8, 30);
       const mList = cachedPrompts.morning || defaultPrompts.morning;
       const mPrompt = mList[dayOfYear % mList.length];
+      const morningTitle = this.activeStreak > 0 
+        ? `🔥 Day ${this.activeStreak} Streak: ${mPrompt.title}`
+        : mPrompt.title;
 
       await Notifications.scheduleNotificationAsync({
         identifier: 'daily_morning_reminder',
         content: {
-          title: mPrompt.title,
+          title: morningTitle,
           body: mPrompt.body,
-          data: { slot: 'morning' },
+          data: { slot: 'morning', streak: this.activeStreak },
           color: '#38bdf8',
           sound: true,
         },

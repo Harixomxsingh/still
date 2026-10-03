@@ -28,7 +28,7 @@ describe('MindfulnessNotificationService', () => {
       expect.objectContaining({
         identifier: 'daily_morning_reminder',
         content: expect.objectContaining({
-          data: { slot: 'morning' },
+          data: expect.objectContaining({ slot: 'morning' }),
         }),
         trigger: expect.objectContaining({
           type: Notifications.SchedulableTriggerInputTypes.DATE,

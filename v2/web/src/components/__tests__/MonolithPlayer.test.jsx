@@ -119,4 +119,115 @@ describe('MonolithPlayer Component', () => {
     fireEvent.click(prevBtn);
     expect(onPrev).toHaveBeenCalledTimes(1);
   });
+
+  it('renders autonomous milestone ladder and 5-min target countdown', () => {
+    const mockTargetMilestone = {
+      currentTier: 1,
+      totalTiers: 5,
+      targetSeconds: 300,
+      secondsRemaining: 285,
+      progressPercent: 5,
+      label: '5m',
+      title: 'The Gateway to Presence',
+      formattedRemaining: '04:45'
+    };
+
+    render(
+      <MonolithPlayer
+        track={mockTrack}
+        quote={mockQuote}
+        isPlaying={true}
+        volume={0.75}
+        isMuted={false}
+        sleepTimer={null}
+        targetMilestone={mockTargetMilestone}
+        activeListeningSeconds={15}
+        theme={mockTheme}
+        onTogglePlay={vi.fn()}
+        onNext={vi.fn()}
+        onPrev={vi.fn()}
+        onVolumeChange={vi.fn()}
+        onToggleMute={vi.fn()}
+        onCycleTimer={vi.fn()}
+        onCycleTheme={vi.fn()}
+        onToggleFullScreen={vi.fn()}
+        onOpenLibrary={vi.fn()}
+        onOpenMixer={vi.fn()}
+        onOpenSettings={vi.fn()}
+        onOpenAbout={vi.fn()}
+        onOpenNote={vi.fn()}
+        onOpenDownload={vi.fn()}
+        isMobileApp={false}
+      />
+    );
+
+    expect(screen.getByText(/5m • 5%/)).toBeInTheDocument();
+  });
+
+  it('renders sleep timer remaining time when manual timer is activated', () => {
+    render(
+      <MonolithPlayer
+        track={mockTrack}
+        quote={mockQuote}
+        isPlaying={true}
+        volume={0.75}
+        isMuted={false}
+        sleepTimer={900}
+        theme={mockTheme}
+        onTogglePlay={vi.fn()}
+        onNext={vi.fn()}
+        onPrev={vi.fn()}
+        onVolumeChange={vi.fn()}
+        onToggleMute={vi.fn()}
+        onCycleTimer={vi.fn()}
+        onCycleTheme={vi.fn()}
+        onToggleFullScreen={vi.fn()}
+        onOpenLibrary={vi.fn()}
+        onOpenMixer={vi.fn()}
+        onOpenSettings={vi.fn()}
+        onOpenAbout={vi.fn()}
+        onOpenNote={vi.fn()}
+        onOpenDownload={vi.fn()}
+        isMobileApp={false}
+      />
+    );
+
+    expect(screen.getByText('15:00')).toBeInTheDocument();
+  });
+
+  it('toggles Sanctuary More popover menu', () => {
+    render(
+      <MonolithPlayer
+        track={mockTrack}
+        quote={mockQuote}
+        isPlaying={true}
+        volume={0.75}
+        isMuted={false}
+        sleepTimer={null}
+        theme={mockTheme}
+        onTogglePlay={vi.fn()}
+        onNext={vi.fn()}
+        onPrev={vi.fn()}
+        onVolumeChange={vi.fn()}
+        onToggleMute={vi.fn()}
+        onCycleTimer={vi.fn()}
+        onCycleTheme={vi.fn()}
+        onToggleFullScreen={vi.fn()}
+        onOpenLibrary={vi.fn()}
+        onOpenMixer={vi.fn()}
+        onOpenSettings={vi.fn()}
+        onOpenAbout={vi.fn()}
+        onOpenNote={vi.fn()}
+        onOpenDownload={vi.fn()}
+        isMobileApp={false}
+      />
+    );
+
+    const moreBtn = screen.getByTitle(/Sanctuary Options & Tools/i);
+    fireEvent.click(moreBtn);
+
+    expect(screen.getByText('Sanctuary Tools')).toBeInTheDocument();
+    expect(screen.getByText('Sanctuary Settings & Sync')).toBeInTheDocument();
+    expect(screen.getByText('About Still & Neuroscience')).toBeInTheDocument();
+  });
 });

@@ -6,13 +6,14 @@ import { MilestoneRewardModal } from './components/MilestoneRewardModal';
 import { SettingsModal } from './components/SettingsModal';
 import { UpdateModal } from './components/UpdateModal';
 import { WisdomCloudSync } from './services/WisdomCloudSync';
+import { SanctuarySyncService } from './services/SanctuarySyncService';
 
 export const MILESTONES = [
-  { seconds: 300, label: '5 Minutes', title: 'The Gateway to Presence', message: '5 minutes of continuous stillness. Your heart rate has slowed and your nervous system is settling.' },
-  { seconds: 600, label: '10 Minutes', title: 'Alpha Wave Immersion', message: '10 minutes of pure calm. Mental chatter has quieted and your mind is entering deep tranquility.' },
-  { seconds: 1200, label: '20 Minutes', title: 'Deep Parasympathetic Reset', message: '20 minutes of undisturbed peace. Full physiological recovery and somatic harmony.' },
-  { seconds: 2400, label: '40 Minutes', title: 'The Flow State Sanctuary', message: '40 minutes of deep focus. Distractions have dissolved and your flow state is locked in.' },
-  { seconds: 4800, label: '80 Minutes', title: 'Mastery of Stillness', message: '80 minutes of profound presence. A transformative immersion into pure stillness.' },
+  { seconds: 300, label: '5m', tier: 1, title: 'The Gateway to Presence', message: '5 minutes of continuous stillness. Your heart rate has slowed and your nervous system is settling.' },
+  { seconds: 600, label: '10m', tier: 2, title: 'Alpha Wave Immersion', message: '10 minutes of pure calm. Mental chatter has quieted and your mind is entering deep tranquility.' },
+  { seconds: 1200, label: '20m', tier: 3, title: 'Deep Parasympathetic Reset', message: '20 minutes of undisturbed peace. Full physiological recovery and somatic harmony.' },
+  { seconds: 2400, label: '40m', tier: 4, title: 'The Flow State Sanctuary', message: '40 minutes of deep focus. Distractions have dissolved and your flow state is locked in.' },
+  { seconds: 4800, label: '80m', tier: 5, title: 'Mastery of Stillness', message: '80 minutes of profound presence. A transformative immersion into pure stillness.' },
 ];
 import { HomeGateway } from './components/HomeGateway';
 import { MonolithPlayer } from './components/MonolithPlayer';
@@ -59,6 +60,64 @@ export const App = () => {
   const [unlockedMilestone, setUnlockedMilestone] = useState(null);
   const [isMilestoneOpen, setIsMilestoneOpen] = useState(false);
   const [bonusQuoteIndex, setBonusQuoteIndex] = useState(0);
+
+  // Autonomous Compounding Milestone Ladder Computation
+  const targetMilestone = useMemo(() => {
+    const nextIdx = MILESTONES.findIndex((m) => m.seconds > activeListeningSeconds);
+    if (nextIdx === -1) {
+      return {
+        currentTier: MILESTONES.length,
+        totalTiers: MILESTONES.length,
+        nextMilestone: null,
+        targetSeconds: 4800,
+        secondsRemaining: 0,
+        progressPercent: 100,
+        label: '80m+',
+        title: 'Mastery of Stillness',
+        formattedRemaining: '00:00'
+      };
+    }
+
+    const nextMilestone = MILESTONES[nextIdx];
+    const prevSeconds = nextIdx === 0 ? 0 : MILESTONES[nextIdx - 1].seconds;
+    const targetSeconds = nextMilestone.seconds;
+    const secondsRemaining = Math.max(0, targetSeconds - activeListeningSeconds);
+    const tierTotalSeconds = targetSeconds - prevSeconds;
+    const tierElapsedSeconds = activeListeningSeconds - prevSeconds;
+    const progressPercent = Math.min(100, Math.max(0, (tierElapsedSeconds / tierTotalSeconds) * 100));
+
+    const mins = Math.floor(secondsRemaining / 60);
+    const secs = secondsRemaining % 60;
+    const formattedRemaining = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+    return {
+      currentTier: nextIdx + 1,
+      totalTiers: MILESTONES.length,
+      nextMilestone,
+      targetSeconds,
+      secondsRemaining,
+      progressPercent,
+      label: nextMilestone.label,
+      title: nextMilestone.title,
+      formattedRemaining
+    };
+  }, [activeListeningSeconds]);
+
+  // Daily Habit & Streak Tracking Engine
+  const [streakInfo, setStreakInfo] = useState(() => SanctuarySyncService.getStreakInfo());
+  const [googleUser, setGoogleUser] = useState(() => SanctuarySyncService.getGoogleUser());
+
+  const handleLinkGoogle = async () => {
+    const res = await SanctuarySyncService.linkGoogleAccount();
+    if (res.success) {
+      setGoogleUser(res.user);
+    }
+  };
+
+  const handleUnlinkGoogle = () => {
+    SanctuarySyncService.unlinkGoogleAccount();
+    setGoogleUser(null);
+  };
 
   // Settings & In-App Autonomous Updates
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -113,11 +172,11 @@ export const App = () => {
       if (res.ok) {
         const data = await res.json();
         setUpdateInfo(data);
-        if (data.version && data.version !== '2.1.1') {
+        if (data.version && data.version !== '2.2.0') {
           setUpdateStatus(`New update v${data.version} available!`);
           setIsUpdateModalOpen(true);
         } else {
-          setUpdateStatus('You are running the latest version (v2.1.1)');
+          setUpdateStatus('You are running the latest version (v2.2.0)');
         }
       } else {
         setUpdateStatus('Latest version installed');
@@ -142,17 +201,17 @@ export const App = () => {
     // Autonomous Weekly Cloud Wisdom Synchronization
     WisdomCloudSync.syncWeekly();
 
-    // Check if user has seen v2.1.1 update announcement (Mobile App Only)
+    // Check if user has seen v2.2.0 update announcement (Mobile App Only)
     try {
       if (isMobileApp) {
         const lastSeenVer = localStorage.getItem('still_last_seen_version');
-        if (lastSeenVer !== '2.1.1') {
+        if (lastSeenVer !== '2.2.0') {
           if (window.ReactNativeWebView) {
             window.ReactNativeWebView.postMessage(JSON.stringify({
               type: 'APP_UPDATE_AVAILABLE',
-              version: '2.1.1',
-              title: '✨ Still Sanctuary v2.1.1 Update is Live!',
-              body: 'Compounding mindfulness rewards (5m–80m), calm analytics, and notification sovereignty are now active. Tap to enter your sanctuary.'
+              version: '2.2.0',
+              title: '✨ Still Sanctuary v2.2.0 Update is Live!',
+              body: 'Daily Stillness Streaks, 1-Tap SOS State Rescues, and Cross-Device Sync are now active. Tap to enter your sanctuary.'
             }));
           }
 
@@ -161,13 +220,27 @@ export const App = () => {
             .then((data) => {
               setUpdateInfo(data);
               setIsUpdateModalOpen(true);
-              localStorage.setItem('still_last_seen_version', '2.1.1');
+              localStorage.setItem('still_last_seen_version', '2.2.0');
             })
             .catch(() => {});
         }
       }
     } catch (e) {}
   }, []);
+
+  // Quick 1-Tap SOS State Rescue Handler
+  const handleSelectSosMode = (rescue) => {
+    setIsNoteOpen(false);
+    setIsHomeOpen(false);
+    setCurrentTrackIndex(rescue.trackIndex);
+    if (rescue.sleepTimerSeconds) {
+      setSleepTimerSeconds(rescue.sleepTimerSeconds);
+    }
+    setIsPlaying(true);
+    if (engineRef.current) {
+      engineRef.current.applySoundscape(SOUNDSCAPES[rescue.trackIndex], 1.2);
+    }
+  };
 
   useEffect(() => {
     let interval = null;
@@ -176,11 +249,20 @@ export const App = () => {
         sessionSecondsRef.current += 1;
         const currentSec = sessionSecondsRef.current;
         setActiveListeningSeconds(currentSec);
-        setLifetimeSeconds((l) => {
-          const next = l + 1;
-          try { localStorage.setItem('still_lifetime_seconds', String(next)); } catch (e) {}
-          return next;
-        });
+
+        // Record listening seconds in SanctuarySyncService
+        const stats = SanctuarySyncService.recordListeningSeconds(1);
+        setStreakInfo(SanctuarySyncService.getStreakInfo());
+        setLifetimeSeconds(stats.lifetimeSeconds);
+
+        if (window.ReactNativeWebView) {
+          window.ReactNativeWebView.postMessage(JSON.stringify({
+            type: 'SYNC_STREAK_STATS',
+            streak: stats.streak,
+            todaySeconds: stats.todaySeconds,
+            lifetimeSeconds: stats.lifetimeSeconds
+          }));
+        }
 
         // Check compounding milestones
         const milestone = MILESTONES.find((m) => m.seconds === currentSec);
@@ -640,6 +722,8 @@ export const App = () => {
       <HomeGateway 
         isVisible={isHomeOpen} 
         onEnter={handleEnterCalmSpace} 
+        onSelectSosMode={handleSelectSosMode}
+        streakInfo={streakInfo}
         onOpenAbout={() => setIsAboutOpen(true)} 
         onOpenDownload={() => setIsDownloadOpen(true)}
         isMobileApp={isMobileApp}
@@ -654,7 +738,10 @@ export const App = () => {
           volume={volume}
           isMuted={isMuted}
           sleepTimer={sleepTimerSeconds}
+          targetMilestone={targetMilestone}
+          activeListeningSeconds={activeListeningSeconds}
           theme={THEMES[currentThemeIdx]}
+          streakInfo={streakInfo}
           onTogglePlay={handleTogglePlay}
           onNext={handleNextTrack}
           onPrev={handlePrevTrack}
@@ -717,6 +804,10 @@ export const App = () => {
         onClose={() => setIsSettingsOpen(false)}
         todaySeconds={activeListeningSeconds}
         lifetimeSeconds={lifetimeSeconds}
+        streakInfo={streakInfo}
+        googleUser={googleUser}
+        onLinkGoogle={handleLinkGoogle}
+        onUnlinkGoogle={handleUnlinkGoogle}
         currentMilestoneLabel={unlockedMilestone?.label || '0s'}
         notificationPrefs={notificationPrefs}
         onUpdatePref={handleUpdatePref}
@@ -751,7 +842,7 @@ export const App = () => {
           userSelect: 'none'
         }}
       >
-        v2.1.1
+        v2.2.0
       </div>
     </>
   );

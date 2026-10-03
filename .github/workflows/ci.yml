@@ -1,0 +1,58 @@
+name: CI Universal Test & Quality Gate
+
+on:
+  push:
+    branches: ["main", "master", "dev", "feature/**"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  test:
+    name: Universal Test Suite & Quality Gate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: |
+            v2/web/package-lock.json
+            v2/mobile/package-lock.json
+
+      - name: Install Web Dependencies
+        run: |
+          cd v2/web
+          npm ci
+
+      - name: Run Web & Shared Test Suite (Vitest)
+        run: |
+          cd v2/web
+          npm test
+
+      - name: Build Web Production Singlefile Bundle
+        run: |
+          cd v2/web
+          npm run build
+
+      - name: Bundle Webview into Mobile Package
+        run: |
+          node scripts/bundle_mobile_html.js
+
+      - name: Install Mobile Dependencies
+        run: |
+          cd v2/mobile
+          npm ci
+
+      - name: Run Mobile Test Suite (Vitest)
+        run: |
+          cd v2/mobile
+          npm test
+
+      - name: Verify Bundle Integrity & Release Artifacts
+        run: |
+          node scripts/verify_bundle.js

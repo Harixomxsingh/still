@@ -35,10 +35,19 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Mobile Dependencies
+      - name: Install Dependencies & Run Universal Test Gate
         run: |
+          cd v2/web
+          npm ci
+          npm test
+          npm run build
+          cd ../..
+          node scripts/bundle_mobile_html.js
           cd v2/mobile
-          npm install
+          npm ci
+          npm test
+          cd ../..
+          node scripts/verify_bundle.js
 
       - name: Build Standalone Release APK (Gradle)
         run: |
@@ -67,14 +76,15 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/heads/main')
         with:
-          tag_name: v2.0.0
-          name: "Still v2.0.0 — Standalone Android Release"
+          tag_name: v2.1.1
+          name: "Still v2.1.1 — Standalone Android Release"
           body: |
-            ## 📱 Still for Android (v2.0.0)
+            ## 📱 Still for Android (v2.1.1)
             
             A distraction-free, neuro-acoustic sanctuary for your pocket.
             
-            ### ✨ Features in this release:
+            ### ✨ Quality Gate Verified:
+            - **🛡️ 100% Automated Universal Test Gate Passed** (Soundscapes, Audio Synthesis Engine, Milestone Tracking, Bridge IPC, Background Notification Service).
             - **🔒 Background Audio & MediaSession:** Keeps playing when screen locks.
             - **🫁 0.1 Hz Resonant Breathing with Haptics:** Tactile phone vibration breathing guide.
             - **🎛️ Physical Tactile Stem Mixer:** Sliders with continuous vibration feedback.

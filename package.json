@@ -1,0 +1,27 @@
+{
+  "name": "still-sanctuary",
+  "version": "2.1.1",
+  "private": true,
+  "description": "Still — Minimalist Neuro-Acoustic Sanctuary for Deep Focus, Sleep & Somatic Calm",
+  "scripts": {
+    "test": "npm run test:web && npm run test:mobile && npm run test:bundle",
+    "test:web": "npm --prefix v2/web test",
+    "test:mobile": "npm --prefix v2/mobile test",
+    "test:bundle": "node scripts/verify_bundle.js",
+    "build:web": "npm --prefix v2/web run build",
+    "bundle:mobile": "node scripts/bundle_mobile_html.js",
+    "build": "npm run build:web && npm run bundle:mobile",
+    "ci": "npm run build && npm test",
+    "pre-push": "bash scripts/pre-push.sh"
+  },
+  "keywords": [
+    "stillness",
+    "soundscapes",
+    "binaural-beats",
+    "neuro-acoustics",
+    "meditation",
+    "hrv-breathing"
+  ],
+  "author": "Hari",
+  "license": "MIT"
+}

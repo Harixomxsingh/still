@@ -61,6 +61,7 @@ export const BreathingHalo = ({ isPlaying, onTogglePlay }) => {
       onClick={onTogglePlay}
       title={isPlaying ? "Pause (Space)" : "Play (Space)"}
     >
+      <div className="nexus-warm-aura" />
       <div className="nexus-outer-halo" />
       <div className="nexus-glow-disc" />
       <div className="nexus-core-sphere">
@@ -72,6 +73,14 @@ export const BreathingHalo = ({ isPlaying, onTogglePlay }) => {
         <span className="text-[9px] font-mono tracking-widest text-slate-300 mt-2 uppercase opacity-80" style={{ fontSize: '9px', letterSpacing: '0.14em' }}>
           {breathPhase}
         </span>
+      </div>
+
+      {/* Screen 02 / 03 / 04: Wavy Moonlight Water Ripples */}
+      <div className="nexus-wavy-ripples">
+        <div className="water-ripple ripple-1" />
+        <div className="water-ripple ripple-2" />
+        <div className="water-ripple ripple-3" />
+        <div className="water-ripple ripple-4" />
       </div>
     </div>
   );

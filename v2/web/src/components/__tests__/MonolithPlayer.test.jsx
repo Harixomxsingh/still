@@ -161,7 +161,8 @@ describe('MonolithPlayer Component', () => {
       />
     );
 
-    expect(screen.getByText(/5m • 5%/)).toBeInTheDocument();
+    expect(screen.getByText('Daily Stillness')).toBeInTheDocument();
+    expect(screen.getByText('5%')).toBeInTheDocument();
   });
 
   it('renders sleep timer remaining time when manual timer is activated', () => {
@@ -191,6 +192,9 @@ describe('MonolithPlayer Component', () => {
         isMobileApp={false}
       />
     );
+
+    const moreBtn = screen.getByTitle(/Sanctuary Options & Tools/i);
+    fireEvent.click(moreBtn);
 
     expect(screen.getByText('15:00')).toBeInTheDocument();
   });

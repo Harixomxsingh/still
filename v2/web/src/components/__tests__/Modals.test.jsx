@@ -5,6 +5,8 @@ import { AboutModal } from '../AboutModal';
 import { SettingsModal } from '../SettingsModal';
 import { MilestoneRewardModal } from '../MilestoneRewardModal';
 import { DownloadModal } from '../DownloadModal';
+import { StreakDashboardModal } from '../StreakDashboardModal';
+import { BreathPacerModal } from '../BreathPacerModal';
 import { MILESTONES } from '../../App';
 
 describe('Modal Components Suite', () => {
@@ -109,6 +111,50 @@ describe('Modal Components Suite', () => {
       render(<DownloadModal isOpen={true} onClose={vi.fn()} />);
       expect(screen.getByText(/Get Still on Your Phone/i)).toBeInTheDocument();
       expect(screen.getByText(/Download Still for Android/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('StreakDashboardModal', () => {
+    it('does not render when closed', () => {
+      const { container } = render(<StreakDashboardModal isOpen={false} onClose={vi.fn()} />);
+      expect(container.firstChild).toBeNull();
+    });
+
+    it('renders 16-week matrix, streak count, mindful hours, and habit status when opened', () => {
+      render(
+        <StreakDashboardModal
+          isOpen={true}
+          onClose={vi.fn()}
+          streakInfo={{ streak: 5, longestStreak: 12, isGoalMetToday: true }}
+          todaySeconds={350}
+          lifetimeSeconds={7200}
+        />
+      );
+      expect(screen.getByText('Stillness Practice & Streak')).toBeInTheDocument();
+      expect(screen.getByText('16-Week Consistency Matrix')).toBeInTheDocument();
+      expect(screen.getByText('5')).toBeInTheDocument();
+      expect(screen.getByText('12')).toBeInTheDocument();
+      expect(screen.getByText('2.0')).toBeInTheDocument();
+      expect(screen.getByText("Today's Stillness Completed!")).toBeInTheDocument();
+    });
+  });
+
+  describe('BreathPacerModal', () => {
+    it('does not render when closed', () => {
+      const { container } = render(<BreathPacerModal isOpen={false} onClose={vi.fn()} onSelectPattern={vi.fn()} activePatternId="coherence" />);
+      expect(container.firstChild).toBeNull();
+    });
+
+    it('renders breath patterns and allows selection', () => {
+      const onSelect = vi.fn();
+      render(<BreathPacerModal isOpen={true} onClose={vi.fn()} onSelectPattern={onSelect} activePatternId="coherence" />);
+      expect(screen.getByText('Resonant Breath Pacer')).toBeInTheDocument();
+      expect(screen.getByText('0.1 Hz Coherence')).toBeInTheDocument();
+      expect(screen.getByText(/Box Breathing/)).toBeInTheDocument();
+      expect(screen.getByText('4-7-8 Deep Rest')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByText(/Box Breathing/));
+      expect(onSelect).toHaveBeenCalledWith('box');
     });
   });
 });

@@ -101,7 +101,8 @@ describe('App Main Application Component & Flow', () => {
     // Verify Monolith Player is now rendered playing Brownian Noise
     expect(screen.getByText(SOUNDSCAPES[2].title)).toBeInTheDocument();
     expect(screen.getAllByTitle(/Pause \(Space\)/i).length).toBeGreaterThan(0);
-    expect(screen.getByText(/5m • 0%/)).toBeInTheDocument();
+    expect(screen.getByText('Daily Stillness')).toBeInTheDocument();
+    expect(screen.getByText('0%')).toBeInTheDocument();
   });
 
   it('validates MILESTONES constant configuration', () => {

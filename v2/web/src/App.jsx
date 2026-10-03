@@ -19,6 +19,9 @@ import { HomeGateway } from './components/HomeGateway';
 import { MonolithPlayer } from './components/MonolithPlayer';
 import { StemMixer } from './components/StemMixer';
 import { SoundscapeModal } from './components/SoundscapeModal';
+import { SessionTimerModal } from './components/SessionTimerModal';
+import { StreakDashboardModal } from './components/StreakDashboardModal';
+import { BreathPacerModal } from './components/BreathPacerModal';
 import { AboutModal } from './components/AboutModal';
 import { WelcomeCard } from './components/WelcomeCard';
 import { DownloadModal } from './components/DownloadModal';
@@ -35,6 +38,25 @@ export const App = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [sleepTimerSeconds, setSleepTimerSeconds] = useState(null);
   const [currentThemeIdx, setCurrentThemeIdx] = useState(0);
+
+  // Sanctuary Backdrop Mode ('horizon' | 'void' | 'nebula')
+  const [backdropMode, setBackdropMode] = useState(() => {
+    try {
+      return localStorage.getItem('still_backdrop_mode') || 'horizon';
+    } catch (e) {
+      return 'horizon';
+    }
+  });
+
+  const handleCycleBackdropMode = () => {
+    setBackdropMode((prev) => {
+      const next = prev === 'horizon' ? 'void' : prev === 'void' ? 'nebula' : 'horizon';
+      try {
+        localStorage.setItem('still_backdrop_mode', next);
+      } catch (e) {}
+      return next;
+    });
+  };
 
   // Sleep Timer Live Countdown Loop
   useEffect(() => {
@@ -121,6 +143,9 @@ export const App = () => {
 
   // Settings & In-App Autonomous Updates
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isStreakModalOpen, setIsStreakModalOpen] = useState(false);
+  const [isBreathPacerOpen, setIsBreathPacerOpen] = useState(false);
+  const [breathPatternId, setBreathPatternId] = useState('coherence');
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [updateInfo, setUpdateInfo] = useState(null);
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
@@ -335,6 +360,7 @@ export const App = () => {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [isMixerOpen, setIsMixerOpen] = useState(false);
+  const [isTimerModalOpen, setIsTimerModalOpen] = useState(false);
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   // Detect if running inside the React Native mobile shell
   const isNativeApp = typeof window !== 'undefined' && (
@@ -699,6 +725,22 @@ export const App = () => {
     setCurrentThemeIdx((prev) => (prev + 1) % THEMES.length);
   };
 
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  useEffect(() => {
+    const handleFsChange = () => {
+      const isFs = Boolean(document.fullscreenElement);
+      setIsFullScreen(isFs);
+      if (isFs) {
+        document.body.classList.add('is-zen-fullscreen');
+      } else {
+        document.body.classList.remove('is-zen-fullscreen');
+      }
+    };
+    document.addEventListener('fullscreenchange', handleFsChange);
+    return () => document.removeEventListener('fullscreenchange', handleFsChange);
+  }, []);
+
   const handleToggleFullScreen = () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().catch(() => {});
@@ -709,6 +751,17 @@ export const App = () => {
 
   return (
     <>
+      {/* Atmospheric Celestial Horizon Layer (Screens 01, 02, 04) */}
+      <div className={`celestial-backdrop backdrop-${backdropMode}`} />
+
+      {/* Screen 04: Fullscreen Zen Mode Overlay Elements */}
+      {isFullScreen && (
+        <>
+          <div className="zen-exit-hint">Press ESC to exit</div>
+          <div className="zen-breath-guide">Inhale 4s &bull; Hold 2s &bull; Exhale 4s</div>
+        </>
+      )}
+
       {/* Floating Particle Canvas */}
       <canvas ref={canvasRef} className="ambient-canvas" />
 
@@ -724,6 +777,7 @@ export const App = () => {
         onEnter={handleEnterCalmSpace} 
         onSelectSosMode={handleSelectSosMode}
         streakInfo={streakInfo}
+        onOpenStreak={() => setIsStreakModalOpen(true)}
         onOpenAbout={() => setIsAboutOpen(true)} 
         onOpenDownload={() => setIsDownloadOpen(true)}
         isMobileApp={isMobileApp}
@@ -742,13 +796,19 @@ export const App = () => {
           activeListeningSeconds={activeListeningSeconds}
           theme={THEMES[currentThemeIdx]}
           streakInfo={streakInfo}
+          breathPatternId={breathPatternId}
+          backdropMode={backdropMode}
           onTogglePlay={handleTogglePlay}
           onNext={handleNextTrack}
           onPrev={handlePrevTrack}
           onVolumeChange={handleVolumeChange}
           onToggleMute={handleToggleMute}
           onCycleTimer={handleCycleTimer}
+          onOpenTimer={() => setIsTimerModalOpen(true)}
+          onOpenStreak={() => setIsStreakModalOpen(true)}
+          onOpenBreathPacer={() => setIsBreathPacerOpen(true)}
           onCycleTheme={handleCycleTheme}
+          onCycleBackdrop={handleCycleBackdropMode}
           onToggleFullScreen={handleToggleFullScreen}
           onOpenLibrary={() => setIsLibraryOpen(true)}
           onOpenMixer={() => setIsMixerOpen(true)}
@@ -756,9 +816,27 @@ export const App = () => {
           onOpenAbout={() => setIsAboutOpen(true)}
           onOpenNote={() => setIsNoteOpen(true)}
           onOpenDownload={() => setIsDownloadOpen(true)}
+          onBackToHome={() => setIsHomeOpen(true)}
           isMobileApp={isMobileApp}
         />
       )}
+
+      {/* Stillness Practice & Streak Matrix Dashboard Modal */}
+      <StreakDashboardModal
+        isOpen={isStreakModalOpen}
+        onClose={() => setIsStreakModalOpen(false)}
+        streakInfo={streakInfo}
+        todaySeconds={activeListeningSeconds}
+        lifetimeSeconds={lifetimeSeconds}
+      />
+
+      {/* Resonant Breath Pacer Mode Selector Modal */}
+      <BreathPacerModal
+        isOpen={isBreathPacerOpen}
+        onClose={() => setIsBreathPacerOpen(false)}
+        activePatternId={breathPatternId}
+        onSelectPattern={(pId) => setBreathPatternId(pId)}
+      />
 
       {/* Soundscape Library Modal */}
       <SoundscapeModal
@@ -767,6 +845,14 @@ export const App = () => {
         currentTrackIndex={currentTrackIndex}
         isPlaying={isPlaying}
         onSelectTrack={handleSelectTrack}
+      />
+
+      {/* Screen 05: Session Timer Menu Popover */}
+      <SessionTimerModal
+        isOpen={isTimerModalOpen}
+        onClose={() => setIsTimerModalOpen(false)}
+        sleepTimer={sleepTimerSeconds}
+        onSelectTimer={(secs) => setSleepTimerSeconds(secs)}
       />
 
       {/* Audio Stem Layer Mixer Drawer */}

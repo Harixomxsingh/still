@@ -49,6 +49,29 @@ export class SanctuarySyncService {
   }
 
   /**
+   * Retrieves all recorded daily calm practice history mapping 'YYYY-MM-DD' -> seconds
+   */
+  static getPracticesHistory() {
+    try {
+      const history = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(STORAGE_KEYS.TODAY_SECONDS_PREFIX)) {
+          const dateStr = key.replace(STORAGE_KEYS.TODAY_SECONDS_PREFIX, '');
+          history[dateStr] = Number(localStorage.getItem(key) || 0);
+        }
+      }
+      return history;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  static getPracticeHistory() {
+    return this.getPracticesHistory();
+  }
+
+  /**
    * Records newly added seconds and updates the daily streak
    */
   static recordListeningSeconds(addedSeconds = 1) {

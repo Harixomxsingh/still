@@ -40,35 +40,32 @@ export const SoundscapeModal = ({ isOpen, onClose, currentTrackIndex, isPlaying,
                   display: 'flex',
                   alignItems: 'center',
                   gap: '12px',
-                  padding: '12px 14px',
+                  padding: '10px 12px',
                   borderRadius: '16px',
                   cursor: 'pointer',
-                  border: isActive ? '1px solid var(--accent-primary)' : '1px solid rgba(255, 255, 255, 0.05)',
-                  background: isActive ? 'rgba(56, 189, 248, 0.08)' : 'rgba(255, 255, 255, 0.02)',
+                  border: isActive ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid rgba(255, 255, 255, 0.06)',
+                  background: isActive ? 'rgba(56, 189, 248, 0.08)' : 'rgba(255, 255, 255, 0.025)',
+                  boxShadow: isActive ? '0 0 20px rgba(56, 189, 248, 0.15)' : 'none',
                   transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
               >
-                {/* Icon */}
-                <div style={{ 
-                  width: '38px', 
-                  height: '38px', 
-                  borderRadius: '12px', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  background: isActive ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255,255,255,0.04)', 
-                  color: isActive ? 'var(--accent-primary)' : '#94a3b8', 
-                  flexShrink: 0,
-                  fontSize: '14px'
-                }}>
-                  <i className={`fa-solid ${track.icon || 'fa-water'}`}></i>
+                {/* Visual Artwork Thumbnail */}
+                <div style={{ position: 'relative', width: '56px', height: '42px', flexShrink: 0, borderRadius: '10px', overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                  <img 
+                    src={track.artwork || './thumb_alpha_sanctuary.jpg'} 
+                    alt={track.title} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                  />
+                  {isActive && (
+                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(56, 189, 248, 0.2)' }} />
+                  )}
                 </div>
 
                 {/* Content */}
                 <div style={{ flexGrow: 1, minWidth: 0, textAlign: 'left' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                     <h5 style={{ 
-                      fontSize: '13.5px', 
+                      fontSize: '13px', 
                       fontWeight: isActive ? 700 : 600, 
                       color: isActive ? 'var(--accent-primary)' : '#f8fafc', 
                       overflow: 'hidden', 
@@ -78,32 +75,38 @@ export const SoundscapeModal = ({ isOpen, onClose, currentTrackIndex, isPlaying,
                     }}>
                       {track.title}
                     </h5>
-                    
-                    {/* Frequency Pill on Right */}
-                    <span style={{ 
-                      fontSize: '10px', 
-                      fontFamily: 'monospace', 
-                      color: isActive ? 'var(--accent-primary)' : '#64748b',
-                      background: isActive ? 'rgba(56, 189, 248, 0.12)' : 'rgba(255, 255, 255, 0.03)',
-                      padding: '2px 8px',
-                      borderRadius: '8px',
-                      whiteSpace: 'nowrap',
-                      border: isActive ? '1px solid rgba(56, 189, 248, 0.3)' : '1px solid rgba(255, 255, 255, 0.04)'
-                    }}>
-                      {track.science.split('•')[0].trim()}
-                    </span>
                   </div>
 
                   {/* Essential Purpose */}
                   <p style={{ 
                     fontSize: '11px', 
-                    color: isActive ? '#cbd5e1' : 'var(--text-secondary)', 
-                    marginTop: '3px',
+                    color: isActive ? '#94a3b8' : 'var(--text-muted)', 
+                    marginTop: '2px',
                     marginBottom: 0,
-                    fontWeight: 400
+                    fontWeight: 300,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
                   }}>
                     {track.purpose || track.science}
                   </p>
+                </div>
+
+                {/* Play Circle Action Indicator */}
+                <div style={{ 
+                  width: '28px', 
+                  height: '28px', 
+                  borderRadius: '50%', 
+                  background: isActive ? 'var(--accent-primary)' : 'rgba(255, 255, 255, 0.05)', 
+                  border: isActive ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  color: isActive ? '#05070d' : '#94a3b8', 
+                  flexShrink: 0,
+                  fontSize: '11px'
+                }}>
+                  <i className="fa-solid fa-play" style={{ marginLeft: '1px' }}></i>
                 </div>
               </div>
             );

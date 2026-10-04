@@ -24,7 +24,7 @@ function checkFileExists(filePath, minSizeBytes = 100, description = '') {
   return true;
 }
 
-console.log('🔍 [1/3] Verifying Production Web Singlefile Bundle...');
+console.log('🔍 [1/4] Verifying Production Web Singlefile Bundle...');
 if (checkFileExists('v2/web/dist/index.html', 5000, 'Web Production Singlefile Bundle')) {
   const htmlContent = fs.readFileSync(path.resolve(rootDir, 'v2/web/dist/index.html'), 'utf8');
   if (!htmlContent.includes('<html') || !htmlContent.includes('</html>')) {
@@ -35,7 +35,15 @@ if (checkFileExists('v2/web/dist/index.html', 5000, 'Web Production Singlefile B
   }
 }
 
-console.log('\n🔍 [2/3] Verifying Mobile Web Offline Bundle...');
+console.log('\n🔍 [2/4] Verifying Root Production Entry Point for GitHub Pages...');
+if (checkFileExists('index.html', 5000, 'Root Production Entry Point')) {
+  const rootContent = fs.readFileSync(path.resolve(rootDir, 'index.html'), 'utf8');
+  if (!rootContent.includes('v2.2.0') && !rootContent.includes('Daily Stillness')) {
+    errors.push('❌ Root index.html does not match v2.2.0 production build');
+  }
+}
+
+console.log('\n🔍 [3/4] Verifying Mobile Web Offline Bundle...');
 if (checkFileExists('v2/mobile/src/assets/webAppBundle.js', 5000, 'Mobile Webview Bundle')) {
   const bundleContent = fs.readFileSync(path.resolve(rootDir, 'v2/mobile/src/assets/webAppBundle.js'), 'utf8');
   if (!bundleContent.includes('export const WEB_APP_HTML =')) {

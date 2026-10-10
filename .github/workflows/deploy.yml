@@ -31,7 +31,7 @@ jobs:
       - name: Run Web Tests & Verification
         run: |
           cd v2/web
-          npm ci
+          npm install
           npm test
           npm run build
 
@@ -39,7 +39,7 @@ jobs:
         run: |
           node scripts/bundle_mobile_html.js
           cd v2/mobile
-          npm ci
+          npm install
           npm test
 
       - name: Verify Bundle Integrity

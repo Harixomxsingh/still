@@ -67,24 +67,42 @@ export const DownloadModal = ({ isOpen, onClose }) => {
           </a>
 
           {/* GitHub Mirror */}
-          <a
-            href="https://github.com/Harixomxsingh/still"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '6px',
-              color: '#94a3b8',
-              fontSize: '11.5px',
-              textDecoration: 'none',
-              padding: '6px 12px'
-            }}
-          >
-            <i className="fa-brands fa-github"></i>
-            <span>Open Source on GitHub (Harixomxsingh/still)</span>
-          </a>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
+            <a
+              href="https://github.com/Harixomxsingh/still/releases/latest/download/Still.apk"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                color: '#38bdf8',
+                fontSize: '11.5px',
+                textDecoration: 'none',
+                padding: '6px 8px'
+              }}
+            >
+              <i className="fa-solid fa-download"></i>
+              <span>GitHub Release Mirror</span>
+            </a>
+            <a
+              href="https://github.com/Harixomxsingh/still"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                color: '#94a3b8',
+                fontSize: '11.5px',
+                textDecoration: 'none',
+                padding: '6px 8px'
+              }}
+            >
+              <i className="fa-brands fa-github"></i>
+              <span>Source Code</span>
+            </a>
+          </div>
         </div>
 
         {/* Radically Simple 3-Step Guide (Zero Decision Fatigue) */}

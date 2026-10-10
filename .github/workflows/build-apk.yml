@@ -42,6 +42,16 @@ jobs:
           cd v2/mobile
           npm install --legacy-peer-deps
 
+      - name: Configure Hermes Compiler
+        run: |
+          mkdir -p v2/mobile/node_modules/react-native/sdks/hermesc
+          if [ -d "v2/mobile/node_modules/hermes-compiler/hermesc/linux64-bin" ]; then
+            ln -sf "$(pwd)/v2/mobile/node_modules/hermes-compiler/hermesc/linux64-bin" v2/mobile/node_modules/react-native/sdks/hermesc/linux64-bin
+          fi
+          if [ -d "v2/mobile/node_modules/hermes-compiler/hermesc/osx-bin" ]; then
+            ln -sf "$(pwd)/v2/mobile/node_modules/hermes-compiler/hermesc/osx-bin" v2/mobile/node_modules/react-native/sdks/hermesc/osx-bin
+          fi
+
       - name: Build Standalone Release APK (Gradle)
         run: |
           cd v2/mobile/android

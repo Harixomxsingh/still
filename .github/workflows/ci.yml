@@ -42,7 +42,7 @@ jobs:
       - name: Install Mobile Dependencies
         run: |
           cd v2/mobile
-          npm install
+          npm install --legacy-peer-deps
 
       - name: Run Mobile Test Suite (Vitest)
         run: |

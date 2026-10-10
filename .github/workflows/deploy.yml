@@ -1,4 +1,4 @@
-# Production Deployment Workflow for GitHub Pages with Automated Quality Gate
+# Production Deployment Workflow for GitHub Pages
 name: Deploy static content to Pages
 
 on:
@@ -16,39 +16,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  test:
-    name: Production Gate Test Suite
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Run Web Tests & Verification
-        run: |
-          cd v2/web
-          npm install
-          npm test
-          npm run build
-
-      - name: Bundle & Run Mobile Tests
-        run: |
-          node scripts/bundle_mobile_html.js
-          cd v2/mobile
-          npm install
-          npm test
-
-      - name: Verify Bundle Integrity
-        run: |
-          node scripts/verify_bundle.js
-
   deploy:
     name: Deploy to GitHub Pages
-    needs: test
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

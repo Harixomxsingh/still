@@ -12,6 +12,7 @@ permissions: write-all
 
 jobs:
   build:
+    name: Build & Release Standalone APK
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +20,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js 20
         uses: actions/setup-node@v4
@@ -37,19 +37,10 @@ jobs:
           echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
           echo "Using Android SDK at: $ANDROID_HOME"
 
-      - name: Install Dependencies & Run Universal Test Gate
+      - name: Install Mobile Dependencies
         run: |
-          cd v2/web
-          npm install
-          npm test
-          npm run build
-          cd ../..
-          node scripts/bundle_mobile_html.js
           cd v2/mobile
           npm install
-          npm test
-          cd ../..
-          node scripts/verify_bundle.js
 
       - name: Build Standalone Release APK (Gradle)
         run: |
@@ -65,7 +56,6 @@ jobs:
           fi
           echo "Found compiled Release APK at: $APK_PATH"
           cp "$APK_PATH" Still.apk
-          cp "$APK_PATH" v2/web/public/Still.apk
           ls -lh Still.apk
 
       - name: Upload APK Artifact

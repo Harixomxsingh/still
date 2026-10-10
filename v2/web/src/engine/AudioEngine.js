@@ -40,6 +40,13 @@ export class AudioEngine {
       binaural: 0.4,
       piano: 0.5
     };
+
+    const isNativeApp = typeof window !== 'undefined' && Boolean(
+      window.ReactNativeWebView ||
+      window.location?.search?.includes('platform=android') ||
+      window.navigator?.userAgent?.includes('StillAndroidApp')
+    );
+    this.masterVolume = isNativeApp ? 0.0 : 0.75;
   }
 
   init() {
@@ -49,7 +56,7 @@ export class AudioEngine {
     this.ctx = new AudioContextClass();
 
     this.masterGain = this.ctx.createGain();
-    this.masterGain.gain.setValueAtTime(0.75, this.ctx.currentTime);
+    this.masterGain.gain.setValueAtTime(this.masterVolume, this.ctx.currentTime);
     this.masterGain.connect(this.ctx.destination);
 
     // Initialize Stem Sub-Master Gain Nodes
@@ -379,6 +386,25 @@ export class AudioEngine {
     } catch (e) {}
   }
 
+  setMasterVolume(val) {
+    const isNativeApp = typeof window !== 'undefined' && Boolean(
+      window.ReactNativeWebView ||
+      window.location?.search?.includes('platform=android') ||
+      window.navigator?.userAgent?.includes('StillAndroidApp')
+    );
+    if (isNativeApp) {
+      this.masterVolume = 0.0;
+      if (this.masterGain && this.ctx) {
+        this.masterGain.gain.setValueAtTime(0.0, this.ctx.currentTime);
+      }
+      return;
+    }
+    this.masterVolume = Math.max(0, Math.min(1, val));
+    if (this.masterGain && this.ctx) {
+      this.masterGain.gain.setTargetAtTime(this.masterVolume, this.ctx.currentTime, 0.05);
+    }
+  }
+
   resume() {
     this.isPlaying = true;
     this._startMediaAnchor();
@@ -386,7 +412,7 @@ export class AudioEngine {
     try {
       this.ctx.resume();
       if (this.masterGain) {
-        this.masterGain.gain.setValueAtTime(0.75, this.ctx.currentTime);
+        this.masterGain.gain.setValueAtTime(this.masterVolume, this.ctx.currentTime);
       }
     } catch (e) {}
     if (this.currentTrack) {

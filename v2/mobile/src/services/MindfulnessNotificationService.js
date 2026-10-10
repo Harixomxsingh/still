@@ -1,5 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import defaultPrompts from '../data/prompts.json';
 
 const MINDFULNESS_CHANNEL_ID = 'still_mindfulness_channel';
@@ -53,15 +54,21 @@ export class MindfulnessNotificationService {
           lightColor: '#38bdf8',
           lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
           sound: 'default',
-        });
+        }).catch((e) => console.log('Mindfulness channel setup note:', e));
       }
 
-      // 3. Retrieve and print Expo Push Token for remote push delivery
-      try {
-        const tokenData = await Notifications.getExpoPushTokenAsync();
-        console.log('🔥 [REMOTE_PUSH_TOKEN]:', tokenData.data);
-      } catch (tokenErr) {
-        console.log('Remote push token note:', tokenErr.message);
+      // 3. Retrieve and print Expo Push Token for remote push delivery (standalone / dev builds only)
+      const isExpoGo =
+        Constants?.executionEnvironment === ExecutionEnvironment?.StoreClient ||
+        Constants?.appOwnership === 'expo';
+
+      if (!isExpoGo) {
+        try {
+          const tokenData = await Notifications.getExpoPushTokenAsync();
+          console.log('🔥 [REMOTE_PUSH_TOKEN]:', tokenData.data);
+        } catch (tokenErr) {
+          console.log('Remote push token note:', tokenErr.message);
+        }
       }
 
       // 3. Purge all old stuck notifications so no backlog can ever fire

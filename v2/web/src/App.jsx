@@ -413,30 +413,36 @@ export const App = () => {
   // Expose global bridge handlers for native lockscreen notification buttons & 2-way hardware volume sync
   useEffect(() => {
     window.__mediaSetPlaying = (shouldPlay) => {
-      if (shouldPlay) {
+      console.log('Bridge: __mediaSetPlaying called with:', shouldPlay);
+      const wantPlay = Boolean(shouldPlay);
+      if (wantPlay) {
         if (isHomeOpen) {
-          setIsNoteOpen(false);
-          setIsHomeOpen(false);
+          handleEnterCalmSpace();
+        } else if (!isPlaying) {
+          handleTogglePlay();
         }
-        setIsPlaying(true);
       } else {
-        setIsPlaying(false);
+        if (isPlaying) {
+          handleTogglePlay();
+        }
       }
     };
     window.__mediaTogglePlay = () => {
+      console.log('Bridge: __mediaTogglePlay triggered');
       if (isHomeOpen) handleEnterCalmSpace();
       else handleTogglePlay();
     };
     window.__mediaNextTrack = () => {
+      console.log('Bridge: __mediaNextTrack triggered');
       handleNextTrack();
+    };
+    window.__mediaPrevTrack = () => {
+      console.log('Bridge: __mediaPrevTrack triggered');
+      handlePrevTrack();
     };
     window.__mediaSelectTrack = (idx) => {
       if (typeof idx === 'number' && idx >= 0 && idx < SOUNDSCAPES.length) {
-        setCurrentTrackIndex(idx);
-        if (isHomeOpen) {
-          setIsHomeOpen(false);
-          setIsNoteOpen(false);
-        }
+        handleSelectTrack(idx);
       }
     };
     window.__syncVolume = (deviceVol) => {
@@ -448,11 +454,15 @@ export const App = () => {
         if (engineRef.current) engineRef.current.setMasterVolume(v);
       }
     };
-    return () => {
-      delete window.__mediaTogglePlay;
-      delete window.__mediaNextTrack;
-      delete window.__mediaSelectTrack;
-      delete window.__syncVolume;
+    window.__syncSanctuarySeconds = (totalTodaySeconds) => {
+      if (typeof totalTodaySeconds === 'number' && totalTodaySeconds >= 0) {
+        const streak = SanctuarySyncService.getStreakInfo();
+        const diff = totalTodaySeconds - streak.todaySeconds;
+        if (diff > 0) {
+          SanctuarySyncService.recordListeningSeconds(diff);
+          setStreakInfo(SanctuarySyncService.getStreakInfo());
+        }
+      }
     };
   }, [isHomeOpen, isPlaying, currentTrackIndex]);
 
@@ -575,16 +585,30 @@ export const App = () => {
   const handleNextTrack = () => {
     const nextIdx = (currentTrackIndex + 1) % SOUNDSCAPES.length;
     setCurrentTrackIndex(nextIdx);
-    if (isPlaying && engineRef.current) {
-      engineRef.current.applySoundscape(SOUNDSCAPES[nextIdx], 3.0);
+    if (isHomeOpen) {
+      setIsHomeOpen(false);
+    }
+    if (engineRef.current) {
+      if (!isPlaying) {
+        engineRef.current.isPlaying = true;
+        setIsPlaying(true);
+      }
+      engineRef.current.applySoundscape(SOUNDSCAPES[nextIdx], 0.2);
     }
   };
 
   const handlePrevTrack = () => {
     const prevIdx = (currentTrackIndex - 1 + SOUNDSCAPES.length) % SOUNDSCAPES.length;
     setCurrentTrackIndex(prevIdx);
-    if (isPlaying && engineRef.current) {
-      engineRef.current.applySoundscape(SOUNDSCAPES[prevIdx], 3.0);
+    if (isHomeOpen) {
+      setIsHomeOpen(false);
+    }
+    if (engineRef.current) {
+      if (!isPlaying) {
+        engineRef.current.isPlaying = true;
+        setIsPlaying(true);
+      }
+      engineRef.current.applySoundscape(SOUNDSCAPES[prevIdx], 0.2);
     }
   };
 
@@ -598,7 +622,7 @@ export const App = () => {
         engineRef.current.isPlaying = true;
         setIsPlaying(true);
       }
-      engineRef.current.applySoundscape(SOUNDSCAPES[idx], 2.5);
+      engineRef.current.applySoundscape(SOUNDSCAPES[idx], 0.2);
     }
   };
 

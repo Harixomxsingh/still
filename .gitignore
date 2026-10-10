@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build Outputs & Temp
+dist-apk/
+dist/
+build/
+.cache/
+.temp/
+
+# Android Build Outputs
+v2/mobile/android/app/build/
+v2/mobile/android/.gradle/
+v2/mobile/android/build/
+v2/mobile/android/app/.cxx/
+v2/mobile/android/.cxx/
+*.apk.idsig
+
+# Logs & Environment
+*.log
+.env
+.env.local
+
+# OS Artifacts
+.DS_Store
+Thumbs.db

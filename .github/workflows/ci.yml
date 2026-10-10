@@ -2,9 +2,9 @@ name: CI Universal Test & Quality Gate
 
 on:
   push:
-    branches: ["main", "master", "dev", "feature/**"]
+    branches: ["main", "master", "dev", "feature/**", "version-**"]
   pull_request:
-    branches: ["main", "master"]
+    branches: ["main", "master", "version-**"]
 
 jobs:
   test:
